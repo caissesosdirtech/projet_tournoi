@@ -885,9 +885,7 @@ def liste_equipes(request):
 
 def ajouter_joueur(request):
     if request.method == "POST":
-
         equipe = get_object_or_404(Equipe, id=request.POST.get('equipe_id'))
-
         try:
             Joueur.objects.create(
                 nom=request.POST.get('nom'),
@@ -896,15 +894,15 @@ def ajouter_joueur(request):
                 poste=request.POST.get('poste'),
                 equipe=equipe
             )
-
-            # ✅ REDIRECTION vers la liste
-            return redirect('liste_joueurs')
+            return JsonResponse({'success': True})  # ✅
 
         except IntegrityError:
-            messages.error(request, "❌ Numéro déjà utilisé")
+            return JsonResponse({   # ✅
+                'success': False,
+                'error': '❌ Numéro déjà utilisé dans cette équipe'
+            }, status=400)
 
-    return redirect('liste_joueurs')
-
+    return JsonResponse({'success': False, 'error': 'Méthode non autorisée'}, status=405)
 
 
 def liste_joueurs(request):

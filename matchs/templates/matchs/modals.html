@@ -310,10 +310,11 @@ function ouvrirModalEditEquipe(id, nom, coach1, coach2){
 
 // ================= AJOUT JOUEUR =================
 document.getElementById('formJoueur').addEventListener('submit', async function(e) {
-    e.preventDefault(); // ← bloque la soumission normale
+    e.preventDefault();
 
     const formData = new FormData(this);
     const msgBox = document.getElementById('joueur-message');
+    msgBox.innerHTML = '';
 
     try {
         const response = await fetch("{% url 'ajouter_joueur' %}", {
@@ -321,16 +322,19 @@ document.getElementById('formJoueur').addEventListener('submit', async function(
             body: formData,
         });
 
-        // La vue fait un redirect → response.ok suffit
-        if (response.ok || response.redirected) {
+        const data = await response.json();
+
+        if (data.success) {
             closeModal('modalJoueur');
             window.location.reload();
         } else {
-            msgBox.innerHTML = '<p style="color:red;">❌ Erreur serveur !</p>';
+            // ✅ Affiche l'erreur DANS le modal sans le fermer
+            msgBox.innerHTML = `<p style="color:red; padding:8px; background:#fef0f0; 
+                border-radius:6px;">${data.error}</p>`;
         }
 
     } catch (err) {
-        msgBox.innerHTML = '<p style="color:red;">❌ Erreur réseau !</p>';
+        msgBox.innerHTML = '<p style="color:red;">❌ Erreur inattendue</p>';
     }
 });
 

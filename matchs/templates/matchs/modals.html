@@ -84,7 +84,7 @@
 
     <div id="joueur-message"></div>
 
-    <form id="formJoueur" method="POST" class="modal-form">
+    <form id="formJoueur" method="POST" action="{% url 'ajouter_joueur' %}" class="modal-form"></form>
       {% csrf_token %}
 
       <input type="text" name="nom" placeholder="Nom" required>
@@ -307,5 +307,31 @@ function ouvrirModalEditEquipe(id, nom, coach1, coach2){
     document.getElementById("formEditEquipe").action =
     "/equipes/" + id + "/editer/";
 }
+
+// ================= AJOUT JOUEUR =================
+document.getElementById('formJoueur').addEventListener('submit', async function(e) {
+    e.preventDefault(); // ← bloque la soumission normale
+
+    const formData = new FormData(this);
+    const msgBox = document.getElementById('joueur-message');
+
+    try {
+        const response = await fetch("{% url 'ajouter_joueur' %}", {
+            method: 'POST',
+            body: formData,
+        });
+
+        // La vue fait un redirect → response.ok suffit
+        if (response.ok || response.redirected) {
+            closeModal('modalJoueur');
+            window.location.reload();
+        } else {
+            msgBox.innerHTML = '<p style="color:red;">❌ Erreur serveur !</p>';
+        }
+
+    } catch (err) {
+        msgBox.innerHTML = '<p style="color:red;">❌ Erreur réseau !</p>';
+    }
+});
 
 </script>

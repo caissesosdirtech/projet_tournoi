@@ -1,0 +1,24 @@
+<h2>✏ Modifier équipe</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label>Nom</label>
+        <input type="text" name="nom" value="{{ equipe.nom }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Coach 1</label>
+        <input type="text" name="coach1" value="{{ equipe.coach1 }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Coach 2</label>
+        <input type="text" name="coach2" value="{{ equipe.coach2 }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Enregistrer
+    </button>
+</form>

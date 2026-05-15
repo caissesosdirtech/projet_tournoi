@@ -1,0 +1,87 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h2>🏆 Résultats des matchs – Coupe de la DRN</h2>
+
+<!-- BADGES -->
+<div class="alert-badges">
+    <div class="badge badge-blue">📋 Matchs joués : {{ matchs_joues|length }}</div>
+</div>
+
+<!-- TABLEAU DES RESULTATS -->
+<section class="top-section">
+    <table class="table compact">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Équipe A</th>
+                <th>Score</th>
+                <th>Équipe B</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in matchs_joues %}
+            <tr>
+    <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+    <td>
+    {{ m.equipe1.nom }}
+
+    <div style="font-size:12px; margin-top:5px;">
+
+        <!-- BUTEURS -->
+        {% for b in m.buts.all %}
+            {% if b.joueur.equipe_id == m.equipe1.id %}
+                ⚽ {{ b.joueur.nom }} {{ b.joueur.prenom }} ({{ b.minute }}')<br>
+            {% endif %}
+        {% empty %}
+            <span style="color:gray;">Aucun but</span>
+        {% endfor %}
+
+        <!-- CARTONS / SANCTIONS -->
+        {% for e in m.evenements.all %}
+            {% if e.joueur.equipe_id == m.equipe1.id and e.type_evenement != "but" %}
+                {% if e.type_evenement == "carton_jaune" %}🟨
+                {% elif e.type_evenement == "carton_rouge" %}🟥
+                {% elif e.type_evenement == "suspension" %}⛔
+                {% endif %}
+                {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }}')<br>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+</td>
+    <td>{{ m.score1 }} - {{ m.score2 }}</td>
+    <td>
+    {{ m.equipe2.nom }}
+
+    <div style="font-size:12px; margin-top:5px;">
+
+        <!-- BUTEURS -->
+        {% for e in m.evenements.all %}
+            {% if e.type_evenement == "but" and e.joueur.equipe_id == m.equipe2.id %}
+                ⚽ {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }})<br>
+            {% endif %}
+        {% endfor %}
+
+        <!-- CARTONS / SANCTIONS -->
+        {% for e in m.evenements.all %}
+            {% if e.joueur.equipe_id == m.equipe2.id and e.type_evenement != "but" %}
+                {% if e.type_evenement == "carton_jaune" %}🟨
+                {% elif e.type_evenement == "carton_rouge" %}🟥
+                {% elif e.type_evenement == "suspension" %}⛔
+                {% endif %}
+                {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }}')<br>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+</td>
+</tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>📸 Galerie du tournoi</h2>
+
+{% if images %}
+<div class="gallery-grid">
+    {% for img in images %}
+    <div class="gallery-item">
+        <img src="{{ img.image_url }}" alt="{{ img.titre }}">
+        {% if img.titre %}
+        <div class="caption">{{ img.titre }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>Aucune image disponible pour le moment.</p>
+{% endif %}
+
+<style>
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.gallery-item {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.caption {
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+</style>
+{% endblock %}

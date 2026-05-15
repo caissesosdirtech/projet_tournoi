@@ -1,0 +1,67 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <!-- CONTENU PRINCIPAL : ACTUALITES -->
+    <div class="content-left">
+
+        {% if messages %}
+        <ul class="messages-list">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="timeline">
+            <h2 class="page-title">📰 Actualités du tournoi</h2>
+            {% for info in infos %}
+            <div class="timeline-item">
+                <div class="timeline-date">📅 {{ info.date_publication|date:"d M Y - H:i" }}</div>
+                <div class="timeline-content">
+                    {% if info.priorite == "urgent" %}
+                        <span class="badge urgent">🚨 URGENT</span>
+                    {% elif info.priorite == "important" %}
+                        <span class="badge important">⚠ IMPORTANT</span>
+                    {% else %}
+                        <span class="badge info">ℹ INFORMATION</span>
+                    {% endif %}
+                    <h3>{{ info.titre }}</h3>
+                    <p>{{ info.contenu }}</p>
+                    {% if info.fichier %}
+                        <a href="{{ info.fichier.url }}" class="btn-download" target="_blank">📎 Télécharger le fichier</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p>Aucune information publiée pour le moment.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="content-right">
+        <div class="notifications">
+            <h2>🔔 Notifications récentes</h2>
+            {% for n in notifications %}
+            <div class="notification {{ n.type_notification }}">
+                {% if n.equipe %}<img src="{{ n.equipe.logo.url }}" class="team-logo">{% endif %}
+                <strong>{{ n.titre }}</strong>
+                <p>{{ n.message }}</p>
+                <small>{{ n.date_creation|date:"d M Y H:i" }}</small>
+            </div>
+            {% empty %}
+            <p>Aucune notification récente.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

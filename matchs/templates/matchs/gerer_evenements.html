@@ -1,0 +1,278 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Événements du match – {{ match.equipe1.nom }} vs {{ match.equipe2.nom }}{% endblock %}
+{% block subtitle %}Gestion des buts, cartons et scores{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'liste_equipes' %}">📋 Liste des équipes</a></li>
+            <li><a href="{% url 'liste_joueurs' %}">📋 Liste des joueurs</a></li>
+        </ul>
+    </aside>
+
+    <!-- CONTENU -->
+    <main class="content">
+
+        <!-- SCORE -->
+        <section class="admin-section">
+
+            <div class="score-board">
+
+                <div class="team">
+                    {% if match.equipe1.logo %}
+                        <img src="{{ match.equipe1.logo.url }}" class="logo">
+                    {% endif %}
+                    <h3>{{ match.equipe1.nom }}</h3>
+                </div>
+
+                <h1 class="score">
+                    {{ match.score1|default:0 }} - {{ match.score2|default:0 }}
+                </h1>
+
+                <div class="team">
+                    {% if match.equipe2.logo %}
+                        <img src="{{ match.equipe2.logo.url }}" class="logo">
+                    {% endif %}
+                    <h3>{{ match.equipe2.nom }}</h3>
+                </div>
+
+            </div>
+
+            <p>Date : {{ match.date|date:"d/m/Y H:i" }}</p>
+
+            <div class="match-status">
+                {% if match.statut == 'a_venir' %}
+                    <span class="badge badge-blue">À venir</span>
+                {% elif match.statut == 'en_cours' %}
+                    <span class="badge badge-orange">En cours</span>
+                {% elif match.statut == 'termine' %}
+                    <span class="badge badge-green">Terminé</span>
+                {% endif %}
+            </div>
+
+        </section>
+
+        <!-- 🔒 SI MATCH TERMINÉ -->
+        {% if match.statut == "termine" %}
+            <div class="alert alert-danger">
+                ⛔ Match terminé — modification désactivée
+            </div>
+        {% endif %}
+
+        <!-- FORMULAIRE EVENEMENT -->
+        {% if match.statut != "termine" %}
+        <section class="admin-section">
+
+            <h3>📝 Ajouter un événement</h3>
+
+            <form method="post" id="eventForm">
+                {% csrf_token %}
+
+                <label>Type d'événement</label>
+                <select name="type_evenement" required>
+                    <option value="but">⚽ But</option>
+                    <option value="carton_jaune">🟨 Carton Jaune</option>
+                    <option value="carton_rouge">🟥 Carton Rouge</option>
+                </select>
+
+                <label>Joueur</label>
+                <select name="joueur" required>
+                    {% for j in joueurs %}
+                        <option value="{{ j.id }}" {% if j.est_suspendu %}disabled{% endif %}>
+                            {{ j.nom }} {{ j.prenom }}
+                            {% if j.est_suspendu %} (⛔ suspendu){% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Minute</label>
+                <input type="number" name="minute" min="1" max="120" required>
+
+                <button type="submit" class="btn">Ajouter</button>
+
+            </form>
+
+        </section>
+        {% endif %}
+
+        <!-- TERMINER MATCH -->
+        {% if match.statut != "termine" %}
+        <section class="admin-section">
+
+            <h3>⚠ Terminer le match</h3>
+
+            <form method="post" id="finMatchForm">
+                {% csrf_token %}
+                <input type="hidden" name="type_evenement" value="fin_match">
+
+                <button type="submit" class="btn danger">
+                    Terminer le match
+                </button>
+            </form>
+
+        </section>
+        {% endif %}
+
+        <!-- TIMELINE -->
+        <section class="admin-section">
+
+            <h3>📋 Chronologie du match</h3>
+
+            <div class="timeline">
+
+                {% for e in evenements %}
+                    <div class="timeline-event 
+                        {% if e.joueur.equipe.id == match.equipe1.id %}
+                            left
+                        {% else %}
+                            right
+                        {% endif %}
+                    ">
+                        <div class="event-content {% if e.type_evenement == 'but' %}goal{% endif %}">
+
+                            <span class="minute">{{ e.minute }}'</span>
+
+                            <span class="icon">
+                                {% if e.type_evenement == "but" %}⚽
+                                {% elif e.type_evenement == "carton_jaune" %}🟨
+                                {% elif e.type_evenement == "carton_rouge" %}🟥
+                                {% endif %}
+                            </span>
+
+                            <span class="player">
+                                {{ e.joueur.nom }} {{ e.joueur.prenom }}
+                            </span>
+
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Aucun événement enregistré.</p>
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<!-- CSS -->
+<style>
+.container{display:flex;}
+.sidebar{width:220px;background:#1e2a38;padding:20px;}
+.sidebar a{color:white;text-decoration:none;display:block;margin-bottom:10px;}
+.content{flex:1;padding:20px;}
+
+.admin-section{
+    background:#f8f9fa;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:10px;
+}
+
+.score-board{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:40px;
+}
+
+.logo{width:60px;height:60px;}
+.score{font-size:40px;}
+
+.btn{
+    margin-top:10px;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:6px;
+}
+
+.danger{background:#dc3545;}
+
+.timeline{margin-top:20px;}
+.timeline-event{margin-bottom:10px;}
+.left{text-align:left;}
+.right{text-align:right;}
+
+.event-content{
+    display:inline-block;
+    padding:8px 12px;
+    background:white;
+    border-radius:8px;
+}
+
+.goal{
+    background:#4CAF50;
+    color:white;
+}
+</style>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function handleSubmit(formId){
+
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(window.location.href, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                "Accept": "application/json"
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if(data.success){
+
+                document.querySelector(".score").innerText =
+                    data.score1 + " - " + data.score2;
+
+                if(data.type){
+                    location.reload(); // 🔥 refresh pour sync total
+                }
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+            } else {
+                Swal.fire("Erreur", data.message, "error");
+            }
+
+        })
+        .catch(() => {
+            Swal.fire("Erreur serveur", "Problème de requête", "error");
+        });
+
+    });
+}
+
+handleSubmit("eventForm");
+handleSubmit("finMatchForm");
+</script>
+
+{% endblock %}

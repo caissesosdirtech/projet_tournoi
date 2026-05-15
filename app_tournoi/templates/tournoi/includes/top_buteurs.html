@@ -1,0 +1,6 @@
+<h3>Top buteurs</h3>
+<ul>
+{% for j in meilleurs_buteurs %}
+    <li>{{ j.nom }} ({{ j.equipe.nom }}) - {{ j.nb_buts }}</li>
+{% endfor %}
+</ul>

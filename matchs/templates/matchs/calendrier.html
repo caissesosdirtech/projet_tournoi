@@ -1,0 +1,62 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h2>📅 Calendrier des matchs</h2>
+
+{% if matchs %}
+<section class="card">
+    <h3>⚽ Tous les matchs</h3>
+    <table class="table match-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Stade</th>
+                <th>Match</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in matchs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                <td>🏟 {{ m.stade }}</td>
+                <td class="match-cell">
+                    <div class="team-box">
+                        {% if m.equipe1.logo %}<img src="{{ m.equipe1.logo.url }}" class="team-logo">{% endif %}
+                        <span class="team-name">{{ m.equipe1.nom }}</span>
+                    </div>
+                    <div class="score-box">
+                        {% if m.score1 is not None and m.score2 is not None %}{{ m.score1 }} - {{ m.score2 }}{% else %}VS{% endif %}
+                    </div>
+                    <div class="team-box">
+                        {% if m.equipe2.logo %}<img src="{{ m.equipe2.logo.url }}" class="team-logo">{% endif %}
+                        <span class="team-name">{{ m.equipe2.nom }}</span>
+                    </div>
+                </td>
+                <td>
+                    {% if m.statut_auto == 'a_venir' %}
+                        <span class="badge badge-blue">À venir</span>
+                    {% elif m.statut_auto == 'en_cours' %}
+                        <span class="badge badge-orange">En cours</span>
+                    {% elif m.statut_auto == 'termine' %}
+                        <span class="badge badge-green">Terminé</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center;">Aucun match programmé</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% else %}
+<p style="text-align:center;">Aucun match programmé</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,170 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="page-header-pro">
+
+    <div class="title-section">
+        <h2>👤 Liste des joueurs</h2>
+        <span class="badge-count">
+            {{ joueurs.paginator.count }} joueurs
+        </span>
+    </div>
+
+    <li>
+        <a href="javascript:void(0)" onclick="openModal('modalJoueur')" class="btn-add">
+            ➕ Ajouter joueur
+        </a>
+    </li>
+
+</div>
+
+<!-- FILTRE -->
+<form method="get" class="filter-bar-premium">
+
+    <div class="filter-buttons">
+
+    <a href="{% url 'liste_joueurs' %}"
+       class="filter-btn {% if not equipe_id %}active{% endif %}">
+        ⚽ Toutes
+    </a>
+
+    {% for e in equipes %}
+    <a href="?equipe={{ e.id }}"
+       class="filter-btn {% if e.id|stringformat:'s' == equipe_id %}active{% endif %}">
+        {{ e.nom }}
+    </a>
+    {% endfor %}
+
+</div>
+
+    <div class="field search-field">
+        <span class="search-icon">🔍</span>
+        <input type="text"
+               name="q"
+               placeholder="Rechercher joueur..."
+               value="{{ request.GET.q|default:'' }}">
+    </div>
+
+    <div class="button-group">
+        <button type="submit" class="btn-premium">
+            Rechercher
+        </button>
+
+        <a href="{% url 'liste_joueurs' %}" class="btn-light">
+            Réinitialiser
+        </a>
+    </div>
+
+</form>
+
+<!-- TABLE -->
+<table class="table table-premium">
+
+<thead>
+<tr>
+<th>#</th>
+<th>Nom</th>
+<th>Prénom</th>
+<th>Numéro</th>
+<th>Poste</th>
+<th>Équipe</th>
+<th>Statut</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for j in joueurs %}
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ j.nom }}</td>
+<td>{{ j.prenom }}</td>
+
+<td>
+<span class="badge-numero">{{ j.numero }}</span>
+</td>
+
+<td>{{ j.poste }}</td>
+<td>{{ j.equipe.nom }}</td>
+
+<td>
+{% if j.suspension_active %}
+<span style="color:red;font-weight:bold;">
+⛔ Suspendu ({{ j.suspension_active.matchs_restants }} matchs)
+</span>
+{% else %}
+<span style="color:green;">✅ Disponible</span>
+{% endif %}
+</td>
+
+<td>
+
+<!-- EDIT -->
+<button class="btn-action edit"
+onclick="ouvrirModalEdit(
+'{{ j.id }}',
+'{{ j.nom|escapejs }}',
+'{{ j.prenom|escapejs }}',
+'{{ j.numero }}',
+'{{ j.poste|escapejs }}'
+)">
+<i class="fas fa-pencil-alt"></i>
+</button>
+
+<!-- DELETE -->
+<button class="btn-action delete"
+onclick="ouvrirModalDelete('{{ j.id }}','{{ j.nom }}' , '{{ j.prenom }}')">
+<i class="fas fa-trash-alt"></i>
+</button>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="8" style="text-align:center">
+Aucun joueur trouvé
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination-modern" style="display:flex;justify-content:center;margin-top:20px;">
+
+    {% if joueurs.has_previous %}
+        <a href="?page=1{% if equipe_id %}&equipe={{ equipe_id }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">⏮</a>
+        <a href="?page={{ joueurs.previous_page_number }}{% if equipe_id %}&equipe={{ equipe_id }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">←</a>
+    {% else %}
+        <span class="page-btn disabled">⏮</span>
+        <span class="page-btn disabled">←</span>
+    {% endif %}
+
+    {% for num in joueurs.paginator.page_range %}
+        {% if joueurs.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+        {% elif num >= joueurs.number|add:-2 and num <= joueurs.number|add:2 %}
+            <a href="?page={{ num }}{% if equipe_id %}&equipe={{ equipe_id }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">
+                {{ num }}
+            </a>
+        {% endif %}
+    {% endfor %}
+
+    {% if joueurs.has_next %}
+        <a href="?page={{ joueurs.next_page_number }}{% if equipe_id %}&equipe={{ equipe_id }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">→</a>
+        <a href="?page={{ joueurs.paginator.num_pages }}{% if equipe_id %}&equipe={{ equipe_id }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="page-btn">⏭</a>
+    {% else %}
+        <span class="page-btn disabled">→</span>
+        <span class="page-btn disabled">⏭</span>
+    {% endif %}
+
+</div>
+

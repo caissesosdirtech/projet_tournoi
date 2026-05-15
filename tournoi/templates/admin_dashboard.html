@@ -1,0 +1,194 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard – Tournoi{% endblock %}
+{% block subtitle %}Back-office de gestion du tournoi{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+
+        <li><a href="{% url 'programmer_match' %}">➕ Programmer un match</a></li>
+
+        <li class="has-submenu">
+            <a href="#">👥 Équipes & Joueurs</a>
+            <ul class="submenu">
+                <li><a href="{% url 'liste_equipes' %}">📋 Liste des équipes</a></li>
+                <li><a href="{% url 'liste_joueurs' %}">📋 Liste des joueurs</a></li>
+                <li><a href="javascript:void(0)" onclick="openModal('modalEquipe')">➕ Ajouter Équipe</a></li>
+                <li><a href="javascript:void(0)" onclick="openModal('modalJoueur')">➕ Ajouter Joueur</a></li>
+            </ul>
+        </li>
+
+        <!-- NOUVEAU LIEN -->
+        <li><a href="{% url 'ajouter_media' %}">📸 Ajouter photos / vidéos</a></li>
+
+        <li><a href="/admin/">🔐 Django Admin</a></li>
+        <li><a href="{% url 'dashboard' %}">🌍 Site public</a></li>
+    </ul>
+</aside>
+
+    <!-- CONTENU CENTRAL -->
+    <main class="content">
+
+        {% if page == 'liste_equipes' %}
+            {% include 'matchs/liste_equipes.html' %}
+
+        {% elif page == 'liste_joueurs' %}
+            {% include 'matchs/liste_joueurs.html' %}
+
+        {% else %}
+            <!-- BADGES -->
+            <div class="alert-badges">
+                <div class="badge badge-blue">Nbr de Matchs : {{ total_matchs }}</div>
+                <div class="badge badge-green">Nbr de Équipes : {{ equipes|length }}</div>
+                <div class="badge badge-red">Nbr de Joueurs : {{ joueurs|length }}</div>
+            </div>
+
+            <!-- CARTE PROCHAIN MATCH -->
+            {% if prochain_match %}
+                <div class="card card-highlight" style="margin-bottom:1rem; padding:1rem; background:#f7f9fc; border-left:4px solid #4a90e2;">
+                    <h3>📅 Prochain match</h3>
+                    <p><strong>{{ prochain_match.equipe1.nom }} vs {{ prochain_match.equipe2.nom }}</strong></p>
+                    <p>Date : {{ prochain_match.date|date:"d/m/Y H:i" }}</p>
+                    <p>Lieu : {{ prochain_match.lieu|default:"Non défini" }}</p>
+                </div>
+            {% endif %}
+
+            <!-- STATISTIQUES DU TOURNOI -->
+<section class="admin-section">
+    <h2>📊 Statistiques du tournoi</h2>
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <h3>Matchs</h3>
+            <p>Total : {{ total_matchs }}</p>
+            <p>À venir : {{ matchs_a_venir }}</p>
+            <p>En cours : {{ matchs_en_cours }}</p>
+            <p>Terminés : {{ matchs_termines }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Équipes</h3>
+            <p>Total : {{ equipes|length }}</p>
+<p>Équipe la plus grande : {% if top_team %}{{ top_team.nom }} ({{ top_team.joueurs.count }} joueurs){% else %}-{% endif %}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Joueurs</h3>
+            <p>Total : {{ joueurs|length }}</p>
+            {% comment %} Si tu as une table But liée au joueur {% endcomment %}
+            {% if meilleurs_buteurs %}
+                <p>Meilleur buteur : {{ meilleurs_buteurs.nom }} {{ meilleurs_buteurs.prenom }} ({{ meilleurs_buteurs.nb_buts }} buts)</p>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+
+<style>
+.stats-grid {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+.stat-card {
+    flex: 1 1 200px;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.stat-card h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #333;
+}
+.stat-card p {
+    margin: 0.2rem 0;
+}
+</style>
+
+            <!-- GESTION DES MATCHS -->
+            <section class="admin-section" id="matchs">
+                <h2>⚽ Gestion des matchs</h2>
+
+                <!-- FILTRE -->
+                <form method="get" class="filter-bar">
+                    <select name="equipe" onchange="this.form.submit()">
+                        <option value="">-- Toutes les équipes --</option>
+                        {% for e in equipes %}
+                            <option value="{{ e.id }}" {% if e.id|stringformat:"s" == request.GET.equipe %}selected{% endif %}>
+                                {{ e.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="statut" onchange="this.form.submit()">
+                        <option value="">-- Tous les statuts --</option>
+                        <option value="a_venir" {% if request.GET.statut == 'a_venir' %}selected{% endif %}>À venir</option>
+                        <option value="en_cours" {% if request.GET.statut == 'en_cours' %}selected{% endif %}>En cours</option>
+                        <option value="termine" {% if request.GET.statut == 'termine' %}selected{% endif %}>Terminé</option>
+                    </select>
+                </form>
+
+                <!-- TABLEAU DES MATCHS -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date & Heure</th>
+                            <th>Équipe A</th>
+                            <th>Score</th>
+                            <th>Équipe B</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for m in matchs %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                            <td>{{ m.equipe1.nom }}</td>
+                            <td>
+                                {% if m.score1 is not None and m.score2 is not None %}
+                                    {{ m.score1 }} - {{ m.score2 }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ m.equipe2.nom }}</td>
+                            <td>
+                                {% if m.date > now %}
+                                    <span class="badge badge-blue">À venir</span>
+                                {% elif m.score1 is None %}
+                                    <span class="badge badge-orange">En cours</span>
+                                {% else %}
+                                    <span class="badge badge-green">Terminé</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'gerer_evenements' m.id %}" class="btn btn-sm">🎯 Événements</a>
+                                <a href="{% url 'supprimer_match' m.id %}" class="btn btn-sm danger" onclick="return confirm('Supprimer ce match ?')">🗑</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" style="text-align:center">Aucun match trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        {% endif %}
+
+    </main>
+</div>
+
+{% endblock %}

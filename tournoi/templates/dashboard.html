@@ -1,0 +1,19 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Dashboard Public{% endblock %}
+{% block subtitle %}Bienvenue sur la plateforme du tournoi{% endblock %}
+
+{% block body %}
+<main class="content" style="padding:40px">
+
+    <h2>🏆 Tableau de bord public</h2>
+
+    <p>Classement, matchs, résultats visibles par tous.</p>
+
+    <div class="alert-badges">
+        <div class="badge badge-blue">Matchs : {{ matchs|length }}</div>
+        <div class="badge badge-green">Équipes : {{ equipes|length }}</div>
+    </div>
+
+</main>
+{% endblock %}

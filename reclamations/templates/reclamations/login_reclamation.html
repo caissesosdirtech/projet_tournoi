@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Connexion Recours</title>
+
+<link rel="stylesheet" href="{% static 'tournoi/css/login_reclamation.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif;}
+    body {
+        height: 100vh;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        display: flex; justify-content:center; align-items:center;
+        position: relative; overflow:hidden;
+    }
+    .overlay {
+        position: absolute; width:100%; height:100%; background:rgba(0,0,0,0.4);
+        top:0; left:0; z-index:1;
+    }
+
+    .login-container {
+        position: relative; z-index:2;
+        background:#fff; padding:40px 30px; width:400px;
+        border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.2);
+        text-align:center; animation:fadeIn 1s ease-out;
+    }
+
+    .logo img { width:250px; margin-bottom:15px; animation:bounce 2s infinite;}
+    .logo h1 { font-size:24px; color:#1e3c72; margin-bottom:25px;}
+
+    h2 { color:#2a5298; margin-bottom:15px; font-weight:500;}
+    .subtitle { font-size:14px; color:#555; margin-bottom:25px;}
+
+    .alert { background:#ffdddd; color:#900; padding:10px 15px; border-radius:5px; margin-bottom:20px; text-align:left;}
+
+    /* === Floating Labels === */
+    .form-group {
+        position: relative; margin-bottom: 25px; text-align:left;
+    }
+    .form-group input {
+        width: 100%; padding:12px 12px; border-radius:6px; border:1px solid #ccc;
+        font-size:14px; outline:none; transition: all 0.3s;
+    }
+    .form-group input:focus { border-color:#1e3c72; box-shadow:0 0 8px rgba(30,60,114,0.3);}
+    .form-group label {
+        position: absolute; top:50%; left:12px;
+        transform: translateY(-50%);
+        color:#888; font-size:14px; pointer-events:none;
+        background:#fff; padding:0 4px; transition:0.3s;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+        top:-8px; left:10px; font-size:12px; color:#1e3c72;
+    }
+
+    .btn-login {
+        width:100%; padding:12px; background:#1e3c72; color:#fff;
+        font-size:16px; border:none; border-radius:6px; cursor:pointer; font-weight:500;
+        transition: all 0.3s;
+    }
+    .btn-login:hover { background:#2a5298; }
+
+    .info { font-size:13px; color:#666; margin-top:20px; }
+
+    .ball {
+        position:absolute; width:20px; height:20px; background:#ffdd57; border-radius:50%;
+        bottom:-40px; left:calc(50% - 10px); animation:bounceBall 3s infinite ease-in-out; z-index:0;
+    }
+
+    @keyframes fadeIn {0%{opacity:0; transform:translateY(-20px);}100%{opacity:1; transform:translateY(0);}}
+    @keyframes bounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    @keyframes bounceBall {0%,100%{transform:translateY(0);}50%{transform:translateY(-50px);}}
+</style>
+
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div class="login-container">
+
+    <div class="logo">
+        <img src="{% static 'tournoi/img/logo_tournoi.png' %}" alt="Logo tournoi">
+        <h1>Tournoi Inter-Service Coupe du DRN</h1>
+    </div>
+
+    <h2>🔐 Accès Recours</h2>
+    <p class="subtitle">Capitaine ou Coach ? Connectez-vous pour déposer un recours officiel.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="username" placeholder=" " required>
+            <label>Nom d'utilisateur</label>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" placeholder=" " required>
+            <label>Mot de passe</label>
+        </div>
+
+        <button type="submit" class="btn-login">⚽ Se connecter</button>
+    </form>
+
+    <p class="info">Accès réservé aux capitaines et coachs des équipes.</p>
+</div>
+
+<div class="ball"></div>
+
+</body>
+</html>

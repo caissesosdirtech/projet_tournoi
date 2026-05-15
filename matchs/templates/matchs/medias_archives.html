@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Médias archivés</title>
+
+<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+
+<style>
+
+.content{
+padding:30px;
+}
+
+.table-archives{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+.table-archives th,
+.table-archives td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+.table-archives th{
+background:#f4f4f4;
+}
+
+.media-preview img,
+.media-preview video{
+width:120px;
+height:80px;
+object-fit:cover;
+border-radius:5px;
+}
+
+.btn{
+padding:6px 12px;
+border-radius:5px;
+text-decoration:none;
+font-size:14px;
+}
+
+.btn-restore{
+background:#27ae60;
+color:white;
+}
+
+.btn-delete{
+background:#e74c3c;
+color:white;
+}
+
+.btn-back{
+display:inline-block;
+margin-bottom:20px;
+background:#3498db;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="content">
+
+<h2>🗂 Médias archivés</h2>
+
+<a href="{% url 'admin_dashboard' %}" class="btn-back">
+⬅ Retour Dashboard
+</a>
+
+<table class="table-archives">
+
+<thead>
+
+<tr>
+
+<th>Aperçu</th>
+<th>Titre</th>
+<th>Type</th>
+<th>Date</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for media in medias %}
+
+<tr>
+
+<td class="media-preview">
+
+{% if media.type_media == "photo" %}
+<img src="{{ media.image.url }}">
+
+{% elif media.type_media == "video" %}
+<video>
+<source src="{{ media.video.url }}">
+</video>
+{% endif %}
+
+</td>
+
+<td>{{ media.titre }}</td>
+
+<td>{{ media.type_media }}</td>
+
+<td>{{ media.date_ajout }}</td>
+
+<td>
+
+<a href="{% url 'restaurer_media' media.id %}" class="btn btn-restore">
+♻ Restaurer
+</a>
+
+<a href="{% url 'supprimer_definitif_media' media.id %}" class="btn btn-delete"
+onclick="return confirm('Supprimer définitivement ce média ?')">
+🗑 Supprimer
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="5">
+Aucun média archivé
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,193 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Supprimer médias</title>
+
+<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+
+<style>
+
+.media-container{
+width:90%;
+margin:auto;
+margin-top:40px;
+}
+
+.media-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+
+gap:20px;
+
+}
+
+.media-card{
+
+border:1px solid #ddd;
+padding:10px;
+border-radius:8px;
+background:white;
+text-align:center;
+
+}
+
+.media-card img,
+.media-card video{
+
+width:100%;
+height:120px;
+object-fit:cover;
+border-radius:5px;
+
+}
+
+.select-box{
+margin-bottom:10px;
+}
+
+.actions{
+margin-bottom:20px;
+}
+
+/* bouton supprimer */
+
+.btn-delete{
+background:#e74c3c;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.btn-delete:hover{
+background:#c0392b;
+}
+
+/* bouton retour dashboard */
+
+.btn-dashboard{
+
+background:#3498db;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:5px;
+text-decoration:none;
+display:inline-block;
+margin-bottom:20px;
+
+}
+
+.btn-dashboard:hover{
+background:#2980b9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="media-container">
+
+<!-- bouton en haut -->
+
+<a href="{% url 'admin_dashboard' %}" class="btn-dashboard">
+⬅ Retour Dashboard
+</a>
+
+<h2>🗑 Supprimer Photos / Vidéos</h2>
+
+<div class="actions">
+
+<label>
+
+<input type="checkbox" id="selectAll">
+
+Tout sélectionner
+
+</label>
+
+</div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="media-grid">
+
+{% for media in medias %}
+
+<div class="media-card">
+
+<div class="select-box">
+
+<input type="checkbox" name="medias" value="{{ media.id }}">
+
+</div>
+
+{% if media.type_media == "photo" %}
+
+<img src="{{ media.image.url }}">
+
+{% else %}
+
+<video>
+<source src="{{ media.video.url }}">
+</video>
+
+{% endif %}
+
+<p>{{ media.titre }}</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<br>
+
+<button type="submit" class="btn-delete">
+
+🗑 Supprimer sélection
+
+</button>
+
+<!-- bouton en bas -->
+
+<a href="{% url 'admin_dashboard' %}" class="btn-dashboard">
+
+⬅ Retour Dashboard
+
+</a>
+
+</form>
+
+</div>
+
+<script>
+
+const selectAll = document.getElementById("selectAll")
+
+selectAll.addEventListener("change", function(){
+
+const checkboxes = document.querySelectorAll("input[name='medias']")
+
+checkboxes.forEach(cb => cb.checked = selectAll.checked)
+
+})
+
+</script>
+
+</body>
+
+</html>

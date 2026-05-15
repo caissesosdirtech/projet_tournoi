@@ -1,0 +1,42 @@
+<div id="modalJoueur" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modalJoueur')">&times;</span>
+    <h2>➕ Ajouter un joueur</h2>
+
+    <form method="post" action="{% url 'ajouter_joueur' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Nom du joueur</label>
+            <input type="text" name="nom" required>
+        </div>
+
+        <div class="form-group">
+            <label>Numéro</label>
+            <input type="number" name="numero" required>
+        </div>
+
+        <div class="form-group">
+            <label>Poste</label>
+            <select name="poste" required>
+                <option value="">-- Choisir --</option>
+                <option value="Gardien">Gardien</option>
+                <option value="Défenseur">Défenseur</option>
+                <option value="Milieu">Milieu</option>
+                <option value="Attaquant">Attaquant</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Équipe</label>
+            <select name="equipe" required>
+                {% for e in equipes %}
+                    <option value="{{ e.id }}">{{ e.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn">Enregistrer</button>
+    </form>
+  </div>
+</div>

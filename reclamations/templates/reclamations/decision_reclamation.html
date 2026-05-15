@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>📝 Traiter la réclamation</title>
+<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+<style>
+.container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+h2 { text-align:center; color:#4b367c; margin-bottom:25px; }
+.form-group { margin-bottom: 20px; }
+label { font-weight:600; margin-bottom:5px; display:block; }
+input, select, textarea { width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; }
+.btn-submit { width:100%; padding:12px; background:linear-gradient(135deg,#4b367c,#7b5fcf); color:#fff; font-weight:600; border:none; border-radius:8px; cursor:pointer; }
+.btn-submit:hover { background:linear-gradient(135deg,#7b5fcf,#4b367c); }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>📝 Traiter la réclamation</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label>Équipe concernée</label>
+        <input type="text" value="{{ reclamation.equipe.nom }}" disabled>
+    </div>
+    
+    <div class="form-group">
+        <label>Auteur</label>
+        <input type="text" value="{{ reclamation.auteur.username }}" disabled>
+    </div>
+    
+    <div class="form-group">
+        {{ form.statut.label_tag }}
+        {{ form.statut }}
+    </div>
+
+    <div class="form-group">
+        {{ form.decision.label_tag }}
+        {{ form.decision }}
+    </div>
+
+    <div class="form-group">
+        {{ form.document_final.label_tag }}
+        {{ form.document_final }}
+    </div>
+
+    <button type="submit" class="btn-submit">Valider la décision</button>
+</form>
+</div>
+
+</body>
+</html>

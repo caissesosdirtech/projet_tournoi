@@ -1,0 +1,311 @@
+{% load static %}
+
+<!-- ================= MODAL AJOUT INFO ================= -->
+<div id="modalInfo" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalInfo')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📝 Ajouter une information</h3>
+      <span class="modal-close" onclick="closeModal('modalInfo')">&times;</span>
+    </div>
+
+    <form method="POST" action="{% url 'ajouter_info' %}" class="modal-form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" name="titre" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="3" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Niveau</label>
+        <select name="niveau" required>
+          <option value="">Choisir</option>
+          <option value="urgent">🚨 Urgent</option>
+          <option value="important">⚠ Important</option>
+          <option value="information">ℹ Info</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Fichier</label>
+        <input type="file" name="fichier">
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">Publier</button>
+        <button type="button" onclick="closeModal('modalInfo')" class="btn-cancel">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL AJOUT EQUIPE ================= -->
+<div id="modalEquipe" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalEquipe')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>➕ Ajouter une équipe</h3>
+      <span class="modal-close" onclick="closeModal('modalEquipe')">&times;</span>
+    </div>
+
+    <form method="POST" action="{% url 'ajouter_equipe' %}" enctype="multipart/form-data" class="modal-form">
+      {% csrf_token %}
+
+      <input type="text" name="nom" placeholder="Nom équipe" required>
+      <input type="text" name="coach1" placeholder="Coach principal">
+      <input type="text" name="coach2" placeholder="Coach adjoint">
+      <input type="file" name="logo">
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">Enregistrer</button>
+        <button type="button" onclick="closeModal('modalEquipe')" class="btn-cancel">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL AJOUT JOUEUR ================= -->
+<div id="modalJoueur" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalJoueur')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>👤 Ajouter un joueur</h3>
+      <span class="modal-close" onclick="closeModal('modalJoueur')">&times;</span>
+    </div>
+
+    <div id="joueur-message"></div>
+
+    <form id="formJoueur" method="POST" class="modal-form">
+      {% csrf_token %}
+
+      <input type="text" name="nom" placeholder="Nom" required>
+      <input type="text" name="prenom" placeholder="Prénom" required>
+      <input type="number" name="numero" placeholder="Numéro" required>
+
+      <select name="poste" required>
+        <option value="">Poste</option>
+        <option>Gardien</option>
+        <option>Défenseur</option>
+        <option>Milieu</option>
+        <option>Attaquant</option>
+      </select>
+
+      <select name="equipe_id" required>
+        <option value="">Équipe</option>
+        {% for e in equipes %}
+        <option value="{{ e.id }}">{{ e.nom }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">Ajouter</button>
+        <button type="button" onclick="closeModal('modalJoueur')" class="btn-cancel">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL EDIT JOUEUR ================= -->
+<div id="modalEditJoueur" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalEditJoueur')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>✏ Modifier joueur</h3>
+      <span class="modal-close" onclick="closeModal('modalEditJoueur')">&times;</span>
+    </div>
+
+    <div id="edit-joueur-message"></div>
+
+    <form id="formEditJoueur" class="modal-form">
+      {% csrf_token %}
+      <input type="hidden" id="edit-id">
+
+      <input type="text" id="edit-nom" required>
+      <input type="text" id="edit-prenom" required>
+      <input type="number" id="edit-numero" required>
+
+      <select id="edit-poste">
+        <option>Gardien</option>
+        <option>Défenseur</option>
+        <option>Milieu</option>
+        <option>Attaquant</option>
+      </select>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">Modifier</button>
+        <button type="button" onclick="closeModal('modalEditJoueur')" class="btn-cancel">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL SUPPRIMER JOUEUR ================= -->
+<div id="modalDelete" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalDelete')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="deleteText">Supprimer ?</h3>
+      <span class="modal-close" onclick="closeModal('modalDelete')">&times;</span>
+    </div>
+
+    <form method="POST" id="formDelete">
+      {% csrf_token %}
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-delete">Oui supprimer</button>
+        <button type="button" onclick="closeModal('modalDelete')" class="btn-cancel">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ================= MODAL SUPPRIMER EQUIPE ================= -->
+<div id="modalDeleteEquipe" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalDeleteEquipe')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="deleteEquipeText">Supprimer ?</h3>
+      <span class="modal-close" onclick="closeModal('modalDeleteEquipe')">&times;</span>
+    </div>
+
+    <form method="POST" id="formDeleteEquipe">
+      {% csrf_token %}
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-delete">🗑 Supprimer</button>
+        <button type="button" onclick="closeModal('modalDeleteEquipe')" class="btn-cancel">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ================= MODAL EDIT EQUIPE ================= -->
+<div id="modalEditEquipe" class="modal">
+  <div class="modal-overlay" onclick="closeModal('modalEditEquipe')"></div>
+
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>✏ Modifier une équipe</h3>
+      <span class="modal-close" onclick="closeModal('modalEditEquipe')">&times;</span>
+    </div>
+
+    <form method="POST" id="formEditEquipe">
+      {% csrf_token %}
+
+      <input type="hidden" id="edit_equipe_id" nme="id">
+
+      <div class="form-group">
+        <label>Nom équipe</label>
+        <input type="text" id="edit_nom_equipe" name="nom" required>
+      </div>
+
+      <div class="form-group">
+        <label>Coach principal</label>
+        <input type="text" id="edit_coach1" name="coach1">
+      </div>
+
+      <div class="form-group">
+        <label>Coach adjoint</label>
+        <input type="text" id="edit_coach2" name="coach2">
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">💾 Modifier</button>
+        <button type="button" onclick="closeModal('modalEditEquipe')" class="btn-cancel">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= JS GLOBAL ================= -->
+<script>
+function openModal(id){
+    document.getElementById(id).classList.add("active");
+}
+
+function closeModal(id){
+    document.getElementById(id).classList.remove("active");
+}
+
+/* DELETE */
+function ouvrirModalDelete(id, nom, prenom){
+    openModal('modalDelete');
+
+    document.getElementById("deleteText").innerHTML =
+        "Supprimer <b>" + nom + "  " + prenom + "</b> ?";
+
+    document.getElementById("formDelete").action =
+        "/joueur/supprimer/" + id + "/";
+}
+
+function ouvrirModalDeleteEquipe(id, nom){
+    openModal('modalDeleteEquipe');
+
+    document.getElementById("deleteEquipeText").innerHTML =
+        "⚠️ Supprimer l'équipe <br><strong>" + nom + "</strong> ?";
+
+    document.getElementById("formDeleteEquipe").action =
+        "/equipes/" + id + "/supprimer/";
+}
+
+function openModal(id){
+    document.getElementById(id).classList.add("active");
+}
+
+function closeModal(id){
+    document.getElementById(id).classList.remove("active");
+}
+
+/* DELETE */
+function ouvrirModalDelete(id, nom, prenom){
+    openModal('modalDelete');
+
+    document.getElementById("deleteText").innerHTML =
+        "Supprimer <b>" + nom + "  " + prenom + "</b> ?";
+
+    document.getElementById("formDelete").action =
+        "/joueur/supprimer/" + id + "/";
+}
+
+function ouvrirModalDeleteEquipe(id, nom){
+    openModal('modalDeleteEquipe');
+
+    document.getElementById("deleteEquipeText").innerHTML =
+        "⚠️ Supprimer l'équipe <br><strong>" + nom + "</strong> ?";
+
+    document.getElementById("formDeleteEquipe").action =
+        "/equipes/" + id + "/supprimer/";
+}
+
+function ouvrirModalEditEquipe(id, nom, coach1, coach2){
+
+    openModal('modalEditEquipe');
+
+    document.getElementById("edit_equipe_id").value = id;
+    document.getElementById("edit_nom_equipe").value = nom;
+    document.getElementById("edit_coach1").value = coach1;
+    document.getElementById("edit_coach2").value = coach2;
+
+    document.getElementById("formEditEquipe").action =
+    "/equipes/" + id + "/editer/";
+}
+
+</script>

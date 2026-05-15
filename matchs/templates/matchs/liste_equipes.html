@@ -1,0 +1,178 @@
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="page-header-pro">
+
+    <div class="title-section">
+        <h2>👥 Liste des équipes</h2>
+        <span class="badge-count">
+            {{ equipes|length }} équipes
+        </span>
+    </div>
+
+    <!-- ✅ bouton simple -->
+    <div>
+        <a href="{% url 'ajouter_equipe' %}" class="btn-add">
+            ➕ Ajouter Équipe
+        </a>
+    </div>
+
+</div>
+
+<!-- 🔍 BARRE DE RECHERCHE -->
+<form method="get" class="filter-bar-premium">
+
+    <div class="field search-field">
+        <span class="search-icon">🔍</span>
+        <input type="text"
+               name="q"
+               placeholder="Rechercher une équipe..."
+               value="{{ request.GET.q|default:'' }}">
+    </div>
+
+    <div class="button-group">
+        <button type="submit" class="btn-premium">
+            Rechercher
+        </button>
+
+        <a href="{% url 'liste_equipes' %}" class="btn-light">
+            Réinitialiser
+        </a>
+    </div>
+
+</form>
+
+<!-- 📋 TABLE -->
+<table class="table table-premium">
+
+<thead>
+<tr>
+<th>#</th>
+<th>Équipe</th>
+<th>Coach principal</th>
+<th>Coach adjoint</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for e in equipes %}
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>
+<div class="team-cell">
+
+{% if e.logo %}
+<img src="{{ e.logo.url }}" class="team-logo">
+{% else %}
+<div class="team-logo placeholder">⚽</div>
+{% endif %}
+
+<span class="team-name">
+{{ e.nom }}
+</span>
+
+</div>
+</td>
+
+<td>{{ e.coach1 }}</td>
+<td>{{ e.coach2 }}</td>
+
+<td>
+
+<!-- ✏ EDIT -->
+
+<button class="btn-action edit"
+onclick="ouvrirModalEditEquipe(
+'{{ e.id }}',
+'{{ e.nom|escapejs }}',
+'{{ e.coach1|escapejs }}',
+'{{ e.coach2|escapejs }}'
+)">
+    <i class="fas fa-pencil-alt"></i>
+</button>
+<!-- 🗑 DELETE -->
+<button class="btn-action delete"
+onclick="ouvrirModalDeleteEquipe('{{ e.id }}','{{ e.nom }}')">
+    <i class="fas fa-trash"></i>
+</button>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="5" style="text-align:center">
+Aucune équipe trouvée
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+
+<!-- 🎨 STYLE -->
+<style>
+
+.team-cell{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.team-logo{
+width:36px;
+height:36px;
+object-fit:cover;
+border-radius:50%;
+border:2px solid #ddd;
+}
+
+.placeholder{
+display:flex;
+align-items:center;
+justify-content:center;
+background:#f1f1f1;
+font-size:16px;
+}
+
+.team-name{
+font-weight:600;
+font-size:15px;
+}
+
+.table-premium tr:hover{
+background:#f7f9fc;
+}
+
+/* boutons actions */
+.btn-action{
+padding:6px 10px;
+border-radius:6px;
+color:white;
+text-decoration:none;
+margin:2px;
+display:inline-block;
+}
+
+.btn-action.edit{
+background:#3498db;
+}
+
+.btn-action.delete{
+background:#e74c3c;
+}
+
+.btn-action:hover{
+opacity:0.8;
+}
+
+</style>
+
+{% endblock %}

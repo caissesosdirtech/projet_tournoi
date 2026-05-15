@@ -1,0 +1,50 @@
+<h2>{{ match.equipe_a.nom }} vs {{ match.equipe_b.nom }}</h2>
+
+<form method="post">
+{% csrf_token %}
+
+Score :
+<input type="number" name="score_a" value="{{ match.score_a }}">
+ -
+<input type="number" name="score_b" value="{{ match.score_b }}">
+
+<br><br>
+
+Statut :
+<select name="statut">
+    <option value="A_VENIR">À venir</option>
+    <option value="EN_COURS">En cours</option>
+    <option value="TERMINE">Terminé</option>
+    <option value="ANNULE">Annulé</option>
+</select>
+
+<hr>
+
+<h3>Ajouter événement</h3>
+
+<select name="joueur">
+    {% for j in joueurs %}
+        <option value="{{ j.id }}">{{ j.nom }}</option>
+    {% endfor %}
+</select>
+
+<select name="type_evenement">
+    <option value="BUT">But</option>
+    <option value="CJ">Carton Jaune</option>
+    <option value="CR">Carton Rouge</option>
+</select>
+
+<input type="number" name="minute" placeholder="Minute">
+
+<br><br>
+<button type="submit">Enregistrer</button>
+</form>
+
+<hr>
+
+<h3>Événements</h3>
+<ul>
+{% for e in evenements %}
+    <li>{{ e.minute }}' - {{ e.joueur.nom }} - {{ e.get_type_evenement_display }}</li>
+{% endfor %}
+</ul>

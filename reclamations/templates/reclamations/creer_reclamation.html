@@ -1,0 +1,172 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>📩 Déposer une réclamation</title>
+<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+<style>
+body {
+    background-color: #f4f4f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.reclamation-form-container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.reclamation-form-container h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #4b367c;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group label i {
+    color: #4b367c;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea,
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4b367c;
+    box-shadow: 0 0 0 3px rgba(75,54,124,0.15);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.char-counter {
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #4b367c, #7b5fcf);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #7b5fcf, #4b367c);
+    transform: translateY(-2px);
+}
+
+.form-error {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="reclamation-form-container">
+<h2>📩 Déposer un recours</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Équipe -->
+    <div class="form-group">
+        <label for="id_equipe"><i class="fas fa-users"></i> Équipe concernée <span style="color:red;">*</span></label>
+        {{ form.equipe }}
+        {% if form.equipe.errors %}
+            <div class="form-error">{{ form.equipe.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Type de réclamation -->
+    <div class="form-group">
+        <label for="id_type_reclamation"><i class="fas fa-exclamation-circle"></i> Type de recours <span style="color:red;">*</span></label>
+        {{ form.type_reclamation }}
+        {% if form.type_reclamation.errors %}
+            <div class="form-error">{{ form.type_reclamation.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+        <label for="id_description"><i class="fas fa-align-left"></i> Description (optionnelle)</label>
+        {{ form.description }}
+        <div class="char-counter" id="charCounter">0 / 500</div>
+        {% if form.description.errors %}
+            <div class="form-error">{{ form.description.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Fichier joint -->
+    <div class="form-group">
+        <label for="id_fichier_joint"><i class="fas fa-file-upload"></i> Fichier joint <span style="color:red;">*</span></label>
+        {{ form.fichier_joint }}
+        {% if form.fichier_joint.errors %}
+            <div class="form-error">{{ form.fichier_joint.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn-submit">Envoyer le recours</button>
+</form>
+</div>
+
+<script>
+    const textarea = document.getElementById('id_description');
+    const counter = document.getElementById('charCounter');
+    if(textarea) {
+        textarea.addEventListener('input', () => {
+            const len = textarea.value.length;
+            counter.textContent = `${len} / 500`;
+        });
+    }
+    
+</script>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+</body>
+</html>

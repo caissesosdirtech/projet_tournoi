@@ -1,0 +1,199 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+{% block title %}Règlement Intérieur{% endblock %}
+{% block subtitle %}Tournoi Inter-Service DRN{% endblock %}
+
+{% block content %}
+
+<div class="header-officiel">
+    <h2> République du Sénégal</h2>
+    <h3>Delegation Generale au Renseignement National DRN</h3>
+    <hr>
+</div>
+
+<div class="reglement-container">
+
+    <!-- HEADER -->
+    <div class="header-reglement">
+        <h1>📘 Règlement Intérieur</h1>
+
+        <div class="actions">
+    <a href="{% url 'telecharger_pdf' %}" class="btn-download pdf">
+        📄 Télécharger PDF
+    </a>
+
+    <a href="{% url 'telecharger_word' %}" class="btn-download word">
+        📝 Télécharger Word
+    </a>
+
+    <a href="{% url 'telecharger_odf' %}" class="btn-download word">
+        📘 Télécharger ODF
+    </a>
+</div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="card fade-in">
+        <h2>🎯 Objectif du tournoi</h2>
+        <p>
+            Le tournoi inter-service de la DRN vise à promouvoir la cohésion sociale,
+            l’esprit d’équipe, la solidarité et le fair-play entre les agents.
+        </p>
+    </div>
+
+    <!-- CHAPITRE 1 -->
+    <div class="card fade-in delay-1">
+        <h2>👥 Chapitre 1 : Participation</h2>
+        <ul>
+            <li>Le tournoi est réservé exclusivement aux agents de la DRN</li>
+            <li>Chaque joueur doit appartenir à une seule équipe</li>
+            <li>Les équipes doivent être validées par le comité d’organisation</li>
+            <li>Toute fraude entraîne une exclusion immédiate</li>
+        </ul>
+    </div>
+
+    <!-- CHAPITRE 2 -->
+    <div class="card fade-in delay-2">
+        <h2>⚽ Chapitre 2 : Organisation du tournoi</h2>
+        <ul>
+            <li>Phase de groupes suivie de phases éliminatoires</li>
+            <li>Durée des matchs : 2 x 30 minutes</li>
+            <li>3 points pour une victoire, 1 point pour un nul</li>
+            <li>Classement basé sur points, différence de buts, buts marqués</li>
+        </ul>
+    </div>
+
+    <!-- CHAPITRE 3 -->
+    <div class="card fade-in delay-3">
+        <h2>📏 Chapitre 3 : Règles de jeu</h2>
+        <ul>
+            <li>11 joueurs titulaires par équipe</li>
+            <li>7 remplaçants autorisés</li>
+            <li>Remplacements illimités</li>
+            <li>Application stricte des règles FIFA</li>
+        </ul>
+    </div>
+
+    <!-- CHAPITRE 4 -->
+    <div class="card fade-in delay-4">
+        <h2>⚖️ Chapitre 4 : Discipline et sanctions</h2>
+        <ul>
+            <li>Respect obligatoire des arbitres et adversaires</li>
+            <li>2 cartons jaunes = 1 carton rouge automatique</li>
+            <li>Carton rouge direct = suspension de 2 matchs</li>
+            <li>Comportement violent = exclusion du tournoi</li>
+            <li>Accumulation de fautes = sanctions disciplinaires</li>
+        </ul>
+    </div>
+
+    <!-- CHAPITRE 5 -->
+    <div class="card fade-in delay-5">
+        <h2>⛔ Chapitre 5 : Suspensions</h2>
+        <ul>
+            <li>Un joueur suspendu ne peut participer à aucun match</li>
+            <li>La suspension est automatiquement appliquée par le système</li>
+            <li>Le nombre de matchs restants est suivi dans l’application</li>
+        </ul>
+    </div>
+
+    <!-- CHAPITRE 6 -->
+    <div class="card fade-in delay-5">
+        <h2>🏆 Chapitre 6 : Récompenses</h2>
+        <ul>
+            <li>Trophée pour l’équipe gagnante</li>
+            <li>Prix du meilleur joueur</li>
+            <li>Prix du meilleur buteur</li>
+            <li>Prix du fair-play</li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- 🎨 STYLE -->
+<style>
+
+.reglement-container{
+    max-width:950px;
+    margin:auto;
+    padding:30px;
+}
+
+/* HEADER */
+.header-reglement{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header-reglement h1{
+    color:#4b367c;
+}
+
+/* BOUTONS */
+.actions{
+    display:flex;
+    gap:10px;
+}
+
+.btn-download{
+    padding:10px 15px;
+    border-radius:8px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.pdf{ background:#e74c3c; }
+.word{ background:#2c7be5; }
+
+.btn-download:hover{
+    transform:translateY(-3px);
+}
+
+/* CARTES */
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+/* ANIMATION */
+.fade-in{
+    opacity:0;
+    transform:translateY(20px);
+    animation:fadeIn 0.6s forwards;
+}
+
+.delay-1{ animation-delay:0.2s; }
+.delay-2{ animation-delay:0.4s; }
+.delay-3{ animation-delay:0.6s; }
+.delay-4{ animation-delay:0.8s; }
+.delay-5{ animation-delay:1s; }
+
+@keyframes fadeIn{
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+h2{
+    color:#4b367c;
+}
+
+ul{
+    padding-left:20px;
+}
+
+</style>
+
+{% endblock %}

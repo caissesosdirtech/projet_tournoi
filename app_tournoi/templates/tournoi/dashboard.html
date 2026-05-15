@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard – Tournoi111111111</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <h1>🏆 Tournoi de Football – Coupe de la DRN1</h1>
+    <a href="{% url 'admin_login' %}" class="admin-link">🔑 Admin</a>
+</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    {% include 'tournoi/sidebar.html' %}
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <h2>Tableau de bord</h2>
+
+        <!-- BADGES -->
+        <div class="alert-badges">
+            <div class="badge badge-blue">
+                🕒 Prochain match :
+                {% if prochain_match %} {{ prochain_match.equipe1.nom }} vs {{ prochain_match.equipe2.nom }} {% else %} Aucun match {% endif %}
+            </div>
+            <div class="badge badge-green">
+                📅 Match du jour :
+                {% if match_du_jour %} {{ match_du_jour.equipe1.nom }} vs {{ match_du_jour.equipe2.nom }} {% else %} Aucun {% endif %}
+            </div>
+            <div class="badge badge-red">
+                ⚠ Équipe en danger :
+                {% if equipe_en_danger %} {{ equipe_en_danger.nom }} {% else %} - {% endif %}
+            </div>
+        </div>
+
+        <!-- TOP SECTION -->
+        <section class="top-section">
+            <div class="top-left">
+                <h3>📅 Prochains matchs</h3>
+                <table class="table compact">
+                    <tr>
+                        <th>Date</th>
+                        <th>Équipe A</th>
+                        <th>Équipe B</th>
+                        <th>Score</th>
+                    </tr>
+                    {% for m in matchs %}
+                    <tr>
+                        <td>{{ m.date }}</td>
+                        <td>{{ m.equipe1.nom }}</td>
+                        <td>{{ m.equipe2.nom }}</td>
+                        <td>{{ m.score1 }} - {{ m.score2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center;">Aucun match programmé</td></tr>
+                    {% endfor %}
+                </table>
+
+                <h3>🔥 Meilleurs buteurs</h3>
+                {% for joueur in joueurs|dictsortreversed:"nb_buts" %}
+                    <p>{{ joueur.nom }} : {{ joueur.nb_buts }} buts</p>
+                {% empty %}
+                    <p>Aucun joueur</p>
+                {% endfor %}
+            </div>
+
+            <div class="top-right">
+                <h3>⚡ Résumé du tournoi</h3>
+<div class="cards">
+    <div class="card">
+        <h4>Équipe en forme</h4>
+        {% if premier_match_joue and equipe_en_forme %}
+            <p>{{ equipe_en_forme.nom }}</p>
+        {% else %}
+            <p>-</p>
+        {% endif %}
+    </div>
+    <div class="card">
+        <h4>Meilleure attaque</h4>
+        {% if premier_match_joue and meilleure_attaque %}
+            <p>{{ meilleure_attaque.nom }}</p>
+        {% else %}
+            <p>-</p>
+        {% endif %}
+    </div>
+    <div class="card">
+        <h4>Pire défense</h4>
+        {% if premier_match_joue and pire_defense %}
+            <p>{{ pire_defense.nom }}</p>
+        {% else %}
+            <p>-</p>
+        {% endif %}
+    </div>
+    <div class="card">
+        <h4>Meilleur buteur</h4>
+        {% if premier_match_joue and meilleur_buteur %}
+            <p>{{ meilleur_buteur.nom }}</p>
+        {% else %}
+            <p>-</p>
+        {% endif %}
+    </div>
+</div>
+
+            </div>
+        </section>
+
+        <!-- BOTTOM SECTION -->
+        <section class="bottom-section">
+            <h3>🏅 Classement des équipes</h3>
+            <table class="table">
+                <tr>
+                    <th>Rang</th>
+                    <th>Équipe</th>
+                    <th>MJ</th>
+                    <th>V</th>
+                    <th>N</th>
+                    <th>D</th>
+                    <th>BP</th>
+                    <th>BC</th>
+                    <th>Diff</th>
+                    <th>Pts</th>
+                </tr>
+                {% for ligne in equipes %}
+                <tr 
+                    {% if forloop.first %} style="background-color:#ffd700;font-weight:bold;" {% endif %}
+                    {% if forloop.counter == 2 %} style="background-color:#c0c0c0;font-weight:bold;" {% endif %}
+                    {% if forloop.counter == 3 %} style="background-color:#cd7f32;font-weight:bold;" {% endif %}
+                >
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ ligne.equipe.nom }}</td>
+                    <td>{{ ligne.MJ }}</td>
+                    <td>{{ ligne.V }}</td>
+                    <td>{{ ligne.N }}</td>
+                    <td>{{ ligne.D }}</td>
+                    <td>{{ ligne.BP }}</td>
+                    <td>{{ ligne.BC }}</td>
+                    <td>{{ ligne.Diff }}</td>
+                    <td>{{ ligne.Pts }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% if not premier_match_joue %}
+            <p style="margin-top:15px; color:#555;">
+                ℹ️ Le classement sera mis à jour après les premiers matchs.
+            </p>
+            {% endif %}
+
+            <!-- Graphiques -->
+            <h3>📊 Graphiques des buts</h3>
+<div class="stats-grid">
+    <div class="chart-box">
+        <canvas id="butMarquesChart"></canvas>
+    </div>
+    <div class="chart-box">
+        <canvas id="butEncaissesChart"></canvas>
+    </div>
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggles = document.querySelectorAll('.submenu-toggle');
+
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const submenu = this.nextElementSibling;
+            const arrow = this.querySelector('.arrow');
+
+            // Toggle display
+            submenu.classList.toggle('show');
+
+            // Animation flèche
+            arrow.style.transform = submenu.classList.contains('show') ? 'rotate(-180deg)' : 'rotate(0deg)';
+        });
+    });
+});
+
+const labels = [{% for ligne in equipes %}"{{ ligne.equipe.nom }}",{% endfor %}];
+
+// Graphique des buts marqués
+const ctxMarques = document.getElementById('butMarquesChart');
+new Chart(ctxMarques, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Buts marqués',
+            data: [{% for ligne in equipes %}{{ ligne.BP }},{% endfor %}],
+            backgroundColor: '#1abc9c'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+// Graphique des buts encaissés
+const ctxEncaisses = document.getElementById('butEncaissesChart');
+new Chart(ctxEncaisses, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Buts encaissés',
+            data: [{% for ligne in equipes %}{{ ligne.BC }},{% endfor %}],
+            backgroundColor: '#e74c3c'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+const butCtx = document.getElementById('butChart');
+new Chart(butCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for ligne in equipes %}"{{ ligne.equipe.nom }}",{% endfor %}],
+        datasets: [{
+            label: 'Buts marqués',
+            data: [{% for ligne in equipes %}{{ ligne.BP }},{% endfor %}],
+            backgroundColor: '#1abc9c'
+        }]
+    }
+});
+
+
+
+</script>
+
+
+        </section>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+<script>
+
+
+</body>
+</html>

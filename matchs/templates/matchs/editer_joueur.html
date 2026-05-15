@@ -1,0 +1,49 @@
+
+<div class="form-box">
+
+<h2>✏ Modifier joueur</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label>Nom</label>
+<input type="text" name="nom" value="{{ joueur.nom }}" required>
+
+<label>Prénom</label>
+<input type="text" name="prenom" value="{{ joueur.prenom }}" required>
+
+<label>Numéro</label>
+<input type="number" name="numero" value="{{ joueur.numero }}" required>
+
+<label>Poste</label>
+<select name="poste">
+
+<option value="Gardien" {% if joueur.poste == "Gardien" %}selected{% endif %}>Gardien</option>
+<option value="Défenseur" {% if joueur.poste == "Défenseur" %}selected{% endif %}>Défenseur</option>
+<option value="Milieu" {% if joueur.poste == "Milieu" %}selected{% endif %}>Milieu</option>
+<option value="Attaquant" {% if joueur.poste == "Attaquant" %}selected{% endif %}>Attaquant</option>
+
+</select>
+
+<label>Equipe</label>
+<select name="equipe">
+
+{% for e in equipes %}
+<option value="{{ e.id }}" {% if joueur.equipe.id == e.id %}selected{% endif %}>
+{{ e.nom }}
+</option>
+{% endfor %}
+
+</select>
+
+<button type="submit" class="btn-save">💾 Enregistrer</button>
+
+<a href="{% url 'liste_joueurs' %}" class="btn-cancel">Annuler</a>
+
+</form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Déconnexion – Tournoi</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #3498db, #1abc9c);
+            margin: 0;
+        }
+        .logout-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: slideIn 0.8s ease-out;
+        }
+        @keyframes slideIn {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .logout-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .logout-container a {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 8px;
+            background-color: #1abc9c;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .logout-container a:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <h2>Vous êtes déconnecté</h2>
+        <p>Merci d'avoir utilisé le tableau de bord du tournoi.</p>
+        <a href="{% url 'admin_login' %}">Se reconnecter</a>
+    </div>
+</body>
+</html>

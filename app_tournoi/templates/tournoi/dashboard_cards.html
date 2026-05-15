@@ -1,0 +1,112 @@
+<!-- dashboard_cards.html -->
+
+<!-- ===== INDICATEURS ===== -->
+<section class="card">
+    <h3>📊 Indicateurs globaux</h3>
+    <div class="alert-badges">
+        <div class="badge badge-blue">Matchs : {{ total_matchs }}</div>
+        <div class="badge badge-green">Équipes : {{ equipes|length }}</div>
+        <div class="badge badge-red">Joueurs : {{ joueurs|length }}</div>
+    </div>
+</section>
+
+<!-- ===== PROCHAIN MATCH ===== -->
+{% if prochain_match %}
+<section class="card">
+    <h3>📅 Prochain match</h3>
+    <p><strong>{{ prochain_match.equipe1.nom }} vs {{ prochain_match.equipe2.nom }}</strong></p>
+    <p>Date : {{ prochain_match.date|date:"d/m/Y H:i" }}</p>
+</section>
+{% endif %}
+
+<!-- ===== STATISTIQUES ===== -->
+<section class="card">
+    <h3>📈 Statistiques</h3>
+    <p>Total matchs : {{ total_matchs }}</p>
+    <p>À venir : {{ matchs_a_venir }}</p>
+    <p>En cours : {{ matchs_en_cours }}</p>
+    <p>Terminés : {{ matchs_termines }}</p>
+</section>
+
+<!-- ===== RECLAMATIONS ===== -->
+<section class="card">
+    <h3>📩 Suivi des recours</h3>
+    <div class="alert-badges">
+        <div class="badge badge-blue">Total : {{ total_reclamations }}</div>
+        <div class="badge badge-red">En attente : {{ reclamations_en_attente }}</div>
+        <div class="badge badge-orange">En cours : {{ reclamations_en_cours }}</div>
+        <div class="badge badge-green">Traitées : {{ reclamations_traitees }}</div>
+    </div>
+
+    {% if reclamations_en_attente > 0 %}
+        <p style="color:red; margin-top:10px;">
+            ⚠ {{ reclamations_en_attente }} réclamation(s) en attente !
+        </p>
+    {% endif %}
+
+    <br>
+
+    <a href="{% url 'liste_reclamations' %}" class="btn">
+        🔍 Voir toutes les réclamations
+    </a>
+</section>
+
+<!-- ===== MATCHS ===== -->
+<section class="card">
+    <h3>⚽ Gestion des matchs</h3>
+    <table class="table match-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Stade</th>
+                <th>Match</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for m in matchs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                <td>🏟 {{ m.stade }}</td>
+                <td class="match-cell">
+                    <div class="team-box">
+                        {% if m.equipe1.logo %}
+                        <img src="{{ m.equipe1.logo.url }}" class="team-logo">
+                        {% endif %}
+                        <span class="team-name">{{ m.equipe1.nom }}</span>
+                    </div>
+                    <div class="score-box">
+                        {% if m.score1 is not None and m.score2 is not None %}
+                        {{ m.score1 }} - {{ m.score2 }}
+                        {% else %}VS{% endif %}
+                    </div>
+                    <div class="team-box">
+                        {% if m.equipe2.logo %}
+                        <img src="{{ m.equipe2.logo.url }}" class="team-logo">
+                        {% endif %}
+                        <span class="team-name">{{ m.equipe2.nom }}</span>
+                    </div>
+                </td>
+                <td>
+                    {% if m.statut_auto == 'a_venir' %}
+                        <span class="badge badge-blue">À venir</span>
+                    {% elif m.statut_auto == 'en_cours' %}
+                        <span class="badge badge-orange">En cours</span>
+                    {% elif m.statut_auto == 'termine' %}
+                        <span class="badge badge-green">Terminé</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'gerer_evenements' m.id %}" class="action-btn" title="Ajouter score">🎯</a>
+                    <a href="{% url 'supprimer_match' m.id %}" class="action-btn danger" title="Supprimer match" onclick="return confirm('Supprimer ce match ?')">🗑</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" style="text-align:center;">Aucun match</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>

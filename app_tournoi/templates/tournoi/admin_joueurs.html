@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin – Joueurs de {{ equipe.nom }}</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+    <style>
+        .table th, .table td {
+            padding: 8px 12px;
+            text-align: center;
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .badge-green { background-color: #27ae60; }
+        .badge-yellow { background-color: #f1c40f; }
+        .badge-red { background-color: #e74c3c; }
+        .btn { padding: 5px 10px; border-radius: 5px; margin: 2px; cursor: pointer; text-decoration: none; color: #fff; }
+        .btn-edit { background-color: #3498db; }
+        .btn-delete { background-color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <h1>👤 Gestion des joueurs – {{ equipe.nom }}</h1>
+</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    {% include 'tournoi/sidebar.html' %}
+
+    <!-- BADGE -->
+    <div class="alert-badges">
+        <div class="badge badge-blue">
+            Joueurs totaux : {{ joueurs|length }}
+        </div>
+    </div>
+
+    <!-- TABLEAU DES JOUEURS -->
+    <section class="top-section">
+        <table class="table compact">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Buts</th>
+                    <th>Cartons Jaunes</th>
+                    <th>Cartons Rouges</th>
+                    <th>Suspension</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for joueur in joueurs %}
+                <tr>
+                    <td>{{ joueur.nom }}</td>
+                    <td>{{ joueur.prenom }}</td>
+                    <td>{{ joueur.buts }}</td>
+                    <td>{{ joueur.cartons_jaunes }}</td>
+                    <td>{{ joueur.cartons_rouges }}</td>
+                    <td>
+                        {% if joueur.suspendu %}
+                            <span class="badge badge-red">Oui</span>
+                        {% else %}
+                            <span class="badge badge-green">Non</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'admin_edit_joueur' joueur.id %}" class="btn btn-edit">✏️ Modifier</a>
+                        <a href="{% url 'admin_delete_joueur' joueur.id %}" class="btn btn-delete" onclick="return confirm('Voulez-vous vraiment supprimer ce joueur ?');">🗑️ Supprimer</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;">Aucun joueur pour cette équipe</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Bouton Ajouter un joueur -->
+        <div style="margin-top: 15px;">
+            <a href="{% url 'admin_add_joueur' equipe.id %}" class="btn btn-edit">➕ Ajouter un joueur</a>
+        </div>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+</body>
+</html>

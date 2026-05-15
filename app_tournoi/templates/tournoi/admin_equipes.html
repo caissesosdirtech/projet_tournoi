@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin – Équipes</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+</head>
+<body>
+<h1>Gestion des équipes</h1>
+
+<table class="table compact">
+    <thead>
+        <tr>
+            <th>Nom équipe</th>
+            <th>Nombre de joueurs</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in equipes %}
+        <tr>
+            <td>{{ e.nom }}</td>
+            <td>{{ e.joueurs.count }}</td>
+            <td>
+                <a href="{% url 'admin_equipe_detail' e.id %}">Modifier</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'tournoi/css/galeries.css' %}">
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'tournoi/css/galeries.css' %}">
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="header-container">
+        <h1>📸 Galerie Coupe DRN 📸</h1>
+        <nav>
+            <a href="{% url 'dashboard' %}" class="btn-retour">
+                ⬅ Retour au Dashboard
+            </a>
+        </nav>
+    </div>
+</header>
+
+<!-- ================= CONTENU GALERIE ================= -->
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'tournoi/css/galeries.css' %}">
+
+<h2 class="titre-galerie">Galerie</h2>
+
+<div class="players-grid">
+
+{% for media in medias %}
+
+<div class="player-card">
+
+    {% if media.type_media == "photo" and media.image %}
+        <img src="{{ media.image.url }}" alt="{{ media.titre }}">
+
+        <!-- bouton télécharger -->
+        <a href="{{ media.image.url }}" download class="btn-download">
+            ⬇ Télécharger
+        </a>
+
+    {% elif media.type_media == "video" and media.video %}
+        <video controls>
+            <source src="{{ media.video.url }}">
+        </video>
+    {% endif %}
+
+    <div class="player-info">
+        <h4>{{ media.titre }}</h4>
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <p>© {% now "Y" %} Plateforme de gestion du tournoi Coupe DRN - Tous droits réservés</p>
+</footer>

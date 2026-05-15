@@ -1,0 +1,272 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ===== BANNIERE INFO URGENTE ===== -->
+{% if info_urgente %}
+<div class="urgent-banner" onclick="openModal('modalInfoUrgente')">
+    🚨 INFORMATION URGENTE : {{ info_urgente.titre }}
+</div>
+{% endif %}
+
+<h2 class="fade-in">Tableau de bord</h2>
+
+<!-- ================= BADGES ================= -->
+<div class="alert-badges fade-in-delay">
+    <div class="badge badge-blue glow">
+        🕒 Prochain match :
+        {% if prochain_match %} {{ prochain_match.equipe1.nom }} vs {{ prochain_match.equipe2.nom }} {% else %} Aucun match {% endif %}
+    </div>
+    <div class="badge badge-green glow">
+        📅 Match du jour :
+        {% if match_du_jour %} {{ match_du_jour.equipe1.nom }} vs {{ match_du_jour.equipe2.nom }} {% else %} Aucun {% endif %}
+    </div>
+    <div class="badge badge-red glow">
+        ⚠ Équipe en danger :
+        {% if equipe_en_danger %} {{ equipe_en_danger.nom }} {% else %}-{% endif %}
+    </div>
+</div>
+
+<!-- ================= TOP SECTION ================= -->
+<section class="top-section fade-in-delay">
+
+    <!-- PROCHAINS MATCHS -->
+    <div class="top-left">
+        <h3>📅 Prochains matchs</h3>
+        <table class="table compact animated-table">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Équipe A</th>
+                <th>Équipe B</th>
+                <th>Score</th>
+                <th>Stade</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for m in matchs %}
+            <tr>
+                <td>{{ m.date }}</td>
+                <td>{% if m.equipe1.logo %}<img src="{{ m.equipe1.logo.url }}" class="mini-logo">{% endif %} {{ m.equipe1.nom }}</td>
+                <td>{% if m.equipe2.logo %}<img src="{{ m.equipe2.logo.url }}" class="mini-logo">{% endif %} {{ m.equipe2.nom }}</td>
+                <td>{{ m.score1 }} - {{ m.score2 }}</td>
+                <td>🏟 {{ m.stade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center;">Aucun match programmé</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- MEILLEURS BUTEURS -->
+        <h3>🔥 Meilleurs buteurs</h3>
+        <div class="buteurs-list fade-in">
+            {% for joueur in meilleurs_buteurs %}
+            <div class="buteur-card hover-scale">
+                {% if joueur.photo %}
+                <img src="{{ joueur.photo.url }}" class="joueur-photo">
+                {% else %}
+                <img src="{% static 'tournoi/img/default_player.JPG' %}" class="joueur-photo">
+                {% endif %}
+                <div class="buteur-info">
+                    <strong>{{ joueur.nom }} {{ joueur.prenom }}</strong>
+                    <div class="team">
+                        {% if joueur.equipe.logo %}<img src="{{ joueur.equipe.logo.url }}" class="team-logo">{% endif %}
+                        {{ joueur.equipe.nom }}
+                    </div>
+                </div>
+                <div class="buts">⚽ {{ joueur.nb_buts }}</div>
+            </div>
+            {% empty %}
+            <p>Aucun buteur pour le moment</p>
+            {% endfor %}
+        </div>
+        <h3><a href="{% url 'stats_joueurs' %}" class="link-animated">Voir plus</a></h3>
+
+    </div>
+
+    <!-- RESUME TOURNOI -->
+    <div class="top-right fade-in-delay">
+        <h3>⚡ Résumé du tournoi</h3>
+        <div class="cards">
+            <div class="card hover-card"><h4>Équipe en forme</h4><p>{% if equipe_en_forme %}{{ equipe_en_forme.nom }}{% else %}-{% endif %}</p></div>
+            <div class="card hover-card"><h4>Meilleure attaque</h4><p>{% if meilleure_attaque %}{{ meilleure_attaque.nom }}{% else %}-{% endif %}</p></div>
+            <div class="card hover-card"><h4>Pire défense</h4><p>{% if pire_defense %}{{ pire_defense.nom }}{% else %}-{% endif %}</p></div>
+            <div class="card hover-card"><h4>Meilleur buteur</h4><p>{% if meilleur_buteur %}{{ meilleur_buteur.nom }} {{ meilleur_buteur.prenom }}{% else %}-{% endif %}</p></div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================= CLASSEMENT ================= -->
+<section class="bottom-section fade-in">
+    <h3>🏅 Classement des équipes</h3>
+    <table class="table animated-table">
+        <thead>
+        <tr>
+            <th>Rang</th><th>Équipe</th><th>MJ</th><th>V</th><th>N</th><th>D</th>
+            <th>BP</th><th>BC</th><th>Diff</th><th>Pts</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ligne in classement %}
+        <tr class="{% if forloop.first %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
+            <td>{{ forloop.counter }}</td>
+            <td>{% if ligne.equipe.logo %}<img src="{{ ligne.equipe.logo.url }}" class="mini-logo">{% endif %} {{ ligne.equipe.nom }}</td>
+            <td>{{ ligne.MJ }}</td>
+            <td>{{ ligne.V }}</td>
+            <td>{{ ligne.N }}</td>
+            <td>{{ ligne.D }}</td>
+            <td>{{ ligne.BP }}</td>
+            <td>{{ ligne.BC }}</td>
+            <td>{{ ligne.Diff }}</td>
+            <td>{{ ligne.Pts }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not premier_match_joue %}
+    <p class="info-note">
+        ℹ️ Le classement sera mis à jour après les premiers matchs.
+    </p>
+    {% endif %}
+
+    <h3>📊 Graphiques des buts</h3>
+    <div class="stats-grid fade-in-delay">
+        <div class="chart-box">
+            <canvas id="butMarquesChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="butEncaissesChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ANIMATIONS ================= -->
+<style>
+/* ---- Bannière info urgente ---- */
+.urgent-banner {
+    background: linear-gradient(90deg, #ff4d4f, #ff7875);
+    color: #fff;
+    padding: 15px 25px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+    cursor: pointer;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* ---- Badges ---- */
+.badge.glow {
+    animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+    0% { box-shadow: 0 0 5px #fff; }
+    100% { box-shadow: 0 0 15px #fff; }
+}
+
+/* ---- Animations fade-in ---- */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s forwards;
+}
+.fade-in-delay {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s forwards;
+    animation-delay: 0.3s;
+}
+@keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Hover cards ---- */
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* ---- Buteurs cards ---- */
+.buteur-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+.buteur-card.hover-scale:hover {
+    transform: scale(1.03);
+}
+.buteur-card img.joueur-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+.buteur-info .team img.team-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    margin-right: 4px;
+}
+
+/* ---- Tableau classement ---- */
+.gold { background-color:#ffd700;font-weight:bold; }
+.silver { background-color:#c0c0c0;font-weight:bold; }
+.bronze { background-color:#cd7f32;font-weight:bold; color:#fff; }
+
+/* ---- Lien animé ---- */
+.link-animated {
+    text-decoration:none;
+    color:#3b82f6;
+    position: relative;
+}
+.link-animated::after {
+    content:'';
+    position:absolute;
+    width:0;
+    height:2px;
+    bottom:0;
+    left:0;
+    background-color:#3b82f6;
+    transition: width 0.3s;
+}
+.link-animated:hover::after { width:100%; }
+
+/* ---- Note info ---- */
+.info-note {
+    margin-top:15px;
+    color:#555;
+    font-style:italic;
+}
+
+/* ---- Animated tables ---- */
+.animated-table tr {
+    transition: background-color 0.3s ease;
+}
+.animated-table tr:hover {
+    background-color: rgba(59,130,246,0.1);
+}
+</style>
+
+{% endblock %}

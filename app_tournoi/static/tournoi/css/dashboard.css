@@ -1,0 +1,1673 @@
+/* ======================== RESET ======================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f4f4f9;
+}
+
+/* ======================== HEADER ======================== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e2a38;
+    color: white;
+    padding: 40px 50px;
+    min-height: 100px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* ======================== CONTAINER ======================== */
+.container {
+    display: flex;
+    margin-top: 05px;
+    padding: 0.5 20px; /* bonus pour respirer à gauche/droite */
+    position: relative;
+}
+/* ================= SIDEBAR DJANGO ADMIN PREMIUM ================= */
+.sidebar {
+    width: 250px;
+    min-width: unset !important;
+    background: #1e293b; /* bleu nuit */
+    color: #cbd5e1;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    padding-top: 15px;
+    overflow-y: auto;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+}
+
+/* TITRE SECTION */
+.sidebar-title {
+    padding: 12px 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+/* LISTE */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* ITEMS */
+.sidebar ul li {
+    margin: 4px 0;
+}
+
+/* LIENS */
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+    transition: all 0.25s ease;
+}
+
+/* ICONES */
+.sidebar ul li a i {
+    font-size: 15px;
+    width: 20px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+/* HOVER */
+.sidebar ul li a:hover {
+    background: rgba(255,255,255,0.05);
+    color: #ffffff;
+    border-left: 3px solid #3b82f6;
+}
+
+.sidebar ul li a:hover i {
+    color: #3b82f6;
+}
+
+/* ACTIF */
+.sidebar ul li.active > a {
+    background: rgba(59,130,246,0.15);
+    color: #ffffff;
+    border-left: 3px solid #3b82f6;
+}
+
+.sidebar ul li.active > a i {
+    color: #3b82f6;
+}
+
+/* ================= SOUS MENU ================= */
+.submenu {
+    display: none;
+    padding-left: 10px;
+}
+
+.has-submenu:hover .submenu {
+    display: block;
+}
+
+/* SOUS LIENS */
+.submenu li a {
+    font-size: 13px;
+    color: #94a3b8;
+    padding: 10px 18px;
+    border-left: 2px solid transparent;
+}
+
+.submenu li a:hover {
+    color: #ffffff;
+    background: rgba(255,255,255,0.05);
+    border-left: 2px solid #3b82f6;
+}
+
+/* SCROLL */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+}
+
+/* ======================== RESPONSIVE ======================== */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        z-index: 100;
+        transition: left 0.3s ease;
+    }
+    .sidebar.show {
+        left: 0;
+    }
+}
+
+/* ======================== OPTION HOVER POUR SOUS-MENU DESKTOP ======================== */
+@media (min-width: 769px) {
+    .has-submenu:hover > .submenu {
+        max-height: 500px;
+        opacity: 1;
+    }
+    .has-submenu:hover > a .arrow {
+        transform: rotate(-180deg);
+    }
+}
+
+/* ======================== CONTENT ======================== */
+.content {
+    flex: 1;
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+/* ======================== CARTES ======================== */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex: 1 1 200px;
+}
+
+/* ======================== TABLEAU ======================== */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background: #34495e;
+    color: #fff;
+}
+
+/* ======================== FOOTER ======================== */
+.footer {
+    width: 100%;
+    background: #2c3e50;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 15px;
+    margin-top: auto;
+}
+/* ====== ZONE DU HAUT ====== */
+.top-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.top-left, .top-right {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Tableau compact */
+.table.compact th,
+.table.compact td {
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* ====== CARTES RÉDUITES ====== */
+.top-right .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.top-right .card {
+    padding: 12px;
+    text-align: center;
+}
+
+.top-right .card h4 {
+    font-size: 14px;
+    color: #555;
+}
+
+.top-right .card p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* ====== STATISTIQUES DU BAS ====== */
+.bottom-section {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.chart-box {
+    height: 250px;
+}
+
+/* Rendre les graphes compacts */
+canvas {
+    max-height: 250px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .top-section {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ================= BADGES D'ALERTES ================= */
+.alert-badges {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 10px 18px;
+    border-radius: 30px;   /* forme gélule */
+    font-weight: 600;
+    color: #fff;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.badge-blue {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.badge-green {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.badge-red {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .alert-badges {
+        flex-direction: column;
+    }
+}
+.table td strong {
+    color: #2c3e50;
+}
+
+.table tr:nth-child(1) td {
+    background: #ecfdf5;
+    font-weight: bold;
+}
+
+.table tr:hover {
+    background: #f1f5f9;
+}
+.sidebar li.active,
+.sidebar li:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+
+/* BOUTON ADMIN */
+.admin-header a {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+    animation: glow 2s infinite alternate;
+}
+
+/* GLOW ANIMÉ */
+@keyframes glow {
+    0% { box-shadow: 0 0 10px rgba(231,76,60,0.6); }
+    50% { box-shadow: 0 0 20px rgba(231,76,60,0.8); }
+    100% { box-shadow: 0 0 10px rgba(231,76,60,0.6); }
+}
+
+/* ICÔNE */
+.admin-header a i {
+    margin-right: 8px;
+}
+
+/* BADGE ⚡ ANIMÉ */
+.admin-header .admin-badge {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 14px;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* HOVER */
+.admin-header a:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(192, 57, 43, 0.9), 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* TOOLTIP */
+.admin-header a[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+/* HEADER ADMIN */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Côté gauche */
+.header-left h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.header-subtitle {
+    display: block;
+    font-size: 13px;
+    color: #f0f0f0;
+    margin-top: 4px;
+}
+
+/* Bloc utilisateur à droite */
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Infos user */
+.user-info {
+    text-align: right;
+}
+
+.user-name {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-role {
+    display: block;
+    font-size: 12px;
+    color: #ffeaa7;
+}
+
+/* Bouton logout */
+.btn-logout {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.form-box {
+    max-width: 400px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.form-box label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.form-box select,
+.form-box input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.form-box button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-box button:hover {
+    background: #2980b9;
+}
+
+.admin-link {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.admin-link:hover {
+    background: #2562eb;
+}
+
+.submenu {
+    display: none;
+    padding-left: 20px;
+}
+.submenu.show {
+    display: block;
+}
+.submenu li a {
+    font-size: 14px;
+    color: #ddd;
+}
+
+/* ===== MENU AVEC SOUS-MENU HOVER ===== */
+
+.sidebar ul li {
+    position: relative;
+}
+
+.has-submenu .submenu {
+    display: none;
+    list-style: none;
+    padding-left: 15px;
+    margin-top: 5px;
+}
+
+.has-submenu:hover .submenu {
+    display: block;
+}
+
+.submenu li a {
+    font-size: 14px;
+    opacity: 0.9;
+    padding-left: 20px;
+}
+
+.submenu li a:hover {
+    opacity: 1;
+    color: #3b82f6;
+}
+
+/* MODAL SYSTEM */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-box {
+    position: relative;
+    width: 420px;
+    max-width: 95%;
+    background: #fff;
+    margin: 8% auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-form {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background: #2b7cff;
+    color: white;
+}
+
+.btn-secondary {
+    background: #ddd;
+}
+
+
+.header-left h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.header-left span {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.header-right .btn-admin {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e67e22;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.header-right .btn-admin:hover {
+    background: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Badge flottant “Staff” */
+.header-right .btn-admin .admin-badge {
+    background: #c0392b;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 12px;
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+}
+
+.header-right .btn-admin:hover .admin-badge {
+    opacity: 1;
+    transform: scale(1);
+}
+/* ===== MODAL ADMIN MODERNE ===== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.35);
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+.modal-box {
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    background: #fff;
+    margin: 8% auto;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+    transform: translateY(-50px);
+    opacity: 0;
+    animation: slideDown 0.4s ease forwards;
+}
+
+@keyframes slideDown {
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #3498db;
+    color: white;
+}
+
+.modal-close {
+    font-size: 26px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #e74c3c;
+}
+
+.modal-form {
+    padding: 25px;
+}
+
+.modal-form input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.modal-form input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 10px rgba(52,152,219,0.5);
+    outline: none;
+}
+
+.modal-form button {
+    width: 100%;
+    padding: 12px;
+    background: #1abc9c;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-form button:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Animation fadeIn */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== BOUTON ADMIN ===== */
+.btn-admin {
+    background: #e67e22;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-admin:hover {
+    background: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.admin-badge {
+    background: #c0392b;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 6px;
+    vertical-align: top;
+}
+
+.page-title{
+margin-bottom:20px;
+}
+
+.match-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:20px;
+}
+
+.match-card{
+background:white;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+padding:15px;
+transition:0.2s;
+}
+
+.match-card:hover{
+transform:translateY(-3px);
+}
+
+.match-header{
+text-align:center;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.match-body{
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.team{
+display:flex;
+flex-direction:column;
+align-items:center;
+width:100px;
+}
+
+.team-logo{
+width:50px;
+height:50px;
+object-fit:contain;
+margin-bottom:5px;
+}
+
+.team-name{
+font-weight:600;
+text-align:center;
+}
+
+.score{
+font-size:24px;
+font-weight:bold;
+}
+
+.match-footer{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+font-size:14px;
+}
+
+.badge{
+padding:4px 8px;
+border-radius:6px;
+color:white;
+font-size:12px;
+}
+
+.badge-blue{
+background:#3498db;
+}
+
+.badge-green{
+background:#27ae60;
+}
+
+.badge-orange{
+background:#f39c12;
+}
+
+.mini-logo {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.buteurs-list{
+    margin-top:15px;
+}
+
+.buteur-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#f8f9fa;
+    padding:8px;
+    margin-bottom:8px;
+    border-radius:8px;
+}
+
+.joueur-photo{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.buteur-info{
+    flex:1;
+    margin-left:10px;
+}
+
+.team{
+    font-size:12px;
+    color:#666;
+}
+
+.team-logo{
+    width:16px;
+    vertical-align:middle;
+    margin-right:4px;
+}
+
+.buts{
+    font-weight:bold;
+    color:#e74c3c;
+}
+
+/* Container de la liste des buteurs */
+.buteurs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* espace entre les cartes */
+}
+
+/* Carte d'un buteur */
+.buteur-card {
+    display: flex;
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    width: 100%; /* ou 48% pour deux colonnes sur desktop */
+    max-width: 400px;
+}
+
+/* Photo du joueur */
+.joueur-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* rond */
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Info du joueur (nom + équipe) */
+.buteur-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Logo équipe */
+.team {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.team-logo {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Nombre de buts */
+.buts {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #1abc9c;
+    margin-left: 10px;
+}
+
+.infos-page{
+padding:30px;
+}
+
+.page-title{
+margin-bottom:30px;
+}
+
+.timeline{
+position:relative;
+margin-left:20px;
+}
+
+.timeline:before{
+content:'';
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:3px;
+background:#ddd;
+}
+
+.timeline-item{
+position:relative;
+margin-bottom:30px;
+padding-left:25px;
+}
+
+.timeline-item:before{
+content:'';
+position:absolute;
+left:-8px;
+top:5px;
+width:15px;
+height:15px;
+border-radius:50%;
+background:#3498db;
+}
+
+.timeline-item.urgent:before{
+background:red;
+}
+
+.timeline-content{
+background:white;
+padding:15px;
+border-radius:8px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-date{
+font-size:12px;
+color:gray;
+margin-bottom:5px;
+}
+
+.badge{
+background:#2c3e50;
+color:white;
+padding:4px 8px;
+border-radius:5px;
+font-size:12px;
+}
+
+.badge.urgent{
+background:red;
+}
+
+.info-img{
+width:100%;
+margin:10px 0;
+border-radius:6px;
+}
+
+/* LAYOUT PRINCIPAL */
+.layout {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* SIDEBAR FIXE */
+.sidebar {
+    width: 250px;        /* largeur fixe */
+    min-width: 250px;    /* empêche le rétrécissement */
+    flex-shrink: 0;      /* très important */
+}
+
+/* CONTENU PRINCIPAL */
+.main-content {
+    flex: 1;
+    padding-left: 30px;
+}
+
+/* TITRE CENTRÉ HORIZONTAL */
+.page-title {
+    text-align: center;
+    width: 100%;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 20px 0 30px 0;
+    color: #2c3e50;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
+
+.badge-blue {
+    background-color: #3498db;
+}
+
+.badge-orange {
+    background-color: #f39c12;
+}
+
+.badge-green {
+    background-color: #2ecc71;
+}
+
+.notif-badge{
+
+background:red;
+color:white;
+
+padding:3px 8px;
+border-radius:50%;
+
+font-size:12px;
+margin-left:8px;
+
+}
+
+/* ===== BADGES NIVEAU ===== */
+
+.badge{
+padding:5px 10px;
+border-radius:6px;
+font-size:12px;
+font-weight:bold;
+color:white;
+}
+
+.badge.urgent{
+background:#e74c3c;
+}
+
+.badge.important{
+background:#f39c12;
+}
+
+.badge.info{
+background:#3498db;
+}
+
+
+/* ===== FICHIER ===== */
+
+.btn-download{
+display:inline-block;
+margin-top:10px;
+padding:6px 12px;
+background:#2ecc71;
+color:white;
+border-radius:6px;
+text-decoration:none;
+font-size:13px;
+}
+
+.btn-download:hover{
+background:#27ae60;
+}
+
+.urgent-banner{
+background:#e74c3c;
+color:white;
+padding:12px;
+text-align:center;
+font-weight:bold;
+font-size:18px;
+animation: blink 1.5s infinite;
+}
+
+@keyframes blink{
+0%{opacity:1;}
+50%{opacity:0.5;}
+100%{opacity:1;}
+}
+
+.popup-urgent{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.7);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+z-index:9999;
+}
+
+.popup-content{
+
+background:white;
+
+padding:30px;
+
+border-radius:10px;
+
+max-width:500px;
+
+text-align:center;
+
+animation: popup 0.5s ease;
+}
+
+@keyframes popup{
+from{transform:scale(0.7);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+/* ================= SIDEBAR TOGGLE ================= */
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed ul li a span {
+    display: none;
+}
+
+.sidebar.collapsed ul li a {
+    justify-content: center;
+}
+
+/* ================= BUTTON ICON ================= */
+.btn-icon {
+    background: #3b82f6; /* bleu visible */
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* hover effet */
+.btn-icon:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+/* ================= TRANSITIONS ================= */
+.sidebar, .content, .header {
+    transition: all 0.3s ease;
+}
+
+/* ================= DARK MODE ================= */
+body.dark {
+    --bg: #0f172a;
+    --white: #1e293b;
+    --text: #e2e8f0;
+    --border: #334155;
+    --dark: #020617;
+}
+
+/* TABLE DARK */
+body.dark .table {
+    background: #1e293b;
+}
+
+body.dark .table th {
+    background: #020617;
+    color: white;
+}
+
+/* CARD DARK */
+body.dark .card {
+    background: #1e293b;
+}
+
+/* HEADER DARK */
+body.dark .header {
+    background: #020617;
+    color: white;
+}
+
+/* SIDEBAR DARK */
+body.dark .sidebar {
+    background: #020617;
+}
+
+/* ================= HOVER ANIMATION ================= */
+.btn, .sidebar ul li a {
+    transition: all 0.25s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ================= CARD HOVER ================= */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Quand sidebar est réduite */
+.sidebar.collapsed + .content {
+    margin-left: 70px;
+}
+
+/* Normal */
+.content {
+    transition: all 0.3s ease;
+}
+
+
+/* Masquer texte quand réduit */
+.sidebar.collapsed ul li a {
+    justify-content: center;
+}
+
+.sidebar.collapsed ul li a::after {
+    content: attr(data-title);
+    position: absolute;
+    left: 70px;
+    background: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: none;
+}
+
+.sidebar.collapsed ul li:hover a::after {
+    display: block;
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed span {
+    display: none;
+}
+
+/* ===== SIDEBAR COLLAPSE FIX ===== */
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+/* cacher texte */
+.sidebar.collapsed a span {
+    display: none;
+}
+
+/* centrer icônes */
+.sidebar.collapsed ul li a {
+    justify-content: center;
+}
+
+/* flèches aussi */
+.sidebar.collapsed .arrow {
+    display: none;
+}
+
+/* sous-menu désactivé quand réduit */
+.sidebar.collapsed .submenu {
+    display: none !important;
+}
+
+/* ===== FORCE SIDEBAR RETRACTABLE ===== */
+
+.sidebar {
+    transition: all 0.3s ease !important;
+}
+
+/* MODE NORMAL */
+.sidebar {
+    width: 250px;
+}
+
+/* MODE RÉTRACTÉ */
+.sidebar.collapsed {
+    width: 70px !important;
+}
+
+/* CACHER TEXTE */
+.sidebar.collapsed a span {
+    display: none !important;
+}
+
+/* CENTRER ICÔNES */
+.sidebar.collapsed ul li a {
+    justify-content: center !important;
+}
+
+/* CACHER FLÈCHE */
+.sidebar.collapsed .arrow {
+    display: none !important;
+}
+
+/* CACHER SOUS-MENU */
+.sidebar.collapsed .submenu {
+    display: none !important;
+}
+
+/* BOUTON TOGGLE FIXE */
+#toggleSidebar {
+    position: fixed;
+    top: 80px;
+    left: 260px;
+    z-index: 999;
+
+    color: black;
+
+    padding: 6px 10px;   /* 🔥 réduit */
+    font-size: 16px;     /* 🔥 plus petit */
+    border-radius: 6px;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+#toggleSidebar:hover {
+    background: #d97706;
+    transform: scale(1.05);
+}
+
+/* quand sidebar est réduit */
+.sidebar.collapsed + .content ~ .toggle-btn, {
+    left: 80px;
+}
+
+/* animation */
+.toggle-btn:hover {
+    background: #3b82f6;
+}
+
+/* ===== BOUTON TOGGLE FIXE SANS ANIMATION ===== */
+.toggle-btn {
+    transform: translateY(180%);
+    position: absolute;
+    top: 20px; /* ajuste selon ton container */
+    left: 260px; /* aligné à droite de la sidebar */
+    z-index: 999;
+
+    width: 35px;
+    height: 30px;
+    background: #1e293b;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    /* on supprime toutes transitions et animations */
+    transition: none !important;
+}
+
+/* Les 3 lignes */
+.toggle-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: white;
+
+    /* supprime la transition */
+    transition: none !important;
+}
+
+/* Supprimer tout effet hover */
+.toggle-btn:hover {
+    background: #1e293b; /* reste inchangé */
+    transform: none !important;
+}
+
+/* Supprimer la transformation en croix */
+.toggle-btn.active span:nth-child(1),
+.toggle-btn.active span:nth-child(2),
+.toggle-btn.active span:nth-child(3) {
+    transform: none !important;
+    opacity: 1 !important;
+}
+/* ===== BOUTON ROND ADMIN ===== */
+.admin-menu {
+    position: relative;
+}
+
+/* ===== BOUTONS RONDS ===== */
+/* ======== BOUTON ROND ADMIN ======== */
+.btn-round.profile-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.btn-round.profile-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* ======== DROPDOWN ADMIN ======== */
+.admin-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 60px; /* juste en dessous du bouton */
+    right: 0;
+    background: #ffffff;
+    min-width: 180px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    display: none;
+    z-index: 9999;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.dropdown-content.show {
+    display: block;
+    animation: dropdownFade 0.25s ease forwards;
+}
+
+@keyframes dropdownFade {
+    0% { opacity: 0; transform: translateY(-10px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+/* ======== LIENS DANS DROPDOWN ======== */
+.dropdown-content a {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    gap: 10px;
+}
+
+.dropdown-content a i {
+    width: 18px;
+    text-align: center;
+    color: #555;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f0f0;
+    color: #1abc9c;
+    transform: translateX(3px);
+}
+
+/* ======== ADAPTATION MOBILE ======== */
+@media (max-width: 600px) {
+    .dropdown-content {
+        top: 55px;
+        right: 5px;
+        min-width: 150px;
+    }
+
+    .btn-round.profile-btn {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+table img {
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+table td {
+    vertical-align: middle;
+}
+
+.header-officiel{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.header-officiel h2{
+    font-size:18px;
+    margin:0;
+}
+
+.header-officiel h3{
+    font-size:16px;
+    color:#555;
+}

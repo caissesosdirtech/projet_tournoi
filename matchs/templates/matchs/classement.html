@@ -1,0 +1,66 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h2>📊 Classement général</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Équipe</th>
+            <th>MJ</th>
+            <th>V</th>
+            <th>N</th>
+            <th>D</th>
+            <th>BP</th>
+            <th>BC</th>
+            <th>Diff</th>
+            <th>Pts</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for ligne in classement %}
+        <tr 
+            {% if forloop.first %} style="background-color:#ffd700;font-weight:bold;" {% endif %}
+            {% if forloop.counter == 2 %} style="background-color:#c0c0c0;font-weight:bold;" {% endif %}
+            {% if forloop.counter == 3 %} style="background-color:#cd7f32;font-weight:bold;" {% endif %}
+        >
+            <td>{{ forloop.counter }}</td>
+
+            <td>
+                {% if ligne.equipe.logo %}
+                    <img src="{{ ligne.equipe.logo.url }}" class="mini-logo">
+                {% endif %}
+                <strong>{{ ligne.equipe.nom }}</strong>
+            </td>
+
+            <td>{{ ligne.MJ }}</td>
+            <td>{{ ligne.V }}</td>
+            <td>{{ ligne.N }}</td>
+            <td>{{ ligne.D }}</td>
+            <td>{{ ligne.BP }}</td>
+            <td>{{ ligne.BC }}</td>
+            <td>{{ ligne.Diff }}</td>
+            <td><strong>{{ ligne.Pts }}</strong></td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="10" style="text-align:center;">
+                Aucune équipe enregistrée
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not premier_match_joue %}
+<p style="margin-top:15px; color:#555;">
+    ℹ️ Le classement sera mis à jour automatiquement après les premiers matchs.
+</p>
+{% endif %}
+
+{% endblock %}

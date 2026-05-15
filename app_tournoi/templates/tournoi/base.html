@@ -1,0 +1,187 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tournoi{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+    <div class="header-left">
+        <h1>🏆 TOURNOI INTER-SERVICE Coupe de la DRN</h1>
+        <span>Edition 2026/2027</span>
+    </div>
+
+    <div class="header-right">
+        <div class="admin-menu">
+            <button id="adminMenuBtn" class="btn-round profile-btn">
+                {% if request.user.is_authenticated %}
+                    <img src="{% static 'tournoi/img/default_player.JPG' %}" class="profile-img">
+                {% else %}
+                    👤
+                {% endif %}
+            </button>
+
+            <div id="adminDropdown" class="dropdown-content">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'admin_dashboard' %}">
+                        <i class="fas fa-chart-line"></i>  Admin
+                    </a>
+                    <a href="{% url 'admin_logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{% url 'admin_login' %}">
+                        <i class="fas fa-sign-in-alt"></i> Connexion
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ================= CONTAINER ================= -->
+<div class="container">
+
+    {% include 'tournoi/sidebar.html' %}
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    // DARK MODE
+    const themeBtn = document.getElementById("toggleTheme");
+    if(themeBtn){
+        themeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+
+            themeBtn.innerHTML = document.body.classList.contains("dark") ? "☀" : "🌙";
+        });
+    }
+
+    // MENU ADMIN
+    const adminBtn = document.getElementById("adminMenuBtn");
+    const adminMenu = document.getElementById("adminDropdown");
+
+    if(adminBtn && adminMenu){
+        adminBtn.addEventListener("click", function(e){
+            e.stopPropagation();
+            adminMenu.classList.toggle("show");
+        });
+
+        document.querySelectorAll("#adminDropdown a").forEach(link => {
+            link.addEventListener("click", () => adminMenu.classList.remove("show"));
+        });
+    }
+
+    document.addEventListener("click", () => {
+        if(adminMenu) adminMenu.classList.remove("show");
+    });
+
+    // ================= CHARTS SECURISES =================
+
+    const butMarquesCanvas = document.getElementById('butMarquesChart');
+    if (butMarquesCanvas) {
+        const ctx1 = butMarquesCanvas.getContext('2d');
+
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for j in meilleurs_buteurs %}
+                        '{{ j.nom }} {{ j.prenom }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Buts',
+                    data: [
+                        {% for j in meilleurs_buteurs %}
+                            {{ j.nb_buts }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                animation: {duration: 1500},
+                responsive: true,
+                plugins: {legend: {display: false}}
+            }
+        });
+    }
+
+    const butEncaissesCanvas = document.getElementById('butEncaissesChart');
+    if (butEncaissesCanvas) {
+        const ctx2 = butEncaissesCanvas.getContext('2d');
+
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for l in classement %}
+                        '{{ l.equipe.nom }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Buts encaissés',
+                    data: [
+                        {% for l in classement %}
+                            {{ l.BC }},
+                        {% endfor %}
+                    ],
+                    borderColor: '#ef4444',
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                animation: {duration: 1500},
+                responsive: true
+            }
+        });
+    }
+
+});
+</script>
+
+<!-- ================= SWEETALERT ================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    {% for message in messages %}
+        Swal.fire({
+            icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+            title: "{{ message|escapejs }}",
+            showConfirmButton: false,
+            timer: 5000
+        });
+    {% endfor %}
+});
+</script>
+{% endif %}
+
+</body>
+</html>

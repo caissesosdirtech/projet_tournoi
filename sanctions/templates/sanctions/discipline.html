@@ -1,0 +1,25 @@
+<h2>📊 Discipline joueurs</h2>
+
+<table>
+<tr>
+    <th>Joueur</th>
+    <th>🟨 Jaunes</th>
+    <th>🟥 Rouges</th>
+    <th>⛔ Suspension</th>
+</tr>
+
+{% for d in data %}
+<tr>
+    <td>{{ d.joueur.nom }} {{ d.joueur.prenom }}</td>
+    <td>{{ d.jaunes }}</td>
+    <td>{{ d.rouges }}</td>
+    <td>
+        {% if d.suspension > 0 %}
+            ⛔ {{ d.suspension }} matchs
+        {% else %}
+            ✅ OK
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>

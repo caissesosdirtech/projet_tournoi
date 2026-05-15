@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Classement – Tournoi</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+</head>
+<body>
+
+<header class="header">
+    <h1>🏆 Classement du tournoi</h1>
+    <span>Saison 2026 – Coupe de la DRN</span>
+</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    {% include 'tournoi/sidebar.html' %}
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <h2>📊 Classement général</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Équipe</th>
+                    <th>MJ</th>
+                    <th>V</th>
+                    <th>N</th>
+                    <th>D</th>
+                    <th>BP</th>
+                    <th>BC</th>
+                    <th>Diff</th>
+                    <th>Pts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipe in equipes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ equipe.nom }}</strong></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td><strong>0</strong></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" style="text-align:center;">
+                        Aucune équipe enregistrée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="margin-top:15px; color:#555;">
+            ℹ️ Le classement sera mis à jour automatiquement après les premiers matchs.
+        </p>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+</body>
+</html>

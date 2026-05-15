@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats – Tournoi</title>
+    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
+</head>
+<body>
+
+<header class="header">
+    <h1>🏆 Résultats des matchs – Coupe de la DRN</h1>
+</header>
+
+<div class="container">
+
+     <!-- SIDEBAR -->
+    {% include 'tournoi/sidebar.html' %}
+
+    <!-- BADGES -->
+    <div class="alert-badges">
+        <div class="badge badge-blue">
+            📋 Matchs joués : {{ nb_matchs }}
+        </div>
+    </div>
+
+    <!-- TABLEAU DES RESULTATS -->
+    <section class="top-section">
+        <table class="table compact">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Équipe A</th>
+                    <th>Score</th>
+                    <th>Équipe B</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in matchs_joues %}
+                <tr>
+                    <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                    <td>{{ m.equipe_a.nom }}</td>
+                    <td>{{ m.score_a }} - {{ m.score_b }}</td>
+                    <td>{{ m.equipe_b.nom }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center;">Aucun match joué pour le moment</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+</body>
+</html>

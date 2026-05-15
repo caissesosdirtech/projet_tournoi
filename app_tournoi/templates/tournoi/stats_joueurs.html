@@ -1,0 +1,16 @@
+<h2>🏆 Meilleurs buteurs</h2>
+
+<table class="table">
+    <tr>
+        <th>Joueur</th>
+        <th>Équipe</th>
+        <th>Buts</th>
+    </tr>
+    {% for joueur in meilleurs_buteurs %}
+    <tr>
+        <td>{{ joueur.nom }}</td>
+        <td>{{ joueur.equipe.nom }}</td>
+        <td>{{ joueur.nb_buts }}</td>
+    </tr>
+    {% endfor %}
+</table>

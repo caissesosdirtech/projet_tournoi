@@ -1,0 +1,267 @@
+{% extends 'tournoi/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
+/* TITRES */
+h2{
+    margin-bottom:20px;
+    color:#2c2c54;
+}
+
+/* =========================
+   CARTES STATS PREMIUM
+========================= */
+
+.stats-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.card{
+    background: linear-gradient(135deg,#6c5ce7,#a29bfe);
+    color:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    position:relative;
+    overflow:hidden;
+    transition: all 0.4s ease;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.card:hover{
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:0 15px 35px rgba(0,0,0,0.25);
+}
+
+/* effet glow */
+.card::before{
+    content:'';
+    position:absolute;
+    width:200%;
+    height:200%;
+    top:-50%;
+    left:-50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
+    transform: rotate(25deg);
+}
+
+/* contenu */
+.card h3{
+    margin-bottom:10px;
+    font-size:18px;
+}
+
+.card p{
+    font-size:13px;
+    margin:5px 0;
+}
+
+/* =========================
+   TABLEAU MODERNE
+========================= */
+
+table.table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+table th{
+    background:linear-gradient(135deg,#4b367c,#6c5ce7);
+    color:white;
+    padding:15px;
+    font-size:14px;
+}
+
+table td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+    font-size:13px;
+}
+
+table tr{
+    transition:0.3s;
+}
+
+table tr:hover{
+    background:#f5f6fa;
+}
+
+/* =========================
+   BADGE STYLE
+========================= */
+
+.badge-rank{
+    background:#6c5ce7;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+}
+
+/* =========================
+   GRAPH
+========================= */
+
+.graph-container{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom:40px;
+    animation: fadeIn 1s ease;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+@keyframes fadeInUp{
+    from{
+        opacity:0;
+        transform: translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
+<h2>📊 Statistiques des équipes</h2>
+
+<!-- =========================
+     CARTES
+========================= -->
+<div class="stats-cards">
+
+{% for s in stats %}
+<div class="card">
+
+    <h3>🏟 {{ s.equipe.nom }}</h3>
+
+    <p>📅 Matches : <b>{{ s.matches }}</b></p>
+    <p>✅ Victoires : <b>{{ s.victoires }}</b></p>
+    <p>❌ Défaites : <b>{{ s.defaites }}</b></p>
+
+    <p>⚽ BP : <b>{{ s.bp }}</b></p>
+    <p>🥅 BC : <b>{{ s.bc }}</b></p>
+
+    <p>
+        🥇 Meilleur buteur :
+        <b>
+        {% if s.meilleur_buteur %}
+            {{ s.meilleur_buteur.nom }} {{ s.meilleur_buteur.prenom }}
+        {% else %}
+            N/A
+        {% endif %}
+        </b>
+    </p>
+
+    <p>🎖 Rang : <b>#{{ s.rang }}</b></p>
+
+</div>
+{% endfor %}
+
+</div>
+
+<!-- =========================
+     GRAPHIQUE
+========================= -->
+
+<div class="graph-container">
+    <canvas id="graphEquipe"></canvas>
+</div>
+
+<!-- =========================
+     CLASSEMENT
+========================= -->
+
+<h2>🏆 Classement général</h2>
+
+<table class="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Équipe</th>
+<th>Points</th>
+<th>Différence</th>
+</tr>
+</thead>
+
+<tbody>
+{% for c in classement %}
+<tr>
+<td><span class="badge-rank">{{ c.rang }}</span></td>
+<td>{{ c.equipe.nom }}</td>
+<td><b>{{ c.Pts }}</b></td>
+<td>{{ c.Diff }}</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+<!-- =========================
+     CHART JS
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('graphEquipe').getContext('2d');
+
+new Chart(ctx,{
+    type:'bar',
+    data:{
+        labels:[{% for s in stats %}'{{ s.equipe.nom }}',{% endfor %}],
+        datasets:[
+        {
+            label:'Buts marqués',
+            data:[{% for s in stats %}{{ s.bp }},{% endfor %}],
+            backgroundColor:'rgba(0, 184, 148, 0.7)'
+        },
+        {
+            label:'Buts encaissés',
+            data:[{% for s in stats %}{{ s.bc }},{% endfor %}],
+            backgroundColor:'rgba(214, 48, 49, 0.7)'
+        }]
+    },
+    options:{
+        responsive:true,
+        plugins:{
+            legend:{ position:'top' }
+        },
+        animation:{
+            duration:1500,
+            easing:'easeOutQuart'
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

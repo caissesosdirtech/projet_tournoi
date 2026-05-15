@@ -1,0 +1,12 @@
+<li class="has-submenu">
+    <a href="javascript:void(0);" class="submenu-toggle">
+        ⚽ Équipes <span class="arrow">▾</span>
+    </a>
+    <ul class="submenu">
+        {% for equipe in equipes %}
+        <li>
+            <a href="{% url 'detail_equipe' equipe.id %}">{{ equipe.nom }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</li>

@@ -1,0 +1,216 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<title>Liste des Réclamations</title>
+
+<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+<h1>📩 Liste des Réclamations</h1>
+<span>Gestion des réclamations</span>
+</header>
+
+
+<div class="container">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="javascript:void(0);" onclick="openModal('modalInfo')">📝 Ajouter Info</a></li>
+            <li><a href="{% url 'programmer_match' %}">➕ Programmer un match</a></li>
+
+            <li class="has-submenu">
+                <a href="#">👥 Équipes & Joueurs</a>
+                <ul class="submenu">
+                    <li><a href="{% url 'liste_equipes' %}">📋 Liste des équipes</a></li>
+                    <li><a href="{% url 'liste_joueurs' %}">📋 Liste des joueurs</a></li>
+                    <li><a href="javascript:void(0)" onclick="openModal('modalEquipe')">➕ Ajouter Équipe</a></li>
+                    <li><a href="javascript:void(0)" onclick="openModal('modalJoueur')">➕ Ajouter Joueur</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="{% url 'liste_reclamations' %}">
+                    📩  Liste Réclamations
+                    {% if reclamations_en_attente > 0 %}
+                        <span class="notif-badge">{{ reclamations_en_attente }}</span>
+                    {% endif %}
+                </a>
+            </li>
+
+            <li><a href="/admin/">🔐 Django Admin</a></li>
+            <li><a href="{% url 'dashboard' %}">🌍 Site public</a></li>
+        </ul>
+    </aside>
+
+
+<!-- ================= CONTENT ================= -->
+
+<main class="content">
+
+<section class="card">
+
+<h3>📋 Toutes les réclamations</h3>
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>#</th>
+<th>Auteur</th>
+<th>Equipe</th>
+<th>Type</th>
+<th>Description</th>
+<th>Fichier</th>
+<th>Statut</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for r in reclamations %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ r.auteur.get_full_name|default:r.auteur.username }}</td>
+
+<td>{{ r.equipe }}</td>
+
+<td>{{ r.type_reclamation }}</td>
+
+<td>{{ r.description|truncatewords:10 }}</td>
+
+<td>
+
+{% if r.fichier_joint %}
+<a href="{{ r.fichier_joint.url }}" class="btn-primary" target="_blank">
+Voir
+</a>
+{% else %}
+-
+{% endif %}
+
+</td>
+
+<td>
+
+{% if r.statut == "en_attente" %}
+<span class="badge badge-orange">En attente</span>
+
+{% elif r.statut == "en_cours" %}
+<span class="badge badge-blue">En cours</span>
+
+{% elif r.statut == "traitee" %}
+<span class="badge badge-green">Traitée</span>
+
+{% endif %}
+
+</td>
+
+<td>{{ r.date|date:"d/m/Y H:i" }}</td>
+
+<td>
+    <div class="action-buttons">
+
+        <a href="{% url 'decision_reclamation' r.id %}" class="btn-primary">
+            Traiter
+        </a>
+
+        <button class="btn-danger" onclick="confirmDelete({{ r.id }})">
+             Supprimer
+        </button>
+
+        <form id="delete-form-{{ r.id }}" method="POST" action="{% url 'supprimer_reclamation' r.id %}" style="display:none;">
+            {% csrf_token %}
+        </form>
+
+    </div>
+</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="9" style="text-align:center;">
+Aucune réclamation
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+<p>© 2026 – Plateforme de gestion du tournoi</p>
+</footer>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmDelete(id){
+    Swal.fire({
+        title: "Supprimer cette réclamation ?",
+        text: "Cette action est irréversible !",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Oui, supprimer",
+        cancelButtonText: "Annuler"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("delete-form-" + id).submit();
+        }
+    });
+}
+</script>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if messages %}
+<script>
+    {% for message in messages %}
+        Swal.fire({
+            icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+            title: "{{ message|escapejs }}",
+            showConfirmButton: false,
+            timer: 5000
+        });
+    {% endfor %}
+</script>
+{% endif %}
+
+</body>
+</html>

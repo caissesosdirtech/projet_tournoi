@@ -1,0 +1,84 @@
+<aside class="sidebar" id="sidebar">
+    <ul>
+
+        <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <a href="{% url 'dashboard' %}">
+                🏠 <span>Tableau de bord</span>   
+            </a>
+        </li>
+
+        <li>
+    <a href="{% url 'reglement_interieur' %}">
+        📘 Règlement Intérieur
+    </a>
+</li>
+
+        <li class="{% if request.resolver_match.url_name == 'calendrier' %}active{% endif %}">
+            <a href="{% url 'calendrier' %}">
+                📅 <span>Calendrier</span>
+            </a>
+        </li>
+
+        <!-- ÉQUIPES -->
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="submenu-toggle">
+                ⚽ <span>Équipes</span> <span class="arrow">▾</span>
+            </a>
+            <ul class="submenu">
+                {% for equipe in equipes %}
+                    <li>
+                        <a href="{% url 'detail_equipe' equipe.id %}">
+                            {{ equipe.nom }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li><span>Aucune équipe</span></li>
+                {% endfor %}
+            </ul>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'classement' %}active{% endif %}">
+            <a href="{% url 'classement' %}">
+                🏆 <span>Classement</span>
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'infos' %}active{% endif %}">
+            <a href="{% url 'infos' %}">
+                ℹ️ <span>Infos</span>
+            </a>
+        </li>
+
+        <!-- STATS -->
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="submenu-toggle">
+                📊 <span>Statistiques</span> <span class="arrow">▾</span>
+            </a>
+            <ul class="submenu">
+                <li><a href="{% url 'stats_equipes' %}">Stats équipes</a></li>
+                <li><a href="{% url 'stats_joueurs' %}">Stats joueurs</a></li>
+            </ul>
+        </li>
+
+        <!-- 🔥 RECOURS -->
+        <li class="{% if request.resolver_match.url_name == 'login_reclamation' %}active{% endif %}">
+            <a href="{% url 'login_reclamation' %}">
+                📩 <span>Déposer Recours</span>
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'resultats' %}active{% endif %}">
+            <a href="{% url 'resultats' %}">
+                📋 <span>Résultats</span>
+            </a>
+        </li>
+
+        <!-- 🔥 GALERIE -->
+        <li class="{% if request.resolver_match.url_name == 'galeries' %}active{% endif %}">
+            <a href="{% url 'galeries' %}">
+                📸 <span>Galerie</span>
+            </a>
+        </li>
+
+    </ul>
+</aside>

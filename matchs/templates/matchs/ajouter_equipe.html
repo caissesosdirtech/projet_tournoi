@@ -1,0 +1,20 @@
+<h2>Ajouter une équipe</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="nom">Nom de l'équipe :</label>
+    <input type="text" id="nom" name="nom" placeholder="Nom de l'équipe" required>
+
+    <label for="coach1">Coach 1 :</label>
+    <input type="text" id="coach1" name="coach1" placeholder="Nom du premier coach" required>
+
+    <label for="coach2">Coach 2 :</label>
+    <input type="text" id="coach2" name="coach2" placeholder="Nom du second coach" required>
+
+    <!-- CHAMP LOGO -->
+    <label for="logo">Logo de l'équipe :</label>
+    <input type="file" id="logo" name="logo" accept="image/*">
+
+    <button type="submit">Enregistrer</button>
+</form>

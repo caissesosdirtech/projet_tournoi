@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Supprimer équipe</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6fa;
+padding:40px;
+text-align:center;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:8px;
+width:400px;
+margin:auto;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.btn-delete{
+background:#e74c3c;
+color:white;
+}
+
+.btn-cancel{
+background:#ccc;
+text-decoration:none;
+padding:10px;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>🗑 Supprimer équipe</h2>
+
+<p>
+Voulez-vous supprimer l'équipe  
+<strong>{{ equipe.nom }}</strong> ?
+</p>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<button type="submit" class="btn-delete">
+Oui supprimer
+</button>
+
+<a href="{% url 'liste_equipes' %}" class="btn-cancel">
+Annuler
+</a>
+
+</form>
+
+</div>
+
+</body>
+</html>

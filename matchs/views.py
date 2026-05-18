@@ -894,15 +894,12 @@ def ajouter_joueur(request):
                 poste=request.POST.get('poste'),
                 equipe=equipe
             )
-            return JsonResponse({'success': True})  # ← plus de redirect
-
+            return JsonResponse({'success': True, 'message': 'Joueur ajouté avec succès !'})
         except IntegrityError:
-            return JsonResponse({
-                'success': False,
-                'error': '❌ Ce numéro est déjà utilisé dans cette équipe'
-            }, status=400)
-
-
+            return JsonResponse({'success': False, 'error': '❌ Numéro déjà utilisé dans cette équipe'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False}, status=405)
 def liste_joueurs(request):
 
     equipe_id = request.GET.get('equipe')

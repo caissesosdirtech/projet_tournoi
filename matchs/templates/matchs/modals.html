@@ -3,26 +3,21 @@
 <!-- ================= MODAL AJOUT INFO ================= -->
 <div id="modalInfo" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalInfo')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>📝 Ajouter une information</h3>
       <span class="modal-close" onclick="closeModal('modalInfo')">&times;</span>
     </div>
-
     <form method="POST" action="{% url 'ajouter_info' %}" class="modal-form" enctype="multipart/form-data">
       {% csrf_token %}
-
       <div class="form-group">
         <label>Titre</label>
         <input type="text" name="titre" required>
       </div>
-
       <div class="form-group">
         <label>Description</label>
         <textarea name="description" rows="3" required></textarea>
       </div>
-
       <div class="form-group">
         <label>Niveau</label>
         <select name="niveau" required>
@@ -32,12 +27,10 @@
           <option value="information">ℹ Info</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Fichier</label>
         <input type="file" name="fichier">
       </div>
-
       <div class="modal-actions">
         <button type="submit" class="btn-save">Publier</button>
         <button type="button" onclick="closeModal('modalInfo')" class="btn-cancel">Annuler</button>
@@ -49,21 +42,17 @@
 <!-- ================= MODAL AJOUT EQUIPE ================= -->
 <div id="modalEquipe" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalEquipe')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>➕ Ajouter une équipe</h3>
       <span class="modal-close" onclick="closeModal('modalEquipe')">&times;</span>
     </div>
-
     <form method="POST" action="{% url 'ajouter_equipe' %}" enctype="multipart/form-data" class="modal-form">
       {% csrf_token %}
-
       <input type="text" name="nom" placeholder="Nom équipe" required>
       <input type="text" name="coach1" placeholder="Coach principal">
       <input type="text" name="coach2" placeholder="Coach adjoint">
       <input type="file" name="logo">
-
       <div class="modal-actions">
         <button type="submit" class="btn-save">Enregistrer</button>
         <button type="button" onclick="closeModal('modalEquipe')" class="btn-cancel">Annuler</button>
@@ -75,7 +64,6 @@
 <!-- ================= MODAL AJOUT JOUEUR ================= -->
 <div id="modalJoueur" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalJoueur')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>👤 Ajouter un joueur</h3>
@@ -84,7 +72,8 @@
 
     <div id="joueur-message"></div>
 
-    <form id="formJoueur" method="POST" action="{% url 'ajouter_joueur' %}" class="modal-form"></form>
+    <!-- ✅ PAS de method/action ici : c'est le fetch qui gère -->
+    <form id="formJoueur" class="modal-form">
       {% csrf_token %}
 
       <input type="text" name="nom" placeholder="Nom" required>
@@ -92,11 +81,11 @@
       <input type="number" name="numero" placeholder="Numéro" required>
 
       <select name="poste" required>
-        <option value="">Poste</option>
-        <option>Gardien</option>
-        <option>Défenseur</option>
-        <option>Milieu</option>
-        <option>Attaquant</option>
+          <option value="">Poste</option>
+          <option value="GK">Gardien</option>
+          <option value="DF">Défenseur</option>
+          <option value="MF">Milieu</option>
+          <option value="FW">Attaquant</option>
       </select>
 
       <select name="equipe_id" required>
@@ -117,7 +106,6 @@
 <!-- ================= MODAL EDIT JOUEUR ================= -->
 <div id="modalEditJoueur" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalEditJoueur')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>✏ Modifier joueur</h3>
@@ -129,18 +117,15 @@
     <form id="formEditJoueur" class="modal-form">
       {% csrf_token %}
       <input type="hidden" id="edit-id">
-
-      <input type="text" id="edit-nom" required>
-      <input type="text" id="edit-prenom" required>
-      <input type="number" id="edit-numero" required>
-
+      <input type="text" id="edit-nom" placeholder="Nom" required>
+      <input type="text" id="edit-prenom" placeholder="Prénom" required>
+      <input type="number" id="edit-numero" placeholder="Numéro" required>
       <select id="edit-poste">
         <option>Gardien</option>
         <option>Défenseur</option>
         <option>Milieu</option>
         <option>Attaquant</option>
       </select>
-
       <div class="modal-actions">
         <button type="submit" class="btn-save">Modifier</button>
         <button type="button" onclick="closeModal('modalEditJoueur')" class="btn-cancel">Annuler</button>
@@ -152,16 +137,13 @@
 <!-- ================= MODAL SUPPRIMER JOUEUR ================= -->
 <div id="modalDelete" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalDelete')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="deleteText">Supprimer ?</h3>
       <span class="modal-close" onclick="closeModal('modalDelete')">&times;</span>
     </div>
-
     <form method="POST" id="formDelete">
       {% csrf_token %}
-
       <div class="modal-actions">
         <button type="submit" class="btn-delete">Oui supprimer</button>
         <button type="button" onclick="closeModal('modalDelete')" class="btn-cancel">Annuler</button>
@@ -170,66 +152,50 @@
   </div>
 </div>
 
-
 <!-- ================= MODAL SUPPRIMER EQUIPE ================= -->
 <div id="modalDeleteEquipe" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalDeleteEquipe')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="deleteEquipeText">Supprimer ?</h3>
       <span class="modal-close" onclick="closeModal('modalDeleteEquipe')">&times;</span>
     </div>
-
     <form method="POST" id="formDeleteEquipe">
       {% csrf_token %}
-
       <div class="modal-actions">
         <button type="submit" class="btn-delete">🗑 Supprimer</button>
-        <button type="button" onclick="closeModal('modalDeleteEquipe')" class="btn-cancel">
-          Annuler
-        </button>
+        <button type="button" onclick="closeModal('modalDeleteEquipe')" class="btn-cancel">Annuler</button>
       </div>
     </form>
   </div>
 </div>
 
-
 <!-- ================= MODAL EDIT EQUIPE ================= -->
 <div id="modalEditEquipe" class="modal">
   <div class="modal-overlay" onclick="closeModal('modalEditEquipe')"></div>
-
   <div class="modal-box">
     <div class="modal-header">
       <h3>✏ Modifier une équipe</h3>
       <span class="modal-close" onclick="closeModal('modalEditEquipe')">&times;</span>
     </div>
-
     <form method="POST" id="formEditEquipe">
       {% csrf_token %}
-
-      <input type="hidden" id="edit_equipe_id" nme="id">
-
+      <input type="hidden" id="edit_equipe_id" name="id">
       <div class="form-group">
         <label>Nom équipe</label>
         <input type="text" id="edit_nom_equipe" name="nom" required>
       </div>
-
       <div class="form-group">
         <label>Coach principal</label>
         <input type="text" id="edit_coach1" name="coach1">
       </div>
-
       <div class="form-group">
         <label>Coach adjoint</label>
         <input type="text" id="edit_coach2" name="coach2">
       </div>
-
       <div class="modal-actions">
         <button type="submit" class="btn-save">💾 Modifier</button>
-        <button type="button" onclick="closeModal('modalEditEquipe')" class="btn-cancel">
-          Annuler
-        </button>
+        <button type="button" onclick="closeModal('modalEditEquipe')" class="btn-cancel">Annuler</button>
       </div>
     </form>
   </div>
@@ -237,65 +203,53 @@
 
 <!-- ================= JS GLOBAL ================= -->
 <script>
-function openModal(id){
+
+// =========================
+// OUVRIR MODAL
+// =========================
+function openModal(id) {
     document.getElementById(id).classList.add("active");
 }
 
-function closeModal(id){
+// =========================
+// FERMER MODAL
+// =========================
+function closeModal(id) {
     document.getElementById(id).classList.remove("active");
 }
 
-/* DELETE */
-function ouvrirModalDelete(id, nom, prenom){
+// =========================
+// SUPPRIMER JOUEUR
+// =========================
+function ouvrirModalDelete(id, nom, prenom) {
+
     openModal('modalDelete');
 
     document.getElementById("deleteText").innerHTML =
-        "Supprimer <b>" + nom + "  " + prenom + "</b> ?";
+        `Supprimer <b>${nom} ${prenom}</b> ?`;
 
     document.getElementById("formDelete").action =
-        "/joueur/supprimer/" + id + "/";
+        `/joueur/supprimer/${id}/`;
 }
 
-function ouvrirModalDeleteEquipe(id, nom){
+// =========================
+// SUPPRIMER EQUIPE
+// =========================
+function ouvrirModalDeleteEquipe(id, nom) {
+
     openModal('modalDeleteEquipe');
 
     document.getElementById("deleteEquipeText").innerHTML =
-        "⚠️ Supprimer l'équipe <br><strong>" + nom + "</strong> ?";
+        `⚠️ Supprimer l'équipe <br><strong>${nom}</strong> ?`;
 
     document.getElementById("formDeleteEquipe").action =
-        "/equipes/" + id + "/supprimer/";
+        `/equipes/${id}/supprimer/`;
 }
 
-function openModal(id){
-    document.getElementById(id).classList.add("active");
-}
-
-function closeModal(id){
-    document.getElementById(id).classList.remove("active");
-}
-
-/* DELETE */
-function ouvrirModalDelete(id, nom, prenom){
-    openModal('modalDelete');
-
-    document.getElementById("deleteText").innerHTML =
-        "Supprimer <b>" + nom + "  " + prenom + "</b> ?";
-
-    document.getElementById("formDelete").action =
-        "/joueur/supprimer/" + id + "/";
-}
-
-function ouvrirModalDeleteEquipe(id, nom){
-    openModal('modalDeleteEquipe');
-
-    document.getElementById("deleteEquipeText").innerHTML =
-        "⚠️ Supprimer l'équipe <br><strong>" + nom + "</strong> ?";
-
-    document.getElementById("formDeleteEquipe").action =
-        "/equipes/" + id + "/supprimer/";
-}
-
-function ouvrirModalEditEquipe(id, nom, coach1, coach2){
+// =========================
+// EDITER EQUIPE
+// =========================
+function ouvrirModalEditEquipe(id, nom, coach1, coach2) {
 
     openModal('modalEditEquipe');
 
@@ -305,16 +259,16 @@ function ouvrirModalEditEquipe(id, nom, coach1, coach2){
     document.getElementById("edit_coach2").value = coach2;
 
     document.getElementById("formEditEquipe").action =
-    "/equipes/" + id + "/editer/";
+        `/equipes/${id}/editer/`;
 }
 
 // ================= AJOUT JOUEUR =================
 document.getElementById('formJoueur').addEventListener('submit', async function(e) {
     e.preventDefault();
+    const msgBox = document.getElementById('joueur-message');
+    msgBox.innerHTML = '<p style="color:#666;">Envoi en cours...</p>';
 
     const formData = new FormData(this);
-    const msgBox = document.getElementById('joueur-message');
-    msgBox.innerHTML = '';
 
     try {
         const response = await fetch("{% url 'ajouter_joueur' %}", {
@@ -322,20 +276,39 @@ document.getElementById('formJoueur').addEventListener('submit', async function(
             body: formData,
         });
 
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (err) {
+            data = { success: false, error: "Erreur de réponse du serveur" };
+        }
 
-        if (data.success) {
-            closeModal('modalJoueur');
-            window.location.reload();
+        if (data.success === true) {
+            msgBox.innerHTML = `
+                <p style="color:green; padding:12px; background:#f0fef4; border-radius:8px;">
+                    ✅ ${data.message || 'Joueur ajouté avec succès !'}
+                </p>`;
+            
+            this.reset();
+
+            setTimeout(() => {
+                closeModal('modalJoueur');
+                window.location.reload();
+            }, 1600);
+
         } else {
-            // ✅ Affiche l'erreur DANS le modal sans le fermer
-            msgBox.innerHTML = `<p style="color:red; padding:8px; background:#fef0f0; 
-                border-radius:6px;">${data.error}</p>`;
+            msgBox.innerHTML = `
+                <p style="color:red; padding:12px; background:#fef0f0; border-radius:8px;">
+                    ❌ ${data.error || 'Une erreur est survenue'}
+                </p>`;
         }
 
     } catch (err) {
-        msgBox.innerHTML = '<p style="color:red;">❌ Erreur inattendue</p>';
+        console.error(err);
+        msgBox.innerHTML = `
+            <p style="color:red; padding:12px; background:#fef0f0; border-radius:8px;">
+                ❌ Erreur de connexion
+            </p>`;
     }
 });
-
 </script>

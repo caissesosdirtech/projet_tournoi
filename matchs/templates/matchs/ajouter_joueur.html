@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label>Équipe</label>
-            <select name="equipe" required>
+            <select name="equipe_id" required>
                 {% for e in equipes %}
                     <option value="{{ e.id }}">{{ e.nom }}</option>
                 {% endfor %}

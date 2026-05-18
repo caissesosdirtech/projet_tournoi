@@ -11,9 +11,7 @@
     <link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
 
-    <!-- STYLE POUR FLUO MODAL -->
     <style>
-        /* Flou appliqué à la page lorsque le modal est actif */
         .blur-background {
             filter: blur(5px);
             pointer-events: none;
@@ -108,7 +106,8 @@
         <span class="close" onclick="closeModal('modalJoueur')">&times;</span>
         <h2>👤 Ajouter un joueur</h2>
         <div id="joueur-message"></div>
-        <form id="formJoueur" method="POST">
+        <!-- ✅ Pas de method/action : géré par fetch -->
+        <form id="formJoueur">
             {% csrf_token %}
             <div class="form-group">
                 <label>Nom</label>
@@ -187,6 +186,64 @@
     </div>
 </div>
 
+<!-- MODAL SUPPRIMER JOUEUR -->
+<div id="modalDelete" class="modal">
+    <div class="modal-content modern-modal">
+        <span class="close" onclick="closeModal('modalDelete')">&times;</span>
+        <h3 id="deleteText">Supprimer ?</h3>
+        <form method="POST" id="formDelete">
+            {% csrf_token %}
+            <div class="modal-actions">
+                <button type="submit" class="btn-save" style="background:#e74c3c;">🗑 Oui, supprimer</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('modalDelete')">❌ Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL SUPPRIMER EQUIPE -->
+<div id="modalDeleteEquipe" class="modal">
+    <div class="modal-content modern-modal">
+        <span class="close" onclick="closeModal('modalDeleteEquipe')">&times;</span>
+        <h3 id="deleteEquipeText">Supprimer ?</h3>
+        <form method="POST" id="formDeleteEquipe">
+            {% csrf_token %}
+            <div class="modal-actions">
+                <button type="submit" class="btn-save" style="background:#e74c3c;">🗑 Oui, supprimer</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('modalDeleteEquipe')">❌ Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDIT EQUIPE -->
+<div id="modalEditEquipe" class="modal">
+    <div class="modal-content modern-modal">
+        <span class="close" onclick="closeModal('modalEditEquipe')">&times;</span>
+        <h2>✏ Modifier une équipe</h2>
+        <form method="POST" id="formEditEquipe">
+            {% csrf_token %}
+            <input type="hidden" id="edit_equipe_id" name="id">
+            <div class="form-group">
+                <label>Nom équipe</label>
+                <input type="text" id="edit_nom_equipe" name="nom" required>
+            </div>
+            <div class="form-group">
+                <label>Coach principal</label>
+                <input type="text" id="edit_coach1" name="coach1">
+            </div>
+            <div class="form-group">
+                <label>Coach adjoint</label>
+                <input type="text" id="edit_coach2" name="coach2">
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">💾 Modifier</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('modalEditEquipe')">❌ Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- ===================== CONTAINER ===================== -->
 <div class="container">
 
@@ -197,7 +254,6 @@
             <li><a href="javascript:void(0);" onclick="openModal('modalInfo')">📝 Ajouter Info</a></li>
             <li><a href="{% url 'programmer_match' %}">➕ Programmer un match</a></li>
 
-            <!-- ÉQUIPES & JOUEURS -->
             <li class="has-submenu">
                 <a href="#">👥 Équipes & Joueurs</a>
                 <ul class="submenu">
@@ -208,7 +264,6 @@
                 </ul>
             </li>
 
-            <!-- RECLAMATIONS -->
             <li>
                 <a href="{% url 'liste_reclamations' %}">📩 Liste Recours
                     {% if reclamations_en_attente > 0 %}
@@ -217,7 +272,6 @@
                 </a>
             </li>
 
-            <!-- MEDIAS -->
             <li class="has-submenu">
                 <a href="#">📸 Gestion médias</a>
                 <ul class="submenu">
@@ -234,16 +288,13 @@
 
     <!-- ===================== CONTENT ===================== -->
     <main class="content">
-
         {% if page == "liste_joueurs" %}
             {% include "matchs/liste_joueurs.html" %}
         {% elif page == "liste_equipes" %}
             {% include "matchs/liste_equipes.html" %}
         {% else %}
-            <!-- DASHBOARD -->
             {% include "tournoi/dashboard_cards.html" %}
         {% endif %}
-
     </main>
 
 </div>
@@ -255,28 +306,73 @@
 
 <!-- ===================== SCRIPTS ===================== -->
 <script>
-/* ===== MODAL ===== */
+
+/* ===== OPEN / CLOSE MODAL ===== */
 function openModal(id) {
     document.getElementById(id).classList.add('active');
     document.querySelector('.container').classList.add('blur-background');
     document.querySelector('header').classList.add('blur-background');
-    document.querySelector('.footer').classList.add('blur-background');
+    document.querySelector('footer').classList.add('blur-background');
 }
 
 function closeModal(id) {
     document.getElementById(id).classList.remove('active');
     document.querySelector('.container').classList.remove('blur-background');
     document.querySelector('header').classList.remove('blur-background');
-    document.querySelector('.footer').classList.remove('blur-background');
+    document.querySelector('footer').classList.remove('blur-background');
 }
 
-/* ===== AJOUT JOUEUR AJAX ===== */
+/* ===== SUPPRIMER JOUEUR ===== */
+function ouvrirModalDelete(id, nom, prenom) {
+    document.getElementById("deleteText").innerHTML =
+        `Supprimer <b>${nom} ${prenom}</b> ?`;
+    document.getElementById("formDelete").action =
+        `/joueur/supprimer/${id}/`;
+    openModal('modalDelete');
+}
+
+/* ===== SUPPRIMER EQUIPE ===== */
+function ouvrirModalDeleteEquipe(id, nom) {
+    document.getElementById("deleteEquipeText").innerHTML =
+        `⚠️ Supprimer l'équipe <br><strong>${nom}</strong> ?`;
+    document.getElementById("formDeleteEquipe").action =
+        `/equipes/${id}/supprimer/`;
+    openModal('modalDeleteEquipe');
+}
+
+/* ===== EDITER EQUIPE ===== */
+function ouvrirModalEditEquipe(id, nom, coach1, coach2) {
+    document.getElementById("edit_equipe_id").value = id;
+    document.getElementById("edit_nom_equipe").value = nom;
+    document.getElementById("edit_coach1").value = coach1;
+    document.getElementById("edit_coach2").value = coach2;
+    document.getElementById("formEditEquipe").action = `/equipes/${id}/editer/`;
+    openModal('modalEditEquipe');
+}
+
+/* ===== EDITER JOUEUR ===== */
+function ouvrirModalEdit(id, nom, prenom, numero, poste) {
+    document.getElementById("edit-id").value = id;
+    document.getElementById("edit-nom").value = nom;
+    document.getElementById("edit-prenom").value = prenom;
+    document.getElementById("edit-numero").value = numero;
+    document.getElementById("edit-poste").value = poste;
+    openModal('modalEditJoueur');
+}
+
+/* ===== AJOUT JOUEUR — un seul listener ===== */
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById('formJoueur');
-    const messageDiv = document.getElementById('joueur-message');
-    form.addEventListener('submit', function(e) {
+
+    document.getElementById('formJoueur').addEventListener('submit', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+
+        const form = document.getElementById('formJoueur');
+        const messageDiv = document.getElementById('joueur-message');
+        messageDiv.innerHTML = '<p style="color:#666;padding:8px;">⏳ Envoi en cours...</p>';
+
         const data = new FormData(form);
+
         fetch("{% url 'ajouter_joueur' %}", {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -287,73 +383,84 @@ document.addEventListener("DOMContentLoaded", function () {
             messageDiv.innerHTML = '';
             const div = document.createElement('div');
             div.classList.add('modal-alert');
-            if(result.status === 'success'){
-                div.classList.add('success');
+
+            if (result.status === 'success') {
                 div.style.backgroundColor = '#28a745';
                 div.style.color = '#fff';
+                div.style.padding = '10px';
+                div.style.borderRadius = '6px';
+                div.innerText = result.message;
+                messageDiv.appendChild(div);
                 form.reset();
-                setTimeout(() => { window.location.href = "{% url 'liste_joueurs' %}"; }, 1500);
+                // ✅ Ferme le modal et recharge après 1.5s
+                setTimeout(() => {
+                    closeModal('modalJoueur');
+                    messageDiv.innerHTML = '';
+                    window.location.reload();
+                }, 1500);
             } else {
-                div.classList.add('error');
                 div.style.backgroundColor = '#ff4d4d';
                 div.style.color = '#fff';
+                div.style.padding = '10px';
+                div.style.borderRadius = '6px';
+                div.innerText = result.message;
+                messageDiv.appendChild(div);
             }
-            div.innerText = result.message;
-            messageDiv.appendChild(div);
-            setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 400); }, 4000);
         })
         .catch(err => {
             console.error(err);
-            messageDiv.innerHTML = '<div class="modal-alert" style="background:#ff4d4d;color:white;">Erreur serveur !</div>';
+            messageDiv.innerHTML =
+                '<div style="background:#ff4d4d;color:white;padding:10px;border-radius:6px;">❌ Erreur de connexion</div>';
         });
     });
-});
 
-/* ===== MODAL EDIT JOUEUR ===== */
-function ouvrirModalEdit(id, nom, prenom, numero, poste){
-    document.getElementById("edit-id").value = id;
-    document.getElementById("edit-nom").value = nom;
-    document.getElementById("edit-prenom").value = prenom;
-    document.getElementById("edit-numero").value = numero;
-    document.getElementById("edit-poste").value = poste;
-    openModal('modalEditJoueur');
-}
+    /* ===== EDIT JOUEUR ===== */
+    document.getElementById("formEditJoueur").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const id = document.getElementById("edit-id").value;
+        const data = new FormData();
+        data.append('nom', document.getElementById("edit-nom").value);
+        data.append('prenom', document.getElementById("edit-prenom").value);
+        data.append('numero', document.getElementById("edit-numero").value);
+        data.append('poste', document.getElementById("edit-poste").value);
 
-document.getElementById("formEditJoueur").addEventListener("submit", function(e){
-    e.preventDefault();
-    const id = document.getElementById("edit-id").value;
-    const data = new FormData();
-    data.append('nom', document.getElementById("edit-nom").value);
-    data.append('prenom', document.getElementById("edit-prenom").value);
-    data.append('numero', document.getElementById("edit-numero").value);
-    data.append('poste', document.getElementById("edit-poste").value);
+        fetch(`/joueur/editer/${id}/`, {
+            method: "POST",
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: data
+        })
+        .then(response => response.json())
+        .then(result => {
+            const messageDiv = document.getElementById("edit-joueur-message");
+            messageDiv.innerHTML = '';
+            const div = document.createElement("div");
+            div.style.padding = '10px';
+            div.style.borderRadius = '6px';
+            div.style.color = '#fff';
+            if (result.status === "success") {
+                div.style.background = "#28a745";
+                div.innerText = result.message;
+                messageDiv.appendChild(div);
+                setTimeout(() => {
+                    closeModal('modalEditJoueur');
+                    window.location.reload();
+                }, 1500);
+            } else {
+                div.style.background = "#ff4d4d";
+                div.innerText = result.message;
+                messageDiv.appendChild(div);
+            }
+        })
+        .catch(() => {
+            alert("❌ Erreur serveur !");
+        });
+    });
 
-    fetch(`/joueur/editer/${id}/`, {
-        method: "POST",
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: data
-    })
-    .then(response => response.json())
-    .then(result => {
-        const messageDiv = document.getElementById("edit-joueur-message");
-        messageDiv.innerHTML = '';
-        const div = document.createElement("div");
-        div.classList.add("modal-alert");
-        if(result.status === "success"){
-            div.style.background = "#28a745"; div.style.color = "#fff";
-            setTimeout(() => { window.location.href = "{% url 'liste_joueurs' %}"; }, 1500);
-        } else { div.style.background = "#ff4d4d"; div.style.color = "#fff"; }
-        div.innerText = result.message;
-        messageDiv.appendChild(div);
-    })
-    .catch(() => { alert("Erreur serveur !"); });
 });
 </script>
 
 </body>
 </html>
-{% include "matchs/modals.html" %}
-

@@ -27,14 +27,6 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label>Équipe</label>
-            <select name="equipe_id" required>
-                {% for e in equipes %}
-                    <option value="{{ e.id }}">{{ e.nom }}</option>
-                {% endfor %}
-            </select>
-        </div>
 
         <button type="submit" class="btn">Enregistrer</button>
     </form>

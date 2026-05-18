@@ -648,27 +648,21 @@ def stats_joueurs(request):
 
 
 def resultats(request):
-    equipes = get_equipes()
-    matchs_joues = Match.objects.filter(statut='joue').order_by('-date')
+    # DEBUG — à supprimer après vérification
+    print(">>> Tous les matchs:", list(Match.objects.values('id', 'equipe1__nom', 'equipe2__nom', 'statut', 'score1', 'score2')))
     
-    # Ajouter le résultat pour chaque match
-    for m in matchs_joues:
-        if m.score1 > m.score2:
-            m.result1 = "victoire"
-            m.result2 = "defaite"
-        elif m.score2 > m.score1:
-            m.result1 = "defaite"
-            m.result2 = "victoire"
-        else:
-            m.result1 = "nul"
-            m.result2 = "nul"
-
+    matchs_a_venir = Match.objects.filter(statut='A_VENIR').order_by('date')
+    matchs_joues = Match.objects.filter(statut='TERMINE').order_by('-date')
+    
+    print(">>> Matchs terminés:", matchs_joues.count())
+    print(">>> Matchs à venir:", matchs_a_venir.count())
+    
     context = {
+        'matchs_a_venir': matchs_a_venir,
         'matchs_joues': matchs_joues,
         'nb_matchs': matchs_joues.count(),
-        'equipes': equipes,  # obligatoire pour le menu
     }
-    return render(request, 'matchs/resultats.html', context)
+    return render(request, 'tournoi/resultats.html', context)
 
 def galeries(request):
 
@@ -1101,7 +1095,7 @@ def terminer_match(request, match_id):
 
     Notification.objects.create(
         titre="Match terminé 🏆",
-        message=f"{match.equipe_a.nom} {match.score_a} - {match.score_b} {match.equipe_b.nom}",
+        message=f"{match.equipe_a.nom} {match.score1} - {match.score2} {match.equipe_b.nom}",
         type_notification="fin"
     )
 

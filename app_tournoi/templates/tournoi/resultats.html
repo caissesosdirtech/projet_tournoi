@@ -1,62 +1,95 @@
+{% extends 'tournoi/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Résultats – Tournoi</title>
-    <link rel="stylesheet" href="{% static 'tournoi/css/dashboard.css' %}">
-</head>
-<body>
 
-<header class="header">
-    <h1>🏆 Résultats des matchs – Coupe de la DRN</h1>
-</header>
+{% block content %}
+<div class="container py-4">
 
-<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">🏆 Coupe de la DRN</h1>
+        <p class="lead text-muted">Saison en cours - Résultats & Programmation</p>
+    </div>
 
-     <!-- SIDEBAR -->
-    {% include 'tournoi/sidebar.html' %}
+    <!-- ===================== MATCHS À VENIR ===================== -->
+    <h2 class="fw-bold mb-4 text-success">
+        <i class="bi bi-calendar-event"></i> Matchs à Venir
+    </h2>
 
-    <!-- BADGES -->
-    <div class="alert-badges">
-        <div class="badge badge-blue">
-            📋 Matchs joués : {{ nb_matchs }}
+    <div class="row g-4 mb-5">
+        {% for match in matchs_a_venir %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="card h-100 shadow-sm border-0 match-card upcoming">
+                <div class="card-body">
+                    <div class="text-center text-muted small mb-3">
+                        {{ match.date|date:"d/m/Y — H:i" }}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-end flex-grow-1">
+                            <strong>{{ match.equipe1.nom }}</strong>
+                        </div>
+                        <div class="mx-4">
+                            <span class="badge bg-warning fs-6 px-3">VS</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong>{{ match.equipe2.nom }}</strong>
+                        </div>
+                    </div>
+                    {% if match.stade %}
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-geo-alt"></i> {{ match.stade }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light text-center">
+                    <small class="text-primary fw-semibold">À venir</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                Aucun match programmé pour le moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ===================== RÉSULTATS ===================== -->
+    <h2 class="fw-bold mb-4">
+        <i class="bi bi-trophy-fill text-warning"></i> Résultats des matchs
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-end">Équipe A</th>
+                        <th class="text-center">Score</th>
+                        <th>Équipe B</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in matchs_joues %}
+                    <tr>
+                        <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end">{{ m.equipe1.nom }}</td>
+                        <td class="text-center fw-bold">{{ m.score1 }} - {{ m.score2 }}</td>
+                        <td>{{ m.equipe2.nom }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            Aucun match terminé pour le moment.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- TABLEAU DES RESULTATS -->
-    <section class="top-section">
-        <table class="table compact">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Équipe A</th>
-                    <th>Score</th>
-                    <th>Équipe B</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for m in matchs_joues %}
-                <tr>
-                    <td>{{ m.date|date:"d/m/Y H:i" }}</td>
-                    <td>{{ m.equipe_a.nom }}</td>
-                    <td>{{ m.score_a }} - {{ m.score_b }}</td>
-                    <td>{{ m.equipe_b.nom }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" style="text-align:center;">Aucun match joué pour le moment</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </section>
-
 </div>
-
-<footer class="footer">
-    <p>© 2026 – Plateforme de gestion du tournoi</p>
-</footer>
-
-</body>
-</html>
+{% endblock %}

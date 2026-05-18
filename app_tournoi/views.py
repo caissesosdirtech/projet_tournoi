@@ -138,22 +138,22 @@ def reclamation(request):
 
 
 # app_tournoi/views.py
-
 def resultats(request):
-    # Récupère tous les matchs dont les scores sont renseignés
-    matchs_joues = Match.objects.filter(
-        score_a__isnull=False,
-        score_b__isnull=False
-    ).order_by('-date')  # Les plus récents en haut
-
-    nb_matchs = matchs_joues.count()
-
+    # DEBUG — à supprimer après vérification
+    print(">>> Tous les matchs:", list(Match.objects.values('id', 'equipe1__nom', 'equipe2__nom', 'statut', 'score1', 'score2')))
+    
+    matchs_a_venir = Match.objects.filter(statut='A_VENIR').order_by('date')
+    matchs_joues = Match.objects.filter(statut='TERMINE').order_by('-date')
+    
+    print(">>> Matchs terminés:", matchs_joues.count())
+    print(">>> Matchs à venir:", matchs_a_venir.count())
+    
     context = {
+        'matchs_a_venir': matchs_a_venir,
         'matchs_joues': matchs_joues,
-        'nb_matchs': nb_matchs
+        'nb_matchs': matchs_joues.count(),
     }
     return render(request, 'tournoi/resultats.html', context)
-
 
 # app_tournoi/views.py
 

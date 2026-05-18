@@ -2,86 +2,110 @@
 {% load static %}
 
 {% block content %}
+<div class="container py-4">
 
-<h2>🏆 Résultats des matchs – Coupe de la DRN</h2>
+    <!-- ===================== HEADER ===================== -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            🏆 Coupe de la DRN
+        </h1>
+        <p class="lead text-muted">Saison en cours - Résultats & Programmation</p>
+    </div>
 
-<!-- BADGES -->
-<div class="alert-badges">
-    <div class="badge badge-blue">📋 Matchs joués : {{ matchs_joues|length }}</div>
-</div>
+    <!-- ===================== MATCHS À VENIR ===================== -->
+    <h2 class="fw-bold mb-4 text-success">
+        <i class="bi bi-calendar-event"></i> Matchs à Venir
+    </h2>
 
-<!-- TABLEAU DES RESULTATS -->
-<section class="top-section">
-    <table class="table compact">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Équipe A</th>
-                <th>Score</th>
-                <th>Équipe B</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for m in matchs_joues %}
-            <tr>
-    <td>{{ m.date|date:"d/m/Y H:i" }}</td>
-    <td>
-    {{ m.equipe1.nom }}
+    <div class="row g-4 mb-5">
+        {% for match in matchs_a_venir %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="card h-100 shadow-sm border-0 match-card upcoming">
+                <div class="card-body">
+                    <div class="text-center text-muted small mb-2">
+                        {{ match.date|date:"d/m/Y - H:i" }}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-end flex-grow-1">
+                            <strong>{{ match.equipe1.nom }}</strong>
+                        </div>
+                        <div class="mx-3">
+                            <span class="badge bg-warning fs-6 px-3">VS</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong>{{ match.equipe2.nom }}</strong>
+                        </div>
+                    </div>
 
-    <div style="font-size:12px; margin-top:5px;">
-
-        <!-- BUTEURS -->
-        {% for b in m.buts.all %}
-            {% if b.joueur.equipe_id == m.equipe1.id %}
-                ⚽ {{ b.joueur.nom }} {{ b.joueur.prenom }} ({{ b.minute }}')<br>
-            {% endif %}
+                    {% if match.stade %}
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-geo-alt"></i> {{ match.stade }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light text-center">
+                    <small class="text-primary fw-semibold">À venir</small>
+                </div>
+            </div>
+        </div>
         {% empty %}
-            <span style="color:gray;">Aucun but</span>
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                Aucun match programmé pour le moment.1111
+            </div>
+        </div>
         {% endfor %}
-
-        <!-- CARTONS / SANCTIONS -->
-        {% for e in m.evenements.all %}
-            {% if e.joueur.equipe_id == m.equipe1.id and e.type_evenement != "but" %}
-                {% if e.type_evenement == "carton_jaune" %}🟨
-                {% elif e.type_evenement == "carton_rouge" %}🟥
-                {% elif e.type_evenement == "suspension" %}⛔
-                {% endif %}
-                {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }}')<br>
-            {% endif %}
-        {% endfor %}
-
     </div>
-</td>
-    <td>{{ m.score1 }} - {{ m.score2 }}</td>
-    <td>
-    {{ m.equipe2.nom }}
 
-    <div style="font-size:12px; margin-top:5px;">
+    <!-- ===================== RÉSULTATS DES MATCHS ===================== -->
+    <h2 class="fw-bold mb-4">
+        <i class="bi bi-trophy-fill text-warning"></i> Résultats des matchs
+    </h2>
 
-        <!-- BUTEURS -->
-        {% for e in m.evenements.all %}
-            {% if e.type_evenement == "but" and e.joueur.equipe_id == m.equipe2.id %}
-                ⚽ {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }})<br>
-            {% endif %}
-        {% endfor %}
-
-        <!-- CARTONS / SANCTIONS -->
-        {% for e in m.evenements.all %}
-            {% if e.joueur.equipe_id == m.equipe2.id and e.type_evenement != "but" %}
-                {% if e.type_evenement == "carton_jaune" %}🟨
-                {% elif e.type_evenement == "carton_rouge" %}🟥
-                {% elif e.type_evenement == "suspension" %}⛔
-                {% endif %}
-                {{ e.joueur.nom }} {{ e.joueur.prenom }} ({{ e.minute }}')<br>
-            {% endif %}
-        {% endfor %}
-
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-end">Équipe A</th>
+                        <th class="text-center">Score</th>
+                        <th>Équipe B</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in matchs_joues %}
+                    <tr>
+                        <td>{{ m.date|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end fw-medium">{{ m.equipe1.nom }}</td>
+                        <td class="text-center fw-bold">
+                            {{ m.score1 }} - {{ m.score2 }}
+                        </td>
+                        <td class="fw-medium">{{ m.equipe2.nom }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</td>
-</tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</section>
 
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.match-card {
+    transition: all 0.3s ease;
+}
+.match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+}
+.upcoming {
+    border-left: 5px solid #28a745;
+}
+</style>
 {% endblock %}

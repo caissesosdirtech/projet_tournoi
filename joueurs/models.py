@@ -65,3 +65,19 @@ class Joueur(models.Model):
 
     def __str__(self):
         return f"{self.prenom} {self.nom} - #{self.numero} ({self.equipe.nom})"
+    
+class Match(models.Model):
+    STATUT_CHOICES = [
+        ('programme', 'Programmé'),    # ← minuscules pour correspondre aux données
+        ('en_cours', 'En cours'),
+        ('termine', 'Terminé'),
+        ('annule', 'Annulé'),
+    ]
+    equipe1 = models.ForeignKey(Equipe, on_delete=models.CASCADE, related_name='matchs_equipe1')
+    equipe2 = models.ForeignKey(Equipe, on_delete=models.CASCADE, related_name='matchs_equipe2')
+    date = models.DateTimeField()
+    score1 = models.IntegerField(default=0)
+    score2 = models.IntegerField(default=0)
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='A_VENIR')
+    def __str__(self):
+        return f"{self.equipe1.nom} vs {self.equipe2.nom} ({self.date.strftime('%d/%m/%Y')})"    

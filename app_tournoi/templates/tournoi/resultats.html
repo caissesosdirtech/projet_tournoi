@@ -2,94 +2,562 @@
 {% load static %}
 
 {% block content %}
+
+<style>
+
+:root{
+    --primary:#071739;
+    --secondary:#0f3460;
+    --accent:#00c853;
+    --gold:#ffcc00;
+    --light:#f5f7fb;
+    --white:#ffffff;
+    --dark:#0b1220;
+}
+
+/* ================= GLOBAL ================= */
+
+body{
+    background: linear-gradient(to bottom,#eef2f7,#f8fbff);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ================= HERO ================= */
+
+/* ================= HERO ================= */
+
+.hero-section{
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    min-height: 300px; /* réduit */
+    padding: 6px;
+    background:
+        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.78)),
+        url("{% static 'img/stadium2.jpg' %}") center center/cover;
+    box-shadow: 0 14px 30px rgba(0,0,0,.15);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    color:white;
+    padding: 35px 40px; /* réduit verticalement */
+}
+
+.hero-badge{
+    padding:8px 18px;
+    margin-bottom:18px;
+    font-size:.85rem;
+}
+
+.hero-title{
+    font-size:3rem; /* avant 4rem */
+    font-weight:900;
+    line-height:1.05;
+    margin-bottom:14px;
+}
+
+.hero-text{
+    max-width:620px;
+    font-size:1rem;
+    line-height:1.6;
+    margin-bottom:0;
+}
+
+.hero-stats{
+    margin-top:28px; /* réduit */
+}
+
+.stat-box{
+    border-radius:18px;
+    padding:16px; /* réduit */
+}
+
+.stat-box h3{
+    font-size:1.5rem;
+    margin-bottom:4px;
+}
+
+.stat-box p{
+    font-size:.92rem;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+    .hero-section{
+        min-height:auto;
+        border-radius:20px;
+    }
+
+    .hero-content{
+        padding:25px 20px;
+    }
+
+    .hero-title{
+        font-size:2rem;
+    }
+
+    .hero-text{
+        font-size:.95rem;
+        line-height:1.5;
+    }
+
+    .hero-stats{
+        margin-top:20px;
+    }
+
+    .stat-box{
+        padding:14px;
+    }
+
+}
+
+/* ================= SECTION ================= */
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.section-title{
+    font-size:2rem;
+    font-weight:900;
+    color:var(--dark);
+}
+
+.section-title i{
+    color:var(--accent);
+}
+
+.section-line{
+    width:80px;
+    height:5px;
+    background:linear-gradient(to right,var(--accent),transparent);
+    border-radius:10px;
+    margin-top:10px;
+}
+
+/* ================= UPCOMING MATCH ================= */
+
+.fixture-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:28px;
+    background:var(--white);
+    box-shadow:0 15px 35px rgba(0,0,0,.07);
+    transition:.35s ease;
+    border:1px solid #edf2f7;
+}
+
+.fixture-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 45px rgba(0,0,0,.12);
+}
+
+.fixture-top{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    padding:18px 25px;
+}
+
+.fixture-date{
+    font-size:.95rem;
+    opacity:.9;
+}
+
+.fixture-body{
+    padding:40px 25px;
+}
+
+.team-logo{
+    width:75px;
+    height:75px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #f1f5f9;
+    background:white;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.team-name{
+    margin-top:15px;
+    font-weight:800;
+    color:#0f172a;
+    font-size:1.1rem;
+}
+
+.vs-circle{
+    width:85px;
+    height:85px;
+    background:linear-gradient(135deg,#ffcc00,#ff9800);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.2rem;
+    font-weight:900;
+    color:white;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(255,193,7,.4);
+}
+
+.fixture-footer{
+    border-top:1px solid #f1f5f9;
+    padding:18px;
+    text-align:center;
+    font-weight:700;
+    color:var(--secondary);
+    background:#f8fafc;
+}
+
+/* ================= RESULTS ================= */
+
+.results-container{
+    background:white;
+    border-radius:30px;
+    overflow:hidden;
+    box-shadow:0 18px 45px rgba(0,0,0,.06);
+}
+
+.results-header{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    padding:28px 35px;
+}
+
+.results-header h2{
+    margin:0;
+    font-size:1.8rem;
+    font-weight:900;
+}
+
+.result-row{
+    padding:28px 35px;
+    border-bottom:1px solid #eef2f7;
+    transition:.3s;
+}
+
+.result-row:hover{
+    background:#f8fbff;
+}
+
+.result-row:last-child{
+    border-bottom:none;
+}
+
+.result-date{
+    color:#64748b;
+    font-size:.92rem;
+    margin-bottom:15px;
+}
+
+.team-block{
+    font-size:1.1rem;
+    font-weight:800;
+    color:#0f172a;
+}
+
+.score-display{
+    min-width:120px;
+    text-align:center;
+    padding:14px 20px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    color:white;
+    font-size:1.4rem;
+    font-weight:900;
+    box-shadow:0 8px 18px rgba(22,163,74,.25);
+}
+
+/* ================= EMPTY ================= */
+
+.empty-state{
+    padding:70px 20px;
+    text-align:center;
+}
+
+.empty-state i{
+    font-size:4rem;
+    color:#cbd5e1;
+    margin-bottom:20px;
+}
+
+.empty-state h4{
+    font-weight:800;
+    color:#334155;
+}
+
+.empty-state p{
+    color:#64748b;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .hero-section{
+        padding:40px 25px;
+        min-height:auto;
+    }
+
+    .hero-title{
+        font-size:2.5rem;
+    }
+
+    .section-title{
+        font-size:1.5rem;
+    }
+
+    .vs-circle{
+        width:65px;
+        height:65px;
+        font-size:1rem;
+    }
+
+    .score-display{
+        min-width:90px;
+        font-size:1.1rem;
+    }
+
+}
+
+</style>
+
 <div class="container py-4">
 
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-primary">🏆 Coupe de la DRN</h1>
-        <p class="lead text-muted">Saison en cours - Résultats & Programmation</p>
+    <!-- ================= HERO ================= -->
+
+    <div class="hero-section mb-5">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                <i class="bi bi-trophy-fill"></i>
+                Tournoi Officiel DRN 2026
+            </div>
+
+            <h1 class="hero-title">
+                La <span>Coupe DRN</span><br>
+                commence ici.
+            </h1>
+
+            <p class="hero-text">
+                Découvrez les rencontres, les scores en direct,
+                les statistiques et toute l’actualité du tournoi
+                inter-services de la DRN dans une expérience premium.
+            </p>
+
+            <div class="row hero-stats g-4">
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h3>{{ matchs_joues|length }}</h3>
+                        <p>Matchs joués</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h3>{{ matchs_a_venir|length }}</h3>
+                        <p>Matchs à venir</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h3>2026</h3>
+                        <p>Saison officielle</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- ===================== MATCHS À VENIR ===================== -->
-    <h2 class="fw-bold mb-4 text-success">
-        <i class="bi bi-calendar-event"></i> Matchs à Venir
-    </h2>
+    <!-- ================= FIXTURES ================= -->
+
+    <div class="section-header">
+
+        <div>
+            <div class="section-title">
+                <i class="bi bi-calendar2-week-fill"></i>
+                Matchs à venir
+            </div>
+
+            <div class="section-line"></div>
+        </div>
+
+    </div>
 
     <div class="row g-4 mb-5">
+
         {% for match in matchs_a_venir %}
+
         <div class="col-lg-6 col-xl-4">
-            <div class="card h-100 shadow-sm border-0 match-card upcoming">
-                <div class="card-body">
-                    <div class="text-center text-muted small mb-3">
-                        {{ match.date|date:"d/m/Y — H:i" }}
+
+            <div class="fixture-card">
+
+                <div class="fixture-top">
+
+                    <div class="fixture-date">
+                        <i class="bi bi-clock"></i>
+                        {{ match.date|date:"d M Y • H:i" }}
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-end flex-grow-1">
-                            <strong>{{ match.equipe1.nom }}</strong>
-                        </div>
-                        <div class="mx-4">
-                            <span class="badge bg-warning fs-6 px-3">VS</span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <strong>{{ match.equipe2.nom }}</strong>
-                        </div>
-                    </div>
-                    {% if match.stade %}
-                    <div class="text-center mt-3">
-                        <small class="text-muted">
-                            <i class="bi bi-geo-alt"></i> {{ match.stade }}
-                        </small>
-                    </div>
-                    {% endif %}
+
                 </div>
-                <div class="card-footer bg-light text-center">
-                    <small class="text-primary fw-semibold">À venir</small>
+
+                <div class="fixture-body">
+
+                    <div class="row align-items-center text-center">
+
+                        <div class="col-5">
+
+                            {% if match.equipe1.logo %}
+                            <img src="{{ match.equipe1.logo.url }}"
+                                 class="team-logo">
+                            {% else %}
+                            <img src="{% static 'images/default-team.png' %}"
+                                 class="team-logo">
+                            {% endif %}
+
+                            <div class="team-name">
+                                {{ match.equipe1.nom }}
+                            </div>
+
+                        </div>
+
+                        <div class="col-2">
+
+                            <div class="vs-circle">
+                                VS
+                            </div>
+
+                        </div>
+
+                        <div class="col-5">
+
+                            {% if match.equipe2.logo %}
+                            <img src="{{ match.equipe2.logo.url }}"
+                                 class="team-logo">
+                            {% else %}
+                            <img src="{% static 'images/default-team.png' %}"
+                                 class="team-logo">
+                            {% endif %}
+
+                            <div class="team-name">
+                                {{ match.equipe2.nom }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
+                <div class="fixture-footer">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    {{ match.stade|default:"Stade principal DRN" }}
+
+                </div>
+
             </div>
+
         </div>
+
         {% empty %}
+
         <div class="col-12">
-            <div class="alert alert-info text-center py-4">
-                Aucun match programmé pour le moment.
+
+            <div class="empty-state bg-white rounded-5 shadow-sm">
+
+                <i class="bi bi-calendar-x"></i>
+
+                <h4>Aucun match programmé</h4>
+
+                <p>Les prochaines rencontres apparaîtront ici.</p>
+
             </div>
+
         </div>
+
         {% endfor %}
+
     </div>
 
-    <!-- ===================== RÉSULTATS ===================== -->
-    <h2 class="fw-bold mb-4">
-        <i class="bi bi-trophy-fill text-warning"></i> Résultats des matchs
-    </h2>
+    <!-- ================= RESULTS ================= -->
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th class="text-end">Équipe A</th>
-                        <th class="text-center">Score</th>
-                        <th>Équipe B</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for m in matchs_joues %}
-                    <tr>
-                        <td>{{ m.date|date:"d/m/Y H:i" }}</td>
-                        <td class="text-end">{{ m.equipe1.nom }}</td>
-                        <td class="text-center fw-bold">{{ m.score1 }} - {{ m.score2 }}</td>
-                        <td>{{ m.equipe2.nom }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center py-5 text-muted">
-                            Aucun match terminé pour le moment.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="results-container">
+
+        <div class="results-header d-flex justify-content-between align-items-center">
+
+            <h2>
+                <i class="bi bi-trophy-fill text-warning"></i>
+                Résultats Officiels
+            </h2>
+
+            <span class="badge bg-light text-dark px-4 py-2 fs-6">
+                {{ matchs_joues|length }} Match(s)
+            </span>
+
         </div>
+
+        {% for m in matchs_joues %}
+
+        <div class="result-row">
+
+            <div class="result-date">
+
+                <i class="bi bi-calendar-event"></i>
+
+                {{ m.date|date:"d M Y • H:i" }}
+
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between gap-3">
+
+                <div class="team-block text-end w-100">
+                    {{ m.equipe1.nom }}
+                </div>
+
+                <div class="score-display">
+                    {{ m.score1 }} - {{ m.score2 }}
+                </div>
+
+                <div class="team-block w-100">
+                    {{ m.equipe2.nom }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+
+            <i class="bi bi-trophy"></i>
+
+            <h4>Aucun résultat disponible</h4>
+
+            <p>Les scores des matchs terminés apparaîtront ici.</p>
+
+        </div>
+
+        {% endfor %}
+
     </div>
 
 </div>
+
 {% endblock %}

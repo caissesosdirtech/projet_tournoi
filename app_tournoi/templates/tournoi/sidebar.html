@@ -1,84 +1,243 @@
+<!-- ================= PREMIUM SIDEBAR ================= -->
 <aside class="sidebar" id="sidebar">
+
+    <!-- LOGO / TOP -->
+    <div class="sidebar-top">
+
+        <div class="sidebar-logo">
+            <div class="logo-circle">
+                <i class="fas fa-trophy"></i>
+            </div>
+
+            <div class="logo-text">
+                <h3>DRN CUP</h3>
+                <span>Edition 2026</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MENU -->
     <ul>
 
-        <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            <a href="{% url 'dashboard' %}">
-                🏠 <span>Tableau de bord</span>   
-            </a>
-        </li>
+    <!-- ACCUEIL -->
+    <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <a href="{% url 'dashboard' %}">
 
-        <li>
-    <a href="{% url 'reglement_interieur' %}">
-        📘 Règlement Intérieur
-    </a>
-</li>
+            <div class="link-content">
 
-        <li class="{% if request.resolver_match.url_name == 'calendrier' %}active{% endif %}">
-            <a href="{% url 'calendrier' %}">
-                📅 <span>Calendrier</span>
-            </a>
-        </li>
+                <span>Accueil</span>
 
-        <!-- ÉQUIPES -->
-        <li class="has-submenu">
-            <a href="javascript:void(0);" class="submenu-toggle">
-                ⚽ <span>Équipes</span> <span class="arrow">▾</span>
-            </a>
-            <ul class="submenu">
-                {% for equipe in equipes %}
-                    <li>
-                        <a href="{% url 'detail_equipe' equipe.id %}">
-                            {{ equipe.nom }}
-                        </a>
-                    </li>
-                {% empty %}
-                    <li><span>Aucune équipe</span></li>
-                {% endfor %}
-            </ul>
-        </li>
+                <div class="icon">
+                    <i class="fas fa-house"></i>
+                </div>
 
-        <li class="{% if request.resolver_match.url_name == 'classement' %}active{% endif %}">
-            <a href="{% url 'classement' %}">
-                🏆 <span>Classement</span>
-            </a>
-        </li>
+            </div>
 
-        <li class="{% if request.resolver_match.url_name == 'infos' %}active{% endif %}">
-            <a href="{% url 'infos' %}">
-                ℹ️ <span>Infos</span>
-            </a>
-        </li>
+        </a>
+    </li>
 
-        <!-- STATS -->
-        <li class="has-submenu">
-            <a href="javascript:void(0);" class="submenu-toggle">
-                📊 <span>Statistiques</span> <span class="arrow">▾</span>
-            </a>
-            <ul class="submenu">
-                <li><a href="{% url 'stats_equipes' %}">Stats équipes</a></li>
-                <li><a href="{% url 'stats_joueurs' %}">Stats joueurs</a></li>
-            </ul>
-        </li>
+    <!-- REGLEMENT -->
+    <li>
+        <a href="{% url 'reglement_interieur' %}">
 
-        <!-- 🔥 RECOURS -->
-        <li class="{% if request.resolver_match.url_name == 'login_reclamation' %}active{% endif %}">
-            <a href="{% url 'login_reclamation' %}">
-                📩 <span>Déposer Recours</span>
-            </a>
-        </li>
+            <div class="link-content">
 
-        <li class="{% if request.resolver_match.url_name == 'resultats' %}active{% endif %}">
-            <a href="{% url 'resultats' %}">
-                📋 <span>Résultats</span>
-            </a>
-        </li>
+                <span>Règlement</span>
 
-        <!-- 🔥 GALERIE -->
-        <li class="{% if request.resolver_match.url_name == 'galeries' %}active{% endif %}">
-            <a href="{% url 'galeries' %}">
-                📸 <span>Galerie</span>
-            </a>
-        </li>
+                <div class="icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
 
-    </ul>
+            </div>
+
+        </a>
+    </li>
+
+    <!-- CALENDRIER -->
+    <li class="{% if request.resolver_match.url_name == 'calendrier' %}active{% endif %}">
+        <a href="{% url 'calendrier' %}">
+
+            <div class="link-content">
+
+                <span>Calendrier</span>
+
+                <div class="icon">
+                    <i class="fas fa-calendar-days"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+    <!-- EQUIPES -->
+    <li class="has-submenu">
+
+        <a href="javascript:void(0);" class="submenu-toggle">
+
+            <div class="link-content">
+
+                <span>Équipes</span>
+
+                <div class="icon">
+                    <i class="fas fa-futbol"></i>
+                </div>
+
+            </div>
+
+            <span class="arrow">
+                <i class="fas fa-chevron-down"></i>
+            </span>
+
+        </a>
+
+        <ul class="submenu">
+
+            {% for equipe in equipes %}
+
+            <li>
+                <a href="{% url 'detail_equipe' equipe.id %}">
+                    {{ equipe.nom }}
+                </a>
+            </li>
+
+            {% empty %}
+
+            <li>
+                <a href="#">Aucune équipe</a>
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </li>
+
+    <!-- CLASSEMENT -->
+    <li class="{% if request.resolver_match.url_name == 'classement' %}active{% endif %}">
+        <a href="{% url 'classement' %}">
+
+            <div class="link-content">
+
+                <span>Classement</span>
+
+                <div class="icon">
+                    <i class="fas fa-ranking-star"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+    <!-- INFOS -->
+    <li class="{% if request.resolver_match.url_name == 'infos' %}active{% endif %}">
+        <a href="{% url 'infos' %}">
+
+            <div class="link-content">
+
+                <span>Infos</span>
+
+                <div class="icon">
+                    <i class="fas fa-circle-info"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+    <!-- STATS -->
+    <li class="has-submenu">
+
+        <a href="javascript:void(0);" class="submenu-toggle">
+
+            <div class="link-content">
+
+                <span>Statistiques</span>
+
+                <div class="icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+
+            </div>
+
+            <span class="arrow">
+                <i class="fas fa-chevron-down"></i>
+            </span>
+
+        </a>
+
+        <ul class="submenu">
+
+            <li>
+                <a href="{% url 'stats_equipes' %}">
+                    Stats équipes
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'stats_joueurs' %}">
+                    Stats joueurs
+                </a>
+            </li>
+
+        </ul>
+
+    </li>
+
+    <!-- RECOURS -->
+    <li class="{% if request.resolver_match.url_name == 'login_reclamation' %}active{% endif %}">
+        <a href="{% url 'login_reclamation' %}">
+
+            <div class="link-content">
+
+                <span>Déposer recours</span>
+
+                <div class="icon">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+    <!-- RESULTATS -->
+    <li class="{% if request.resolver_match.url_name == 'resultats' %}active{% endif %}">
+        <a href="{% url 'resultats' %}">
+
+            <div class="link-content">
+
+                <span>Résultats</span>
+
+                <div class="icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+    <!-- GALERIE -->
+    <li class="{% if request.resolver_match.url_name == 'galeries' %}active{% endif %}">
+        <a href="{% url 'galeries' %}">
+
+            <div class="link-content">
+
+                <span>Galerie</span>
+
+                <div class="icon">
+                    <i class="fas fa-images"></i>
+                </div>
+
+            </div>
+
+        </a>
+    </li>
+
+</ul>
+
 </aside>

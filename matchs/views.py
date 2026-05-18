@@ -883,6 +883,11 @@ def liste_equipes(request):
 
 # ================= GESTION JOUEURS =================
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
+from .models import Joueur, Equipe
+
 def ajouter_joueur(request):
     if request.method == "POST":
         equipe = get_object_or_404(Equipe, id=request.POST.get('equipe_id'))
@@ -894,12 +899,21 @@ def ajouter_joueur(request):
                 poste=request.POST.get('poste'),
                 equipe=equipe
             )
-            return JsonResponse({'success': True, 'message': 'Joueur ajouté avec succès !'})
+            return JsonResponse({
+                'status': 'success',           # ← clé attendue par le JS
+                'message': '✅ Joueur ajouté avec succès !'
+            })
         except IntegrityError:
-            return JsonResponse({'success': False, 'error': '❌ Numéro déjà utilisé dans cette équipe'}, status=400)
+            return JsonResponse({
+                'status': 'error',             # ← clé attendue par le JS
+                'message': '❌ Numéro déjà utilisé dans cette équipe'
+            }, status=400)
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
-    return JsonResponse({'success': False}, status=405)
+            return JsonResponse({
+                'status': 'error',
+                'message': f'❌ Erreur : {str(e)}'
+            }, status=500)
+        
 def liste_joueurs(request):
 
     equipe_id = request.GET.get('equipe')

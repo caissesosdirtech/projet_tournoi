@@ -1,54 +1,68 @@
-from django.contrib.admin.views.decorators import staff_member_required
-from .models import Reclamation
-from .forms import ReclamationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-from .forms import DecisionReclamationForm
-from reclamations.models import Reclamation
-from django.shortcuts import get_object_or_404
+
+from .models import Reclamation
+from .forms import ReclamationForm, DecisionReclamationForm
+from .decorators import role_required
+
+from tournoi.models import Equipe
 
 
-
-@login_required
+@login_required(login_url='login_reclamation')
+@role_required('Capitaine', 'Coach')
 def liste_reclamations(request):
 
     reclamations = Reclamation.objects.all().order_by("-date")
 
-    return render(request,
-    "reclamations/liste_reclamations.html",
-    {"reclamations":reclamations})
-
+    return render(
+        request,
+        "reclamations/liste_reclamations.html",
+        {
+            "reclamations": reclamations
+        }
+    )
     
 
 @login_required(login_url='login_reclamation')
+@role_required('Capitaine', 'Coach')
 def creer_reclamation(request):
 
-    # Vérifier si l'utilisateur est Capitaine ou Coach
-    if not request.user.groups.filter(name__in=['Capitaine', 'Coach']).exists():
-        messages.error(request, "❌ Seuls les capitaines ou coachs peuvent envoyer une réclamation.")
-        return redirect('dashboard')
-
     if request.method == 'POST':
-        form = ReclamationForm(request.POST, request.FILES)
+
+        form = ReclamationForm(
+            request.POST,
+            request.FILES
+        )
 
         if form.is_valid():
+
             reclamation = form.save(commit=False)
+
             reclamation.auteur = request.user
+
             reclamation.save()
 
-            messages.success(request, "✅ Réclamation envoyée avec succès.")
-            return redirect('dashboard')
+            messages.success(
+                request,
+                "✅ Réclamation envoyée avec succès."
+            )
+
+            return redirect('liste_reclamations')
 
     else:
+
         form = ReclamationForm()
 
-    return render(request, 'reclamations/creer_reclamation.html', {
-        'form': form
-    })
+    return render(
+        request,
+        'reclamations/creer_reclamation.html',
+        {
+            'form': form
+        }
+    )
 
 @csrf_protect
 def login_reclamation(request):
@@ -58,30 +72,53 @@ def login_reclamation(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
 
         if user is not None:
 
-            # Vérifier si Capitaine ou Coach
-            if user.groups.filter(name__in=['Capitaine','Coach']).exists():
+            # Coach ou Capitaine
+            if user.groups.filter(
+                name__in=['Capitaine', 'Coach']
+            ).exists():
 
                 login(request, user)
+
+                messages.success(
+                    request,
+                    f"Bienvenue {user.username} 👋"
+                )
+
                 return redirect('creer_reclamation')
 
             # Admin
             elif user.is_staff:
 
                 login(request, user)
+
                 return redirect('admin_dashboard')
 
             else:
-                messages.error(request,"⛔ Accès réservé aux capitaines et coachs")
+
+                messages.error(
+                    request,
+                    "⛔ Accès réservé aux coachs et capitaines."
+                )
 
         else:
-            messages.error(request,"❌ Identifiants incorrects")
 
-    return render(request,"reclamations/login_reclamation.html")
+            messages.error(
+                request,
+                "❌ Identifiants incorrects."
+            )
 
+    return render(
+        request,
+        "reclamations/login_reclamation.html"
+    )
 
 def reclamation(request):
 
@@ -98,30 +135,79 @@ def reclamation(request):
 
 @login_required
 def decision_reclamation(request, id):
-    reclamation = Reclamation.objects.get(id=id)
+
+    if not request.user.is_staff:
+
+        messages.error(
+            request,
+            "⛔ Accès interdit."
+        )
+
+        return redirect('login_reclamation')
+
+    reclamation = get_object_or_404(
+        Reclamation,
+        id=id
+    )
 
     if request.method == "POST":
-        form = DecisionReclamationForm(request.POST, request.FILES, instance=reclamation)
+
+        form = DecisionReclamationForm(
+            request.POST,
+            request.FILES,
+            instance=reclamation
+        )
+
         if form.is_valid():
+
             form.save()
-            messages.success(request, "✅ Réclamation traitée avec succès.")
+
+            messages.success(
+                request,
+                "✅ Réclamation traitée."
+            )
+
             return redirect("liste_reclamations")
+
     else:
-        form = DecisionReclamationForm(instance=reclamation)
 
-    return render(request, "reclamations/decision_reclamation.html", {
-        "form": form,
-        "reclamation": reclamation
-    }) 
+        form = DecisionReclamationForm(
+            instance=reclamation
+        )
 
+    return render(
+        request,
+        "reclamations/decision_reclamation.html",
+        {
+            "form": form,
+            "reclamation": reclamation
+        }
+    )
 
 @login_required
 def supprimer_reclamation(request, id):
-    reclamation = get_object_or_404(Reclamation, id=id)
+
+    if not request.user.is_staff:
+
+        messages.error(
+            request,
+            "⛔ Accès interdit."
+        )
+
+        return redirect('login_reclamation')
+
+    reclamation = get_object_or_404(
+        Reclamation,
+        id=id
+    )
 
     if request.method == "POST":
-        reclamation.delete()
-        messages.success(request, "🗑 Recours supprimée avec succès.")
-        return redirect('liste_reclamations')
 
-    return redirect('liste_reclamations')      
+        reclamation.delete()
+
+        messages.success(
+            request,
+            "🗑 Réclamation supprimée."
+        )
+
+    return redirect('liste_reclamations')

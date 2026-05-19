@@ -1,197 +1,565 @@
 {% extends 'tournoi/base.html' %}
 {% load static %}
+
 {% block title %}Règlement Intérieur{% endblock %}
 {% block subtitle %}Tournoi Inter-Service DRN{% endblock %}
 
 {% block content %}
 
-<div class="header-officiel">
-    <h2> République du Sénégal</h2>
-    <h3>Delegation Generale au Renseignement National DRN</h3>
-    <hr>
-</div>
+<!-- ================= HERO ================= -->
+<section class="reglement-hero">
 
-<div class="reglement-container">
+    <div class="hero-overlay"></div>
 
-    <!-- HEADER -->
-    <div class="header-reglement">
-        <h1>📘 Règlement Intérieur</h1>
+    <div class="hero-content">
 
-        <div class="actions">
-    <a href="{% url 'telecharger_pdf' %}" class="btn-download pdf">
-        📄 Télécharger PDF
-    </a>
+        <div class="hero-badge">
+            📘 DOCUMENT OFFICIEL
+        </div>
 
-    <a href="{% url 'telecharger_word' %}" class="btn-download word">
-        📝 Télécharger Word
-    </a>
+        <h1>
+            Règlement Intérieur
+        </h1>
 
-    <a href="{% url 'telecharger_odf' %}" class="btn-download word">
-        📘 Télécharger ODF
-    </a>
-</div>
+        <p>
+            Tournoi Inter-Service – Direction Technique DRN
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="{% url 'telecharger_pdf' %}" class="btn-hero btn-pdf">
+                📄 Télécharger PDF
+            </a>
+
+            <a href="{% url 'telecharger_word' %}" class="btn-hero btn-word">
+                📝 Télécharger Word
+            </a>
+
+            <a href="{% url 'telecharger_odf' %}" class="btn-hero btn-odf">
+                📘 Télécharger ODF
+            </a>
+
+        </div>
+
     </div>
 
-    <!-- INTRO -->
-    <div class="card fade-in">
-        <h2>🎯 Objectif du tournoi</h2>
-        <p>
-            Le tournoi inter-service de la DRN vise à promouvoir la cohésion sociale,
-            l’esprit d’équipe, la solidarité et le fair-play entre les agents.
-        </p>
+</section>
+
+<!-- ================= ENTETE OFFICIEL ================= -->
+<section class="official-section">
+
+    <div class="official-card">
+
+        <div class="official-top">
+            <div class="official-line"></div>
+
+            <div class="official-center">
+                <h2>République du Sénégal</h2>
+                <p>🇸🇳 Un Peuple • Un But • Une Foi</p>
+            </div>
+
+            <div class="official-line"></div>
+        </div>
+
+        <div class="official-content">
+
+            <div class="official-item">
+                <span class="official-icon">🏛</span>
+                <div>
+                    <h4>Délégation Générale au Renseignement National</h4>
+                    <p>DRN</p>
+                </div>
+            </div>
+
+            <div class="official-item">
+                <span class="official-icon">⚙</span>
+                <div>
+                    <h4>Direction Technique</h4>
+                    <p>Organisation du tournoi</p>
+                </div>
+            </div>
+
+            <div class="official-item">
+                <span class="official-icon">🤝</span>
+                <div>
+                    <h4>Caisse Sociale</h4>
+                    <p>Promotion de la cohésion sociale</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= CONTENU ================= -->
+<div class="reglement-wrapper">
+
+    <!-- OBJECTIF -->
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon blue">🎯</div>
+            <div>
+                <h2>Objectif du tournoi</h2>
+                <span>Esprit d’équipe & cohésion sociale</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <p>
+                Le tournoi inter-service de la DRN vise à promouvoir la cohésion sociale,
+                la solidarité, le respect mutuel et l’esprit de fraternité entre les agents.
+                Il encourage également le fair-play, la discipline et le dépassement de soi.
+            </p>
+        </div>
     </div>
 
     <!-- CHAPITRE 1 -->
-    <div class="card fade-in delay-1">
-        <h2>👥 Chapitre 1 : Participation</h2>
-        <ul>
-            <li>Le tournoi est réservé exclusivement aux agents de la DRN</li>
-            <li>Chaque joueur doit appartenir à une seule équipe</li>
-            <li>Les équipes doivent être validées par le comité d’organisation</li>
-            <li>Toute fraude entraîne une exclusion immédiate</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon purple">👥</div>
+            <div>
+                <h2>Chapitre 1 : Participation</h2>
+                <span>Conditions de participation</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>Le tournoi est réservé exclusivement aux agents de la DRN</li>
+                <li>Chaque joueur doit appartenir à une seule équipe</li>
+                <li>Les équipes doivent être validées par le comité d’organisation</li>
+                <li>Toute fraude entraîne une exclusion immédiate</li>
+            </ul>
+        </div>
     </div>
 
     <!-- CHAPITRE 2 -->
-    <div class="card fade-in delay-2">
-        <h2>⚽ Chapitre 2 : Organisation du tournoi</h2>
-        <ul>
-            <li>Phase de groupes suivie de phases éliminatoires</li>
-            <li>Durée des matchs : 2 x 30 minutes</li>
-            <li>3 points pour une victoire, 1 point pour un nul</li>
-            <li>Classement basé sur points, différence de buts, buts marqués</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon green">⚽</div>
+            <div>
+                <h2>Chapitre 2 : Organisation du tournoi</h2>
+                <span>Structure de la compétition</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>Phase de groupes suivie des phases éliminatoires</li>
+                <li>Durée des matchs : 2 x 30 minutes</li>
+                <li>3 points pour une victoire et 1 point pour un match nul</li>
+                <li>Classement basé sur points, différence de buts et buts marqués</li>
+            </ul>
+        </div>
     </div>
 
     <!-- CHAPITRE 3 -->
-    <div class="card fade-in delay-3">
-        <h2>📏 Chapitre 3 : Règles de jeu</h2>
-        <ul>
-            <li>11 joueurs titulaires par équipe</li>
-            <li>7 remplaçants autorisés</li>
-            <li>Remplacements illimités</li>
-            <li>Application stricte des règles FIFA</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon orange">📏</div>
+            <div>
+                <h2>Chapitre 3 : Règles de jeu</h2>
+                <span>Application des règles sportives</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>11 joueurs titulaires par équipe</li>
+                <li>7 remplaçants autorisés</li>
+                <li>Remplacements illimités pendant les matchs</li>
+                <li>Application stricte des règles FIFA</li>
+            </ul>
+        </div>
     </div>
 
     <!-- CHAPITRE 4 -->
-    <div class="card fade-in delay-4">
-        <h2>⚖️ Chapitre 4 : Discipline et sanctions</h2>
-        <ul>
-            <li>Respect obligatoire des arbitres et adversaires</li>
-            <li>2 cartons jaunes = 1 carton rouge automatique</li>
-            <li>Carton rouge direct = suspension de 2 matchs</li>
-            <li>Comportement violent = exclusion du tournoi</li>
-            <li>Accumulation de fautes = sanctions disciplinaires</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon red">⚖️</div>
+            <div>
+                <h2>Chapitre 4 : Discipline et sanctions</h2>
+                <span>Respect & fair-play</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>Respect obligatoire des arbitres et adversaires</li>
+                <li>2 cartons jaunes = 1 carton rouge automatique</li>
+                <li>Carton rouge direct = suspension de 2 matchs</li>
+                <li>Comportement violent = exclusion du tournoi</li>
+                <li>Accumulation de fautes = sanctions disciplinaires</li>
+            </ul>
+        </div>
     </div>
 
     <!-- CHAPITRE 5 -->
-    <div class="card fade-in delay-5">
-        <h2>⛔ Chapitre 5 : Suspensions</h2>
-        <ul>
-            <li>Un joueur suspendu ne peut participer à aucun match</li>
-            <li>La suspension est automatiquement appliquée par le système</li>
-            <li>Le nombre de matchs restants est suivi dans l’application</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon dark">⛔</div>
+            <div>
+                <h2>Chapitre 5 : Suspensions</h2>
+                <span>Gestion automatique des sanctions</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>Un joueur suspendu ne peut participer à aucun match</li>
+                <li>La suspension est automatiquement appliquée par le système</li>
+                <li>Le nombre de matchs restants est suivi dans l’application</li>
+            </ul>
+        </div>
     </div>
 
     <!-- CHAPITRE 6 -->
-    <div class="card fade-in delay-5">
-        <h2>🏆 Chapitre 6 : Récompenses</h2>
-        <ul>
-            <li>Trophée pour l’équipe gagnante</li>
-            <li>Prix du meilleur joueur</li>
-            <li>Prix du meilleur buteur</li>
-            <li>Prix du fair-play</li>
-        </ul>
+    <div class="reglement-card fade-card">
+        <div class="card-top">
+            <div class="card-icon gold">🏆</div>
+            <div>
+                <h2>Chapitre 6 : Récompenses</h2>
+                <span>Distinctions officielles</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <ul class="premium-list">
+                <li>Trophée pour l’équipe gagnante</li>
+                <li>Prix du meilleur joueur</li>
+                <li>Prix du meilleur buteur</li>
+                <li>Prix du fair-play</li>
+            </ul>
+        </div>
     </div>
 
 </div>
 
-<!-- 🎨 STYLE -->
+<!-- ================= STYLE PREMIUM ================= -->
 <style>
 
-.reglement-container{
-    max-width:950px;
-    margin:auto;
-    padding:30px;
+/* ================= HERO ================= */
+
+.reglement-hero{
+    position:relative;
+    background:linear-gradient(135deg,#1f2937,#374151,#4b367c);
+    min-height:320px;
+    border-radius:24px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:40px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
 }
 
-/* HEADER */
-.header-reglement{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:white;
+    padding:40px;
+}
+
+.hero-badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.15);
+    border:1px solid rgba(255,255,255,0.25);
+    padding:10px 18px;
+    border-radius:40px;
+    margin-bottom:20px;
+    backdrop-filter:blur(10px);
+    font-size:14px;
+    font-weight:600;
+}
+
+.hero-content h1{
+    font-size:52px;
+    margin-bottom:15px;
+    font-weight:800;
+}
+
+.hero-content p{
+    font-size:18px;
+    opacity:0.9;
     margin-bottom:30px;
 }
 
-.header-reglement h1{
-    color:#4b367c;
-}
-
-/* BOUTONS */
-.actions{
+.hero-actions{
     display:flex;
-    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
 }
 
-.btn-download{
-    padding:10px 15px;
-    border-radius:8px;
+.btn-hero{
+    padding:14px 22px;
+    border-radius:12px;
     text-decoration:none;
     color:white;
-    font-weight:bold;
-    transition:0.3s;
+    font-weight:600;
+    transition:0.3s ease;
 }
 
-.pdf{ background:#e74c3c; }
-.word{ background:#2c7be5; }
-
-.btn-download:hover{
-    transform:translateY(-3px);
+.btn-hero:hover{
+    transform:translateY(-4px);
 }
 
-/* CARTES */
-.card{
+.btn-pdf{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+}
+
+.btn-word{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+.btn-odf{
+    background:linear-gradient(135deg,#10b981,#059669);
+}
+
+/* ================= OFFICIAL ================= */
+
+.official-section{
+    margin-bottom:40px;
+}
+
+.official-card{
     background:white;
+    border-radius:22px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.official-top{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:35px;
+}
+
+.official-line{
+    flex:1;
+    height:2px;
+    background:linear-gradient(to right,#4b367c,#c4b5fd);
+}
+
+.official-center{
+    text-align:center;
+}
+
+.official-center h2{
+    color:#1f2937;
+    margin-bottom:6px;
+}
+
+.official-center p{
+    color:#6b7280;
+}
+
+.official-content{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.official-item{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:#f8fafc;
     padding:20px;
-    margin-bottom:20px;
-    border-radius:12px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    border-radius:16px;
     transition:0.3s;
 }
 
-.card:hover{
+.official-item:hover{
     transform:translateY(-5px);
+    background:#eef2ff;
 }
 
-/* ANIMATION */
-.fade-in{
+.official-icon{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#4b367c,#7c3aed);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+}
+
+/* ================= WRAPPER ================= */
+
+.reglement-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+}
+
+/* ================= CARD ================= */
+
+.reglement-card{
+    background:white;
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.07);
+    transition:0.35s ease;
+    border:1px solid #f1f5f9;
+}
+
+.reglement-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}
+
+.card-top{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.card-top h2{
+    color:#111827;
+    margin-bottom:5px;
+}
+
+.card-top span{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.card-icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    color:white;
+    flex-shrink:0;
+}
+
+/* COLORS */
+
+.blue{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+}
+
+.purple{
+    background:linear-gradient(135deg,#7c3aed,#6d28d9);
+}
+
+.green{
+    background:linear-gradient(135deg,#10b981,#059669);
+}
+
+.orange{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+}
+
+.red{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+}
+
+.dark{
+    background:linear-gradient(135deg,#374151,#111827);
+}
+
+.gold{
+    background:linear-gradient(135deg,#fbbf24,#d97706);
+}
+
+/* ================= BODY ================= */
+
+.card-body p{
+    line-height:1.8;
+    color:#374151;
+}
+
+.premium-list{
+    list-style:none;
+    padding:0;
+}
+
+.premium-list li{
+    position:relative;
+    padding-left:34px;
+    margin-bottom:18px;
+    color:#374151;
+    line-height:1.7;
+}
+
+.premium-list li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    top:0;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#4b367c;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:bold;
+}
+
+/* ================= ANIMATION ================= */
+
+.fade-card{
     opacity:0;
-    transform:translateY(20px);
-    animation:fadeIn 0.6s forwards;
+    transform:translateY(30px);
+    animation:fadeCard 0.8s forwards;
 }
 
-.delay-1{ animation-delay:0.2s; }
-.delay-2{ animation-delay:0.4s; }
-.delay-3{ animation-delay:0.6s; }
-.delay-4{ animation-delay:0.8s; }
-.delay-5{ animation-delay:1s; }
+.fade-card:nth-child(1){ animation-delay:0.1s; }
+.fade-card:nth-child(2){ animation-delay:0.2s; }
+.fade-card:nth-child(3){ animation-delay:0.3s; }
+.fade-card:nth-child(4){ animation-delay:0.4s; }
+.fade-card:nth-child(5){ animation-delay:0.5s; }
+.fade-card:nth-child(6){ animation-delay:0.6s; }
 
-@keyframes fadeIn{
+@keyframes fadeCard{
     to{
         opacity:1;
         transform:translateY(0);
     }
 }
 
-h2{
-    color:#4b367c;
-}
+/* ================= RESPONSIVE ================= */
 
-ul{
-    padding-left:20px;
+@media(max-width:768px){
+
+    .hero-content h1{
+        font-size:36px;
+    }
+
+    .hero-actions{
+        flex-direction:column;
+    }
+
+    .official-top{
+        flex-direction:column;
+    }
+
+    .card-top{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
 }
 
 </style>

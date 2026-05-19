@@ -15,284 +15,306 @@
     --dark:#0b1220;
 }
 
-/* ================= GLOBAL ================= */
+/* ================= PAGE ================= */
 
-body{
-    background: linear-gradient(to bottom,#eef2f7,#f8fbff);
-    font-family: 'Segoe UI', sans-serif;
+.premium-page{
+    padding:20px;
 }
 
 /* ================= HERO ================= */
 
-/* ================= HERO ================= */
+.premium-hero{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    min-height:320px;
 
-.hero-section{
-    position: relative;
-    overflow: hidden;
-    border-radius: 24px;
-    min-height: 300px; /* réduit */
-    padding: 6px;
     background:
-        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.78)),
-        url("{% static 'img/stadium2.jpg' %}") center center/cover;
-    box-shadow: 0 14px 30px rgba(0,0,0,.15);
+    linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.75)),
+    url("{% static 'img/stadium2.jpg' %}") center center/cover;
+
+    box-shadow:0 14px 30px rgba(0,0,0,.15);
+
+    display:flex;
+    align-items:center;
+
+    margin-bottom:40px;
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
 }
 
 .hero-content{
     position:relative;
     z-index:2;
     color:white;
-    padding: 35px 40px; /* réduit verticalement */
+    padding:40px;
+    width:100%;
 }
 
 .hero-badge{
-    padding:8px 18px;
-    margin-bottom:18px;
-    font-size:.85rem;
+    display:inline-block;
+    background:rgba(255,255,255,0.12);
+    padding:10px 18px;
+    border-radius:50px;
+    margin-bottom:20px;
+    font-weight:600;
+    backdrop-filter:blur(6px);
 }
 
-.hero-title{
-    font-size:3rem; /* avant 4rem */
+.hero-content h1{
+    font-size:3.2rem;
     font-weight:900;
-    line-height:1.05;
-    margin-bottom:14px;
+    line-height:1.1;
+    margin-bottom:20px;
 }
 
-.hero-text{
-    max-width:620px;
-    font-size:1rem;
-    line-height:1.6;
-    margin-bottom:0;
+.hero-content h1 span{
+    color:var(--gold);
 }
+
+.hero-content p{
+    max-width:700px;
+    font-size:1.05rem;
+    line-height:1.8;
+    opacity:.95;
+}
+
+/* ================= STATS ================= */
 
 .hero-stats{
-    margin-top:28px; /* réduit */
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:35px;
 }
 
-.stat-box{
+.hero-stat-card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.15);
     border-radius:18px;
-    padding:16px; /* réduit */
+    padding:18px 24px;
+    min-width:180px;
 }
 
-.stat-box h3{
-    font-size:1.5rem;
-    margin-bottom:4px;
+.hero-stat-card h3{
+    font-size:2rem;
+    margin-bottom:6px;
+    color:white;
 }
 
-.stat-box p{
-    font-size:.92rem;
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:768px){
-
-    .hero-section{
-        min-height:auto;
-        border-radius:20px;
-    }
-
-    .hero-content{
-        padding:25px 20px;
-    }
-
-    .hero-title{
-        font-size:2rem;
-    }
-
-    .hero-text{
-        font-size:.95rem;
-        line-height:1.5;
-    }
-
-    .hero-stats{
-        margin-top:20px;
-    }
-
-    .stat-box{
-        padding:14px;
-    }
-
+.hero-stat-card span{
+    color:#e5e7eb;
+    font-size:.95rem;
 }
 
 /* ================= SECTION ================= */
 
-.section-header{
+.section-header-pro{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:35px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    gap:15px;
 }
 
-.section-title{
+.section-header-pro h2{
     font-size:2rem;
-    font-weight:900;
     color:var(--dark);
+    margin-bottom:5px;
 }
 
-.section-title i{
-    color:var(--accent);
+.section-header-pro p{
+    color:#64748b;
 }
 
-.section-line{
-    width:80px;
-    height:5px;
-    background:linear-gradient(to right,var(--accent),transparent);
-    border-radius:10px;
-    margin-top:10px;
+/* ================= FIXTURES ================= */
+
+.fixtures-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
 }
 
-/* ================= UPCOMING MATCH ================= */
-
-.fixture-card{
-    position:relative;
+.fixture-card-premium{
+    background:white;
+    border-radius:24px;
     overflow:hidden;
-    border-radius:28px;
-    background:var(--white);
-    box-shadow:0 15px 35px rgba(0,0,0,.07);
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
     transition:.35s ease;
     border:1px solid #edf2f7;
 }
 
-.fixture-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 25px 45px rgba(0,0,0,.12);
+.fixture-card-premium:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.12);
 }
 
 .fixture-top{
     background:linear-gradient(135deg,var(--primary),var(--secondary));
     color:white;
-    padding:18px 25px;
-}
-
-.fixture-date{
-    font-size:.95rem;
-    opacity:.9;
+    padding:16px 22px;
+    font-weight:600;
 }
 
 .fixture-body{
-    padding:40px 25px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:30px 20px;
 }
 
-.team-logo{
-    width:75px;
-    height:75px;
-    border-radius:50%;
-    object-fit:cover;
-    border:4px solid #f1f5f9;
-    background:white;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+.team-side{
+    flex:1;
+    text-align:center;
 }
 
-.team-name{
-    margin-top:15px;
+.team-side h4{
+    margin-top:12px;
+    font-size:1rem;
     font-weight:800;
     color:#0f172a;
-    font-size:1.1rem;
 }
 
-.vs-circle{
-    width:85px;
-    height:85px;
-    background:linear-gradient(135deg,#ffcc00,#ff9800);
+/* ===== LOGOS REDUITS ===== */
+
+.team-logo-premium{
+    width:55px;
+    height:55px;
+    object-fit:cover;
     border-radius:50%;
+    border:3px solid #fff;
+    background:white;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.vs-premium{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#ffcc00,#ff9800);
+    color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:1.2rem;
     font-weight:900;
-    color:white;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(255,193,7,.4);
+    font-size:1rem;
+    box-shadow:0 8px 20px rgba(255,193,7,.35);
 }
 
 .fixture-footer{
-    border-top:1px solid #f1f5f9;
-    padding:18px;
+    border-top:1px solid #eef2f7;
+    background:#f8fafc;
+    padding:16px;
     text-align:center;
     font-weight:700;
-    color:var(--secondary);
-    background:#f8fafc;
+    color:#334155;
 }
 
 /* ================= RESULTS ================= */
 
-.results-container{
+.results-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.result-card{
     background:white;
-    border-radius:30px;
-    overflow:hidden;
-    box-shadow:0 18px 45px rgba(0,0,0,.06);
-}
-
-.results-header{
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    color:white;
-    padding:28px 35px;
-}
-
-.results-header h2{
-    margin:0;
-    font-size:1.8rem;
-    font-weight:900;
-}
-
-.result-row{
-    padding:28px 35px;
-    border-bottom:1px solid #eef2f7;
+    border-radius:22px;
+    padding:22px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+    border:1px solid #eef2f7;
     transition:.3s;
 }
 
-.result-row:hover{
-    background:#f8fbff;
-}
-
-.result-row:last-child{
-    border-bottom:none;
+.result-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 35px rgba(0,0,0,.08);
 }
 
 .result-date{
     color:#64748b;
-    font-size:.92rem;
-    margin-bottom:15px;
+    margin-bottom:18px;
+    font-size:.95rem;
 }
 
-.team-block{
-    font-size:1.1rem;
+.result-body{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.team-result{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:1rem;
     font-weight:800;
     color:#0f172a;
 }
 
-.score-display{
-    min-width:120px;
+.team-result:last-child{
+    justify-content:flex-end;
+}
+
+/* ===== MINI LOGOS ===== */
+
+.mini-team-logo{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.score-premium{
+    min-width:110px;
     text-align:center;
     padding:14px 20px;
-    border-radius:18px;
+    border-radius:16px;
     background:linear-gradient(135deg,#16a34a,#15803d);
     color:white;
-    font-size:1.4rem;
+    font-size:1.3rem;
     font-weight:900;
     box-shadow:0 8px 18px rgba(22,163,74,.25);
 }
 
-/* ================= EMPTY ================= */
-
-.empty-state{
-    padding:70px 20px;
-    text-align:center;
+.results-badge{
+    background:#e2e8f0;
+    padding:10px 18px;
+    border-radius:50px;
+    font-weight:700;
+    color:#0f172a;
 }
 
-.empty-state i{
+/* ================= EMPTY ================= */
+
+.empty-state-premium{
+    background:white;
+    border-radius:24px;
+    padding:60px 20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+.empty-icon{
     font-size:4rem;
-    color:#cbd5e1;
     margin-bottom:20px;
 }
 
-.empty-state h4{
-    font-weight:800;
-    color:#334155;
+.empty-state-premium h3{
+    color:#0f172a;
+    margin-bottom:10px;
 }
 
-.empty-state p{
+.empty-state-premium p{
     color:#64748b;
 }
 
@@ -300,176 +322,158 @@ body{
 
 @media(max-width:768px){
 
-    .hero-section{
-        padding:40px 25px;
-        min-height:auto;
+    .hero-content{
+        padding:25px;
     }
 
-    .hero-title{
-        font-size:2.5rem;
+    .hero-content h1{
+        font-size:2rem;
     }
 
-    .section-title{
-        font-size:1.5rem;
+    .hero-content p{
+        font-size:.95rem;
     }
 
-    .vs-circle{
-        width:65px;
-        height:65px;
-        font-size:1rem;
+    .hero-stats{
+        flex-direction:column;
     }
 
-    .score-display{
-        min-width:90px;
-        font-size:1.1rem;
+    .hero-stat-card{
+        width:100%;
+    }
+
+    .fixture-body{
+        flex-direction:column;
+    }
+
+    .result-body{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .team-result{
+        justify-content:center !important;
+    }
+
+    .score-premium{
+        width:100%;
     }
 
 }
 
 </style>
 
-<div class="container py-4">
+<div class="premium-page">
 
     <!-- ================= HERO ================= -->
 
-    <div class="hero-section mb-5">
+    <section class="premium-hero">
 
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
 
-            <div class="hero-badge">
-                <i class="bi bi-trophy-fill"></i>
-                Tournoi Officiel DRN 2026
-            </div>
+            <span class="hero-badge">
+                🏆 Tournoi Inter-Service DRN 2026
+            </span>
 
-            <h1 class="hero-title">
-                La <span>Coupe DRN</span><br>
-                commence ici.
+            <h1>
+                Coupe Officielle <span>DRN</span>
             </h1>
 
-            <p class="hero-text">
-                Découvrez les rencontres, les scores en direct,
-                les statistiques et toute l’actualité du tournoi
-                inter-services de la DRN dans une expérience premium.
+            <p>
+                Suivez les matchs à venir, les résultats officiels
+                et toute l’actualité du tournoi dans une expérience
+                moderne et immersive.
             </p>
 
-            <div class="row hero-stats g-4">
+            <div class="hero-stats">
 
-                <div class="col-md-4">
-                    <div class="stat-box">
-                        <h3>{{ matchs_joues|length }}</h3>
-                        <p>Matchs joués</p>
-                    </div>
+                <div class="hero-stat-card">
+                    <h3>{{ matchs_joues|length }}</h3>
+                    <span>Matchs joués</span>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="stat-box">
-                        <h3>{{ matchs_a_venir|length }}</h3>
-                        <p>Matchs à venir</p>
-                    </div>
+                <div class="hero-stat-card">
+                    <h3>{{ matchs_a_venir|length }}</h3>
+                    <span>Matchs à venir</span>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="stat-box">
-                        <h3>2026</h3>
-                        <p>Saison officielle</p>
-                    </div>
+                <div class="hero-stat-card">
+                    <h3>2026</h3>
+                    <span>Saison officielle</span>
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
 
-    <!-- ================= FIXTURES ================= -->
+    <!-- ================= MATCHS A VENIR ================= -->
 
-    <div class="section-header">
+    <div class="section-header-pro">
 
         <div>
-            <div class="section-title">
-                <i class="bi bi-calendar2-week-fill"></i>
-                Matchs à venir
-            </div>
-
-            <div class="section-line"></div>
+            <h2>📅 Matchs à venir</h2>
+            <p>
+                Découvrez les prochaines affiches du tournoi.
+            </p>
         </div>
 
     </div>
 
-    <div class="row g-4 mb-5">
+    <div class="fixtures-grid">
 
         {% for match in matchs_a_venir %}
 
-        <div class="col-lg-6 col-xl-4">
+        <div class="fixture-card-premium">
 
-            <div class="fixture-card">
+            <div class="fixture-top">
 
-                <div class="fixture-top">
+                ⏰ {{ match.date|date:"d M Y • H:i" }}
 
-                    <div class="fixture-date">
-                        <i class="bi bi-clock"></i>
-                        {{ match.date|date:"d M Y • H:i" }}
-                    </div>
+            </div>
 
-                </div>
+            <div class="fixture-body">
 
-                <div class="fixture-body">
+                <div class="team-side">
 
-                    <div class="row align-items-center text-center">
+                    {% if match.equipe1.logo %}
+                        <img src="{{ match.equipe1.logo.url }}"
+                             class="team-logo-premium">
+                    {% else %}
+                        <img src="{% static 'images/default-team.png' %}"
+                             class="team-logo-premium">
+                    {% endif %}
 
-                        <div class="col-5">
-
-                            {% if match.equipe1.logo %}
-                            <img src="{{ match.equipe1.logo.url }}"
-                                 class="team-logo">
-                            {% else %}
-                            <img src="{% static 'images/default-team.png' %}"
-                                 class="team-logo">
-                            {% endif %}
-
-                            <div class="team-name">
-                                {{ match.equipe1.nom }}
-                            </div>
-
-                        </div>
-
-                        <div class="col-2">
-
-                            <div class="vs-circle">
-                                VS
-                            </div>
-
-                        </div>
-
-                        <div class="col-5">
-
-                            {% if match.equipe2.logo %}
-                            <img src="{{ match.equipe2.logo.url }}"
-                                 class="team-logo">
-                            {% else %}
-                            <img src="{% static 'images/default-team.png' %}"
-                                 class="team-logo">
-                            {% endif %}
-
-                            <div class="team-name">
-                                {{ match.equipe2.nom }}
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <h4>{{ match.equipe1.nom }}</h4>
 
                 </div>
 
-                <div class="fixture-footer">
+                <div class="vs-premium">
+                    VS
+                </div>
 
-                    <i class="bi bi-geo-alt-fill"></i>
+                <div class="team-side">
 
-                    {{ match.stade|default:"Stade principal DRN" }}
+                    {% if match.equipe2.logo %}
+                        <img src="{{ match.equipe2.logo.url }}"
+                             class="team-logo-premium">
+                    {% else %}
+                        <img src="{% static 'images/default-team.png' %}"
+                             class="team-logo-premium">
+                    {% endif %}
+
+                    <h4>{{ match.equipe2.nom }}</h4>
 
                 </div>
+
+            </div>
+
+            <div class="fixture-footer">
+
+                🏟 {{ match.stade|default:"Stade principal DRN" }}
 
             </div>
 
@@ -477,17 +481,17 @@ body{
 
         {% empty %}
 
-        <div class="col-12">
+        <div class="empty-state-premium">
 
-            <div class="empty-state bg-white rounded-5 shadow-sm">
-
-                <i class="bi bi-calendar-x"></i>
-
-                <h4>Aucun match programmé</h4>
-
-                <p>Les prochaines rencontres apparaîtront ici.</p>
-
+            <div class="empty-icon">
+                📅
             </div>
+
+            <h3>Aucun match programmé</h3>
+
+            <p>
+                Les prochaines rencontres seront affichées ici.
+            </p>
 
         </div>
 
@@ -495,47 +499,67 @@ body{
 
     </div>
 
-    <!-- ================= RESULTS ================= -->
+    <!-- ================= RESULTATS ================= -->
 
-    <div class="results-container">
+    <div class="section-header-pro mt-5">
 
-        <div class="results-header d-flex justify-content-between align-items-center">
-
-            <h2>
-                <i class="bi bi-trophy-fill text-warning"></i>
-                Résultats Officiels
-            </h2>
-
-            <span class="badge bg-light text-dark px-4 py-2 fs-6">
-                {{ matchs_joues|length }} Match(s)
-            </span>
-
+        <div>
+            <h2>🏆 Résultats Officiels</h2>
+            <p>
+                Consultez les derniers scores enregistrés.
+            </p>
         </div>
+
+        <span class="results-badge">
+            {{ matchs_joues|length }} Match(s)
+        </span>
+
+    </div>
+
+    <div class="results-wrapper">
 
         {% for m in matchs_joues %}
 
-        <div class="result-row">
+        <div class="result-card">
 
             <div class="result-date">
 
-                <i class="bi bi-calendar-event"></i>
-
-                {{ m.date|date:"d M Y • H:i" }}
+                📅 {{ m.date|date:"d M Y • H:i" }}
 
             </div>
 
-            <div class="d-flex align-items-center justify-content-between gap-3">
+            <div class="result-body">
 
-                <div class="team-block text-end w-100">
-                    {{ m.equipe1.nom }}
+                <div class="team-result">
+
+                    {% if m.equipe1.logo %}
+                        <img src="{{ m.equipe1.logo.url }}"
+                             class="mini-team-logo">
+                    {% endif %}
+
+                    <span>
+                        {{ m.equipe1.nom }}
+                    </span>
+
                 </div>
 
-                <div class="score-display">
+                <div class="score-premium">
+
                     {{ m.score1 }} - {{ m.score2 }}
+
                 </div>
 
-                <div class="team-block w-100">
-                    {{ m.equipe2.nom }}
+                <div class="team-result">
+
+                    {% if m.equipe2.logo %}
+                        <img src="{{ m.equipe2.logo.url }}"
+                             class="mini-team-logo">
+                    {% endif %}
+
+                    <span>
+                        {{ m.equipe2.nom }}
+                    </span>
+
                 </div>
 
             </div>
@@ -544,13 +568,17 @@ body{
 
         {% empty %}
 
-        <div class="empty-state">
+        <div class="empty-state-premium">
 
-            <i class="bi bi-trophy"></i>
+            <div class="empty-icon">
+                ⚽
+            </div>
 
-            <h4>Aucun résultat disponible</h4>
+            <h3>Aucun résultat disponible</h3>
 
-            <p>Les scores des matchs terminés apparaîtront ici.</p>
+            <p>
+                Les scores des matchs terminés apparaîtront ici.
+            </p>
 
         </div>
 

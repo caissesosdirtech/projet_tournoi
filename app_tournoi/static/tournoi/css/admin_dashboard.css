@@ -1074,3 +1074,457 @@ font-size:16px;
     color: white;
     font-weight: 600;
 }
+
+
+/* ===================================================
+   PREMIUM ADMIN DASHBOARD 2026
+=================================================== */
+
+body{
+    background:
+        radial-gradient(circle at top left, rgba(123,92,255,0.15), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(0,212,255,0.10), transparent 25%),
+        #0f172a;
+    color:#fff;
+}
+
+/* ================= HEADER PREMIUM ================= */
+
+.header{
+    background: rgba(15,23,42,0.92);
+    backdrop-filter: blur(14px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    height:95px;
+    padding:0 35px;
+}
+
+.header h1{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.header-user{
+    gap:14px;
+}
+
+.btn-user{
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius:14px;
+    padding:12px 18px;
+    transition:0.3s;
+}
+
+.btn-user:hover{
+    transform:translateY(-2px);
+    background: rgba(255,255,255,0.12);
+}
+
+.btn-logout{
+    background: linear-gradient(135deg,#ef4444,#dc2626);
+    border-radius:14px;
+    padding:12px 18px;
+    transition:0.3s;
+    box-shadow:0 10px 20px rgba(239,68,68,0.25);
+}
+
+.btn-logout:hover{
+    transform:translateY(-2px);
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+    padding:25px;
+    gap:25px;
+}
+
+/* ================= SIDEBAR PREMIUM ================= */
+
+.sidebar{
+    width:290px;
+    border-radius:28px;
+    background: rgba(15,23,42,0.92);
+    border:1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px);
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    padding:25px 18px;
+}
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:20px;
+}
+
+.sidebar ul li{
+    margin-bottom:10px;
+}
+
+.sidebar ul li a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:500;
+    color:#e2e8f0;
+    transition:all 0.3s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.sidebar ul li a::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:0;
+    width:0;
+    height:100%;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    transition:0.3s;
+    z-index:0;
+}
+
+.sidebar ul li a span,
+.sidebar ul li a i{
+    position:relative;
+    z-index:2;
+}
+
+.sidebar ul li a:hover::before,
+.sidebar li.active a::before{
+    width:100%;
+}
+
+.sidebar ul li a:hover,
+.sidebar li.active a{
+    transform:translateX(4px);
+    color:#fff;
+}
+
+.sidebar ul li a i{
+    font-size:16px;
+    opacity:0.9;
+}
+
+/* ================= SUBMENU ================= */
+
+.has-submenu > a{
+    font-weight:700;
+}
+
+.submenu{
+    margin-top:8px;
+    padding-left:10px;
+}
+
+.submenu li{
+    margin-bottom:6px;
+}
+
+.submenu li a{
+    background:rgba(255,255,255,0.03);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;
+}
+
+.submenu li a:hover{
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
+}
+
+/* ================= CONTENT ================= */
+
+.content{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.96),
+            rgba(248,250,252,0.96)
+        );
+    border-radius:30px;
+    padding:35px;
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.15);
+    border:1px solid rgba(255,255,255,0.7);
+    color:#1e293b;
+}
+
+/* ================= CARDS ================= */
+
+.card{
+    border:none;
+    border-radius:24px;
+    background:linear-gradient(145deg,#ffffff,#f8fafc);
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+    transition:0.35s;
+    overflow:hidden;
+    position:relative;
+}
+
+.card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.12);
+}
+
+/* ================= TABLES ================= */
+
+.table,
+.table-premium{
+    border-radius:22px;
+    overflow:hidden;
+    background:#fff;
+    border:none;
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.06);
+}
+
+.table th,
+.table-premium th{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    border:none;
+    padding:16px;
+}
+
+.table td,
+.table-premium td{
+    padding:16px;
+    border-bottom:1px solid #eef2f7;
+}
+
+.table tbody tr,
+.table-premium tbody tr{
+    transition:0.3s;
+}
+
+.table tbody tr:hover,
+.table-premium tbody tr:hover{
+    background:#f8fafc;
+    transform:scale(1.005);
+}
+
+/* ================= BADGES ================= */
+
+.badge,
+.badge-blue,
+.badge-green,
+.badge-orange{
+    border-radius:30px;
+    padding:8px 16px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.4px;
+}
+
+/* ================= BOUTONS ================= */
+
+.btn-primary,
+.btn-premium,
+.btn-add{
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
+    color:#fff;
+    transition:0.3s;
+    box-shadow:0 10px 20px rgba(59,130,246,0.25);
+}
+
+.btn-primary:hover,
+.btn-premium:hover,
+.btn-add:hover{
+    transform:translateY(-2px);
+}
+
+.btn-light{
+    border-radius:14px;
+}
+
+.btn-action{
+    border-radius:12px;
+    padding:8px 12px;
+    font-weight:600;
+}
+
+.btn-action.edit{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.btn-action.delete{
+    background:#fef2f2;
+    color:#dc2626;
+}
+
+/* ================= FILTER BAR ================= */
+
+.filter-bar,
+.filter-bar-premium{
+    border-radius:22px;
+    background:rgba(255,255,255,0.96);
+    border:1px solid #e2e8f0;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.05);
+}
+
+.search-field input,
+.search-wrapper input,
+.select-wrapper select{
+    border-radius:14px;
+    background:#f8fafc;
+    border:1px solid #dbeafe;
+}
+
+/* ================= MODALS ================= */
+
+.modern-modal{
+    border-radius:28px !important;
+    background:#ffffff;
+    border:none;
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.35);
+    padding:30px;
+}
+
+.modern-modal h2{
+    font-size:26px;
+    margin-bottom:20px;
+    color:#1e293b;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid #dbeafe;
+    background:#f8fafc;
+    transition:0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 4px rgba(99,102,241,0.12);
+    outline:none;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:25px;
+}
+
+.btn-save{
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:white;
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.btn-cancel{
+    background:#f1f5f9;
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+    background:rgba(15,23,42,0.92);
+    backdrop-filter:blur(12px);
+    color:#cbd5e1;
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,0.05);
+    height:70px;
+    margin-top:25px;
+}
+
+/* ================= NOTIFICATION BADGE ================= */
+
+.notif-badge{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    box-shadow:0 5px 15px rgba(239,68,68,0.4);
+    font-weight:700;
+}
+
+/* ================= PAGINATION ================= */
+
+.pagination-modern .page-btn{
+    border-radius:12px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+}
+
+.pagination-modern .page-btn.active{
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+    }
+
+    .content{
+        padding:20px;
+    }
+
+    .header{
+        padding:0 20px;
+    }
+
+    .header h1{
+        font-size:20px;
+    }
+}

@@ -2,464 +2,576 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-<!-- ===================== HEAD ===================== -->
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard – Tournoi</title>
 
-    <!-- CSS PRINCIPAL -->
+    <!-- CSS -->
     <link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
 
-    <style>
-        .blur-background {
-            filter: blur(5px);
-            pointer-events: none;
-            user-select: none;
-        }
-    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 
 <body>
 
-<!-- ===================== HEADER ===================== -->
+<!-- ================= HEADER ================= -->
 <header class="header">
-    <h1>🏆 Admin – Tournoi</h1>
-    <div class="header-user">
-        <a class="btn-user">👤 Super Admin</a>
-        <a href="{% url 'admin_logout' %}" class="btn-logout">Déconnexion</a>
+
+    <div class="header-left">
+        <h1>🏆 Admin Tournament Panel</h1>
+        <span>Gestion complète du tournoi</span>
     </div>
+
+    <div class="header-user">
+
+        <a class="btn-user">
+            <div>
+                <strong>Super Admin</strong><br>
+                <small>Administration</small>
+            </div>
+        </a>
+
+        <a href="{% url 'admin_logout' %}" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            Déconnexion
+        </a>
+
+    </div>
+
 </header>
 
-<!-- ===================== MODALS ===================== -->
-
-<!-- MODAL AJOUT INFO -->
-<div id="modalInfo" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalInfo')">&times;</span>
-        <h2>📝 Ajouter une information</h2>
-        <form id="formAjouterInfo" method="POST" enctype="multipart/form-data" action="{% url 'ajouter_info' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Titre</label>
-                <input type="text" name="titre" placeholder="Titre de l'information" required>
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="4" placeholder="Décrire l'information..." required></textarea>
-            </div>
-            <div class="form-group">
-                <label>Niveau</label>
-                <select name="niveau" required>
-                    <option value="">Choisir un niveau</option>
-                    <option value="urgent">🚨 Urgent</option>
-                    <option value="important">⚠ Important</option>
-                    <option value="information">ℹ Information</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Joindre un fichier</label>
-                <input type="file" name="fichier">
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn-save">✅ Publier</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalInfo')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL AJOUT EQUIPE -->
-<div id="modalEquipe" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalEquipe')">&times;</span>
-        <h2>➕ Ajouter une équipe</h2>
-        <form method="POST" action="{% url 'ajouter_equipe' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Nom de l'équipe</label>
-                <input type="text" name="nom" required>
-            </div>
-            <div class="form-group">
-                <label>Coach 1</label>
-                <input type="text" name="coach1">
-            </div>
-            <div class="form-group">
-                <label>Coach 2</label>
-                <input type="text" name="coach2">
-            </div>
-            <div class="form-group">
-                <label>Logo de l'équipe</label>
-                <input type="file" name="logo">
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn-save">✅ Enregistrer</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalEquipe')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL AJOUT JOUEUR -->
-<div id="modalJoueur" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalJoueur')">&times;</span>
-        <h2>👤 Ajouter un joueur</h2>
-        <div id="joueur-message"></div>
-        <!-- ✅ Pas de method/action : géré par fetch -->
-        <form id="formJoueur">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Nom</label>
-                <input type="text" name="nom" required>
-            </div>
-            <div class="form-group">
-                <label>Prénom</label>
-                <input type="text" name="prenom" required>
-            </div>
-            <div class="form-group">
-                <label>Numéro</label>
-                <input type="number" name="numero" required>
-            </div>
-            <div class="form-group">
-                <label>Poste</label>
-                <select name="poste" required>
-                    <option value="">Choisir</option>
-                    <option value="Gardien">Gardien</option>
-                    <option value="Défenseur">Défenseur</option>
-                    <option value="Milieu">Milieu</option>
-                    <option value="Attaquant">Attaquant</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Équipe</label>
-                <select name="equipe_id" required>
-                    <option value="">Choisir une équipe</option>
-                    {% for equipe in equipes %}
-                    <option value="{{ equipe.id }}">{{ equipe.nom }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn-save">✅ Ajouter</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalJoueur')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL EDITER JOUEUR -->
-<div id="modalEditJoueur" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalEditJoueur')">&times;</span>
-        <h2>✏ Modifier un joueur</h2>
-        <div id="edit-joueur-message"></div>
-        <form id="formEditJoueur">
-            {% csrf_token %}
-            <input type="hidden" id="edit-id">
-            <div class="form-group">
-                <label>Nom</label>
-                <input type="text" id="edit-nom" required>
-            </div>
-            <div class="form-group">
-                <label>Prénom</label>
-                <input type="text" id="edit-prenom" required>
-            </div>
-            <div class="form-group">
-                <label>Numéro</label>
-                <input type="number" id="edit-numero" required>
-            </div>
-            <div class="form-group">
-                <label>Poste</label>
-                <select id="edit-poste">
-                    <option value="Gardien">Gardien</option>
-                    <option value="Défenseur">Défenseur</option>
-                    <option value="Milieu">Milieu</option>
-                    <option value="Attaquant">Attaquant</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn-save">✅ Modifier</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalEditJoueur')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL SUPPRIMER JOUEUR -->
-<div id="modalDelete" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalDelete')">&times;</span>
-        <h3 id="deleteText">Supprimer ?</h3>
-        <form method="POST" id="formDelete">
-            {% csrf_token %}
-            <div class="modal-actions">
-                <button type="submit" class="btn-save" style="background:#e74c3c;">🗑 Oui, supprimer</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalDelete')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL SUPPRIMER EQUIPE -->
-<div id="modalDeleteEquipe" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalDeleteEquipe')">&times;</span>
-        <h3 id="deleteEquipeText">Supprimer ?</h3>
-        <form method="POST" id="formDeleteEquipe">
-            {% csrf_token %}
-            <div class="modal-actions">
-                <button type="submit" class="btn-save" style="background:#e74c3c;">🗑 Oui, supprimer</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalDeleteEquipe')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL EDIT EQUIPE -->
-<div id="modalEditEquipe" class="modal">
-    <div class="modal-content modern-modal">
-        <span class="close" onclick="closeModal('modalEditEquipe')">&times;</span>
-        <h2>✏ Modifier une équipe</h2>
-        <form method="POST" id="formEditEquipe">
-            {% csrf_token %}
-            <input type="hidden" id="edit_equipe_id" name="id">
-            <div class="form-group">
-                <label>Nom équipe</label>
-                <input type="text" id="edit_nom_equipe" name="nom" required>
-            </div>
-            <div class="form-group">
-                <label>Coach principal</label>
-                <input type="text" id="edit_coach1" name="coach1">
-            </div>
-            <div class="form-group">
-                <label>Coach adjoint</label>
-                <input type="text" id="edit_coach2" name="coach2">
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn-save">💾 Modifier</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('modalEditEquipe')">❌ Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- ===================== CONTAINER ===================== -->
+<!-- ================= CONTAINER ================= -->
 <div class="container">
 
-    <!-- ===================== SIDEBAR ===================== -->
+    <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar">
+
         <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="javascript:void(0);" onclick="openModal('modalInfo')">📝 Ajouter Info</a></li>
-            <li><a href="{% url 'programmer_match' %}">➕ Programmer un match</a></li>
 
-            <li class="has-submenu">
-                <a href="#">👥 Équipes & Joueurs</a>
-                <ul class="submenu">
-                    <li><a href="{% url 'liste_equipes' %}">📋 Liste des équipes</a></li>
-                    <li><a href="{% url 'liste_joueurs' %}">📋 Liste des joueurs</a></li>
-                    <li><a href="javascript:void(0)" onclick="openModal('modalEquipe')">➕ Ajouter Équipe</a></li>
-                    <li><a href="javascript:void(0)" onclick="openModal('modalJoueur')">➕ Ajouter Joueur</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="{% url 'liste_reclamations' %}">📩 Liste Recours
-                    {% if reclamations_en_attente > 0 %}
-                        <span class="notif-badge">{{ reclamations_en_attente }}</span>
-                    {% endif %}
+            <li class="active">
+                <a href="{% url 'admin_dashboard' %}">
+                    <span>Dashboard</span>
+                    <i class="fas fa-chart-line"></i>
                 </a>
             </li>
 
-            <li class="has-submenu">
-                <a href="#">📸 Gestion médias</a>
-                <ul class="submenu">
-                    <li><a href="{% url 'ajouter_media' %}">➕ Ajouter photos / vidéos</a></li>
-                    <li><a href="{% url 'supprimer_media' %}">🗑 Supprimer photos / vidéos</a></li>
-                    <li><a href="{% url 'medias_archives' %}">🗂 Archives</a></li>
-                </ul>
+            <li>
+                <a href="javascript:void(0);" onclick="openModal('modalInfo')">
+                    <span>Ajouter Info</span>
+                    <i class="fas fa-bullhorn"></i>
+                </a>
             </li>
 
-            <li><a href="/admin/">🔐 Django Admin</a></li>
-            <li><a href="{% url 'dashboard' %}">🌍 Site public</a></li>
+            <li>
+                <a href="{% url 'programmer_match' %}">
+                    <span>Programmer Match</span>
+                    <i class="fas fa-calendar-plus"></i>
+                </a>
+            </li>
+
+            <!-- ÉQUIPES -->
+            <li class="has-submenu">
+
+                <a href="javascript:void(0);">
+                    <span>Équipes & Joueurs</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="{% url 'liste_equipes' %}">
+                            <span>Liste Équipes</span>
+                            <i class="fas fa-shield-alt"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'liste_joueurs' %}">
+                            <span>Liste Joueurs</span>
+                            <i class="fas fa-users"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0)"
+                           onclick="openModal('modalEquipe')">
+                            <span>Ajouter Équipe</span>
+                            <i class="fas fa-plus-circle"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0)"
+                           onclick="openModal('modalJoueur')">
+                            <span>Ajouter Joueur</span>
+                            <i class="fas fa-user-plus"></i>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <!-- RECOURS -->
+            <li>
+
+                <a href="{% url 'liste_reclamations' %}">
+                    <span>
+                        Liste Recours
+
+                        {% if reclamations_en_attente > 0 %}
+                            <span class="notif-badge">
+                                {{ reclamations_en_attente }}
+                            </span>
+                        {% endif %}
+                    </span>
+
+                    <i class="fas fa-envelope"></i>
+                </a>
+
+            </li>
+
+            <!-- MÉDIAS -->
+            <li class="has-submenu">
+
+                <a href="#">
+                    <span>Gestion Médias</span>
+                    <i class="fas fa-photo-video"></i>
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="{% url 'ajouter_media' %}">
+                            <span>Ajouter Médias</span>
+                            <i class="fas fa-upload"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'supprimer_media' %}">
+                            <span>Supprimer Médias</span>
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'medias_archives' %}">
+                            <span>Archives</span>
+                            <i class="fas fa-folder-open"></i>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <li>
+                <a href="/admin/">
+                    <span>Django Admin</span>
+                    <i class="fas fa-lock"></i>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <span>Site Public</span>
+                    <i class="fas fa-globe"></i>
+                </a>
+            </li>
+
         </ul>
+
     </aside>
 
-    <!-- ===================== CONTENT ===================== -->
+    <!-- ================= CONTENT ================= -->
     <main class="content">
+
         {% if page == "liste_joueurs" %}
+
             {% include "matchs/liste_joueurs.html" %}
+
         {% elif page == "liste_equipes" %}
+
             {% include "matchs/liste_equipes.html" %}
+
         {% else %}
+
             {% include "tournoi/dashboard_cards.html" %}
+
         {% endif %}
+
     </main>
 
 </div>
 
-<!-- ===================== FOOTER ===================== -->
+<!-- ================= FOOTER ================= -->
 <footer class="footer">
-    <p>© 2026 – Plateforme de gestion du tournoi</p>
+    <p>© 2026 – Plateforme Premium de gestion du tournoi</p>
 </footer>
 
-<!-- ===================== SCRIPTS ===================== -->
+<!-- ========================================================= -->
+<!-- ===================== MODALS ============================ -->
+<!-- ========================================================= -->
+
+<!-- MODAL INFO -->
+<div id="modalInfo" class="modal">
+    <div class="modal-content modern-modal">
+
+        <span class="close"
+              onclick="closeModal('modalInfo')">&times;</span>
+
+        <h2>📝 Ajouter une information</h2>
+
+        <form id="formAjouterInfo"
+              method="POST"
+              enctype="multipart/form-data"
+              action="{% url 'ajouter_info' %}">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Titre</label>
+                <input type="text"
+                       name="titre"
+                       placeholder="Titre..."
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description"
+                          rows="4"
+                          placeholder="Description..."
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Niveau</label>
+
+                <select name="niveau" required>
+
+                    <option value="">Choisir</option>
+
+                    <option value="urgent">
+                        🚨 Urgent
+                    </option>
+
+                    <option value="important">
+                        ⚠ Important
+                    </option>
+
+                    <option value="information">
+                        ℹ Information
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Fichier</label>
+                <input type="file" name="fichier">
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="submit" class="btn-save">
+                    ✅ Publier
+                </button>
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalInfo')">
+                    ❌ Annuler
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- MODAL EQUIPE -->
+<div id="modalEquipe" class="modal">
+    <div class="modal-content modern-modal">
+
+        <span class="close"
+              onclick="closeModal('modalEquipe')">&times;</span>
+
+        <h2>➕ Ajouter une équipe</h2>
+
+        <form method="POST"
+              action="{% url 'ajouter_equipe' %}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" name="nom" required>
+            </div>
+
+            <div class="form-group">
+                <label>Coach 1</label>
+                <input type="text" name="coach1">
+            </div>
+
+            <div class="form-group">
+                <label>Coach 2</label>
+                <input type="text" name="coach2">
+            </div>
+
+            <div class="form-group">
+                <label>Logo</label>
+                <input type="file" name="logo">
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="submit" class="btn-save">
+                    ✅ Enregistrer
+                </button>
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalEquipe')">
+                    ❌ Annuler
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- MODAL JOUEUR -->
+<div id="modalJoueur" class="modal">
+
+    <div class="modal-content modern-modal">
+
+        <span class="close"
+              onclick="closeModal('modalJoueur')">&times;</span>
+
+        <h2>👤 Ajouter un joueur</h2>
+
+        <div id="joueur-message"></div>
+
+        <form id="formJoueur">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" name="nom" required>
+            </div>
+
+            <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" name="prenom" required>
+            </div>
+
+            <div class="form-group">
+                <label>Numéro</label>
+                <input type="number" name="numero" required>
+            </div>
+
+            <div class="form-group">
+
+                <label>Poste</label>
+
+                <select name="poste" required>
+
+                    <option value="">Choisir</option>
+
+                    <option value="Gardien">Gardien</option>
+                    <option value="Défenseur">Défenseur</option>
+                    <option value="Milieu">Milieu</option>
+                    <option value="Attaquant">Attaquant</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Équipe</label>
+
+                <select name="equipe_id" required>
+
+                    <option value="">Choisir une équipe</option>
+
+                    {% for equipe in equipes %}
+                        <option value="{{ equipe.id }}">
+                            {{ equipe.nom }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="submit" class="btn-save">
+                    ✅ Ajouter
+                </button>
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalJoueur')">
+                    ❌ Annuler
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- ===================== JAVASCRIPT ======================== -->
+<!-- ========================================================= -->
+
 <script>
 
-/* ===== OPEN / CLOSE MODAL ===== */
+/* ================= MODALS ================= */
+
 function openModal(id) {
+
     document.getElementById(id).classList.add('active');
-    document.querySelector('.container').classList.add('blur-background');
-    document.querySelector('header').classList.add('blur-background');
-    document.querySelector('footer').classList.add('blur-background');
+
+    document.querySelector('.container')
+        .classList.add('blur-background');
+
+    document.querySelector('header')
+        .classList.add('blur-background');
+
+    document.querySelector('footer')
+        .classList.add('blur-background');
 }
 
 function closeModal(id) {
+
     document.getElementById(id).classList.remove('active');
-    document.querySelector('.container').classList.remove('blur-background');
-    document.querySelector('header').classList.remove('blur-background');
-    document.querySelector('footer').classList.remove('blur-background');
+
+    document.querySelector('.container')
+        .classList.remove('blur-background');
+
+    document.querySelector('header')
+        .classList.remove('blur-background');
+
+    document.querySelector('footer')
+        .classList.remove('blur-background');
 }
 
-/* ===== SUPPRIMER JOUEUR ===== */
-function ouvrirModalDelete(id, nom, prenom) {
-    document.getElementById("deleteText").innerHTML =
-        `Supprimer <b>${nom} ${prenom}</b> ?`;
-    document.getElementById("formDelete").action =
-        `/joueur/supprimer/${id}/`;
-    openModal('modalDelete');
-}
+/* ================= SUBMENU ================= */
 
-/* ===== SUPPRIMER EQUIPE ===== */
-function ouvrirModalDeleteEquipe(id, nom) {
-    document.getElementById("deleteEquipeText").innerHTML =
-        `⚠️ Supprimer l'équipe <br><strong>${nom}</strong> ?`;
-    document.getElementById("formDeleteEquipe").action =
-        `/equipes/${id}/supprimer/`;
-    openModal('modalDeleteEquipe');
-}
+document.querySelectorAll('.has-submenu > a').forEach(item => {
 
-/* ===== EDITER EQUIPE ===== */
-function ouvrirModalEditEquipe(id, nom, coach1, coach2) {
-    document.getElementById("edit_equipe_id").value = id;
-    document.getElementById("edit_nom_equipe").value = nom;
-    document.getElementById("edit_coach1").value = coach1;
-    document.getElementById("edit_coach2").value = coach2;
-    document.getElementById("formEditEquipe").action = `/equipes/${id}/editer/`;
-    openModal('modalEditEquipe');
-}
+    item.addEventListener('click', function(e){
 
-/* ===== EDITER JOUEUR ===== */
-function ouvrirModalEdit(id, nom, prenom, numero, poste) {
-    document.getElementById("edit-id").value = id;
-    document.getElementById("edit-nom").value = nom;
-    document.getElementById("edit-prenom").value = prenom;
-    document.getElementById("edit-numero").value = numero;
-    document.getElementById("edit-poste").value = poste;
-    openModal('modalEditJoueur');
-}
-
-/* ===== AJOUT JOUEUR — un seul listener ===== */
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.getElementById('formJoueur').addEventListener('submit', function(e) {
         e.preventDefault();
-        e.stopPropagation();
 
-        const form = document.getElementById('formJoueur');
-        const messageDiv = document.getElementById('joueur-message');
-        messageDiv.innerHTML = '<p style="color:#666;padding:8px;">⏳ Envoi en cours...</p>';
+        const submenu = this.nextElementSibling;
 
-        const data = new FormData(form);
+        submenu.style.display =
+            submenu.style.display === 'block'
+            ? 'none'
+            : 'block';
 
-        fetch("{% url 'ajouter_joueur' %}", {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            body: data
-        })
-        .then(response => response.json())
-        .then(result => {
-            messageDiv.innerHTML = '';
-            const div = document.createElement('div');
-            div.classList.add('modal-alert');
-
-            if (result.status === 'success') {
-                div.style.backgroundColor = '#28a745';
-                div.style.color = '#fff';
-                div.style.padding = '10px';
-                div.style.borderRadius = '6px';
-                div.innerText = result.message;
-                messageDiv.appendChild(div);
-                form.reset();
-                // ✅ Ferme le modal et recharge après 1.5s
-                setTimeout(() => {
-                    closeModal('modalJoueur');
-                    messageDiv.innerHTML = '';
-                    window.location.reload();
-                }, 1500);
-            } else {
-                div.style.backgroundColor = '#ff4d4d';
-                div.style.color = '#fff';
-                div.style.padding = '10px';
-                div.style.borderRadius = '6px';
-                div.innerText = result.message;
-                messageDiv.appendChild(div);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            messageDiv.innerHTML =
-                '<div style="background:#ff4d4d;color:white;padding:10px;border-radius:6px;">❌ Erreur de connexion</div>';
-        });
-    });
-
-    /* ===== EDIT JOUEUR ===== */
-    document.getElementById("formEditJoueur").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const id = document.getElementById("edit-id").value;
-        const data = new FormData();
-        data.append('nom', document.getElementById("edit-nom").value);
-        data.append('prenom', document.getElementById("edit-prenom").value);
-        data.append('numero', document.getElementById("edit-numero").value);
-        data.append('poste', document.getElementById("edit-poste").value);
-
-        fetch(`/joueur/editer/${id}/`, {
-            method: "POST",
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: data
-        })
-        .then(response => response.json())
-        .then(result => {
-            const messageDiv = document.getElementById("edit-joueur-message");
-            messageDiv.innerHTML = '';
-            const div = document.createElement("div");
-            div.style.padding = '10px';
-            div.style.borderRadius = '6px';
-            div.style.color = '#fff';
-            if (result.status === "success") {
-                div.style.background = "#28a745";
-                div.innerText = result.message;
-                messageDiv.appendChild(div);
-                setTimeout(() => {
-                    closeModal('modalEditJoueur');
-                    window.location.reload();
-                }, 1500);
-            } else {
-                div.style.background = "#ff4d4d";
-                div.innerText = result.message;
-                messageDiv.appendChild(div);
-            }
-        })
-        .catch(() => {
-            alert("❌ Erreur serveur !");
-        });
     });
 
 });
+
+/* ================= AJOUT JOUEUR ================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formJoueur =
+        document.getElementById('formJoueur');
+
+    if(formJoueur){
+
+        formJoueur.addEventListener('submit', function(e) {
+
+            e.preventDefault();
+
+            const messageDiv =
+                document.getElementById('joueur-message');
+
+            messageDiv.innerHTML =
+                '<div class="alert-success">⏳ Envoi...</div>';
+
+            const data = new FormData(this);
+
+            fetch("{% url 'ajouter_joueur' %}", {
+
+                method: 'POST',
+
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+
+                body: data
+
+            })
+
+            .then(response => response.json())
+
+            .then(result => {
+
+                if (result.status === 'success') {
+
+                    messageDiv.innerHTML =
+                        `<div class="alert-success">
+                            ${result.message}
+                        </div>`;
+
+                    formJoueur.reset();
+
+                    setTimeout(() => {
+
+                        closeModal('modalJoueur');
+
+                        window.location.reload();
+
+                    }, 1500);
+
+                } else {
+
+                    messageDiv.innerHTML =
+                        `<div class="btn-danger">
+                            ${result.message}
+                        </div>`;
+                }
+
+            })
+
+            .catch(error => {
+
+                messageDiv.innerHTML =
+                    `<div class="btn-danger">
+                        ❌ Erreur serveur
+                    </div>`;
+
+            });
+
+        });
+
+    }
+
+});
+
 </script>
 
 </body>

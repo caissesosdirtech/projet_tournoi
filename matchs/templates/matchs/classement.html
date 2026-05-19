@@ -3,64 +3,746 @@
 
 {% block content %}
 
-<h2>📊 Classement général</h2>
+<div class="classement-page">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Position</th>
-            <th>Équipe</th>
-            <th>MJ</th>
-            <th>V</th>
-            <th>N</th>
-            <th>D</th>
-            <th>BP</th>
-            <th>BC</th>
-            <th>Diff</th>
-            <th>Pts</th>
-        </tr>
-    </thead>
+    <!-- HERO -->
+    <div class="classement-hero">
 
-    <tbody>
-        {% for ligne in classement %}
-        <tr 
-            {% if forloop.first %} style="background-color:#ffd700;font-weight:bold;" {% endif %}
-            {% if forloop.counter == 2 %} style="background-color:#c0c0c0;font-weight:bold;" {% endif %}
-            {% if forloop.counter == 3 %} style="background-color:#cd7f32;font-weight:bold;" {% endif %}
-        >
-            <td>{{ forloop.counter }}</td>
+        <div class="hero-overlay"></div>
 
-            <td>
-                {% if ligne.equipe.logo %}
-                    <img src="{{ ligne.equipe.logo.url }}" class="mini-logo">
-                {% endif %}
-                <strong>{{ ligne.equipe.nom }}</strong>
-            </td>
+        <div class="hero-content">
 
-            <td>{{ ligne.MJ }}</td>
-            <td>{{ ligne.V }}</td>
-            <td>{{ ligne.N }}</td>
-            <td>{{ ligne.D }}</td>
-            <td>{{ ligne.BP }}</td>
-            <td>{{ ligne.BC }}</td>
-            <td>{{ ligne.Diff }}</td>
-            <td><strong>{{ ligne.Pts }}</strong></td>
-        </tr>
+            <div class="hero-left">
 
-        {% empty %}
-        <tr>
-            <td colspan="10" style="text-align:center;">
-                Aucune équipe enregistrée
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <span class="hero-badge">
+                    🏆 Tournoi Inter-Service DRN
+                </span>
 
-{% if not premier_match_joue %}
-<p style="margin-top:15px; color:#555;">
-    ℹ️ Le classement sera mis à jour automatiquement après les premiers matchs.
-</p>
-{% endif %}
+                <h1>Classement Général</h1>
+
+                <p>
+                    Consultez le classement officiel des équipes,
+                    les statistiques des matchs et les performances
+                    en temps réel du tournoi.
+                </p>
+
+                <div class="hero-stats">
+
+                    <div class="stat-card">
+                        <h2>{{ classement|length }}</h2>
+                        <span>Équipes</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h2>2026</h2>
+                        <span>Saison</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h2>DRN</h2>
+                        <span>Compétition</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="hero-right">
+
+                <div class="trophy-box">
+                    🏆
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLEAU -->
+    <div class="table-wrapper">
+
+        <table class="classement-table">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Équipe</th>
+                    <th>MJ</th>
+                    <th>V</th>
+                    <th>N</th>
+                    <th>D</th>
+                    <th>BP</th>
+                    <th>BC</th>
+                    <th>Diff</th>
+                    <th>Pts</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for ligne in classement %}
+
+                <tr
+
+                    class="
+                    {% if forloop.first %}gold-row{% endif %}
+                    {% if forloop.counter == 2 %}silver-row{% endif %}
+                    {% if forloop.counter == 3 %}bronze-row{% endif %}
+                    "
+
+                >
+
+                    <!-- POSITION -->
+                    <td>
+
+                        <div class="rank-box">
+
+                            {% if forloop.first %}
+                                🥇
+                            {% elif forloop.counter == 2 %}
+                                🥈
+                            {% elif forloop.counter == 3 %}
+                                🥉
+                            {% else %}
+                                {{ forloop.counter }}
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                    <!-- EQUIPE -->
+                    <td>
+
+                        <div class="team-info">
+
+                            {% if ligne.equipe.logo %}
+
+                                <img src="{{ ligne.equipe.logo.url }}"
+                                     class="team-logo">
+
+                            {% else %}
+
+                                <div class="team-logo placeholder">
+                                    ⚽
+                                </div>
+
+                            {% endif %}
+
+                            <div class="team-details">
+                                <h4>{{ ligne.equipe.nom }}</h4>
+                                <span>Équipe participante</span>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <!-- STATS -->
+                    <td>{{ ligne.MJ }}</td>
+                    <td>{{ ligne.V }}</td>
+                    <td>{{ ligne.N }}</td>
+                    <td>{{ ligne.D }}</td>
+
+                    <td>
+                        <span class="stat-pill blue">
+                            {{ ligne.BP }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="stat-pill red">
+                            {{ ligne.BC }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        {% if ligne.Diff > 0 %}
+                            <span class="diff positive">
+                                +{{ ligne.Diff }}
+                            </span>
+                        {% elif ligne.Diff < 0 %}
+                            <span class="diff negative">
+                                {{ ligne.Diff }}
+                            </span>
+                        {% else %}
+                            <span class="diff neutral">
+                                {{ ligne.Diff }}
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <div class="points-box">
+                            {{ ligne.Pts }}
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="10">
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                ⚽
+                            </div>
+
+                            <h3>Aucune équipe enregistrée</h3>
+
+                            <p>
+                                Le classement sera disponible
+                                après l’ajout des équipes.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- INFO -->
+    {% if not premier_match_joue %}
+
+    <div class="info-box">
+
+        <div class="info-icon">
+            ℹ️
+        </div>
+
+        <div>
+            <h4>Classement en attente</h4>
+
+            <p>
+                Le classement sera mis à jour automatiquement
+                après les premiers matchs du tournoi.
+            </p>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- ================= STYLE ================= -->
+
+<style>
+
+/* ================= PAGE ================= */
+
+.classement-page{
+    animation:fadePage 0.5s ease;
+}
+
+@keyframes fadePage{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ================= HERO ================= */
+
+.classement-hero{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:24px;
+
+    padding:50px;
+
+    margin-bottom:30px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #eef4ff,
+    #f8fbff,
+    #eef7ff
+    );
+
+    border:1px solid #dbeafe;
+
+    box-shadow:
+    0 10px 35px rgba(59,130,246,0.08);
+}
+
+.hero-overlay{
+
+    position:absolute;
+
+    top:-120px;
+    right:-120px;
+
+    width:320px;
+    height:320px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+    circle,
+    rgba(59,130,246,0.18),
+    transparent 70%
+    );
+}
+
+.hero-content{
+
+    position:relative;
+    z-index:2;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:30px;
+    flex-wrap:wrap;
+}
+
+.hero-badge{
+
+    display:inline-block;
+
+    padding:8px 16px;
+
+    border-radius:50px;
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    font-size:13px;
+    font-weight:700;
+
+    margin-bottom:18px;
+}
+
+.hero-left h1{
+
+    font-size:42px;
+
+    color:#1e293b;
+
+    margin-bottom:15px;
+}
+
+.hero-left p{
+
+    max-width:650px;
+
+    line-height:1.7;
+
+    color:#64748b;
+
+    font-size:16px;
+}
+
+/* ================= STATS ================= */
+
+.hero-stats{
+
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+
+    margin-top:30px;
+}
+
+.stat-card{
+
+    min-width:130px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 5px 18px rgba(0,0,0,0.05);
+
+    transition:0.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    color:#2563eb;
+    font-size:28px;
+}
+
+.stat-card span{
+    color:#64748b;
+    font-size:14px;
+}
+
+/* ================= TROPHY ================= */
+
+.trophy-box{
+
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:white;
+
+    font-size:60px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.08);
+
+    animation:floatTrophy 3s ease-in-out infinite;
+}
+
+@keyframes floatTrophy{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-8px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+/* ================= TABLE ================= */
+
+.table-wrapper{
+
+    overflow:auto;
+
+    background:white;
+
+    border-radius:24px;
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.05);
+}
+
+.classement-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.classement-table thead{
+
+    background:
+    linear-gradient(
+    135deg,
+    #2563eb,
+    #3b82f6
+    );
+
+    color:white;
+}
+
+.classement-table th{
+
+    padding:20px;
+
+    font-size:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:0.5px;
+}
+
+.classement-table td{
+
+    padding:20px;
+
+    border-bottom:1px solid #eef2f7;
+
+    text-align:center;
+}
+
+.classement-table tbody tr{
+    transition:0.3s;
+}
+
+.classement-table tbody tr:hover{
+    background:#f8fbff;
+}
+
+/* ================= TOP 3 ================= */
+
+.gold-row{
+    background:
+    linear-gradient(
+    90deg,
+    rgba(255,215,0,0.18),
+    transparent
+    );
+}
+
+.silver-row{
+    background:
+    linear-gradient(
+    90deg,
+    rgba(192,192,192,0.18),
+    transparent
+    );
+}
+
+.bronze-row{
+    background:
+    linear-gradient(
+    90deg,
+    rgba(205,127,50,0.18),
+    transparent
+    );
+}
+
+/* ================= TEAM ================= */
+
+.team-info{
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.team-logo{
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid #dbeafe;
+}
+
+.placeholder{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#eff6ff;
+
+    font-size:22px;
+}
+
+.team-details{
+    text-align:left;
+}
+
+.team-details h4{
+    color:#1e293b;
+    margin-bottom:4px;
+}
+
+.team-details span{
+    color:#64748b;
+    font-size:13px;
+}
+
+/* ================= POSITION ================= */
+
+.rank-box{
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    font-weight:700;
+
+    margin:auto;
+}
+
+/* ================= POINTS ================= */
+
+.points-box{
+
+    background:
+    linear-gradient(
+    135deg,
+    #2563eb,
+    #3b82f6
+    );
+
+    color:white;
+
+    padding:10px 14px;
+
+    border-radius:12px;
+
+    width:fit-content;
+
+    margin:auto;
+
+    font-weight:700;
+}
+
+/* ================= PILLS ================= */
+
+.stat-pill{
+
+    padding:7px 12px;
+
+    border-radius:50px;
+
+    font-size:13px;
+    font-weight:600;
+}
+
+.stat-pill.blue{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.stat-pill.red{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+/* ================= DIFF ================= */
+
+.diff{
+
+    padding:7px 12px;
+
+    border-radius:50px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.diff.positive{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.diff.negative{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.diff.neutral{
+    background:#f1f5f9;
+    color:#475569;
+}
+
+/* ================= EMPTY ================= */
+
+.empty-state{
+
+    padding:50px 20px;
+
+    text-align:center;
+}
+
+.empty-icon{
+    font-size:60px;
+    margin-bottom:15px;
+}
+
+.empty-state h3{
+    color:#334155;
+    margin-bottom:10px;
+}
+
+.empty-state p{
+    color:#64748b;
+}
+
+/* ================= INFO ================= */
+
+.info-box{
+
+    margin-top:25px;
+
+    display:flex;
+    align-items:flex-start;
+    gap:15px;
+
+    background:#eff6ff;
+
+    border-left:5px solid #2563eb;
+
+    padding:20px;
+
+    border-radius:18px;
+}
+
+.info-icon{
+    font-size:28px;
+}
+
+.info-box h4{
+    color:#1e3a8a;
+    margin-bottom:5px;
+}
+
+.info-box p{
+    color:#475569;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+.hero-left h1{
+    font-size:30px;
+}
+
+.classement-hero{
+    padding:30px;
+}
+
+.classement-table{
+    min-width:1000px;
+}
+
+}
+
+</style>
 
 {% endblock %}

@@ -3,65 +3,702 @@
 
 {% block content %}
 
-<div class="main-content">
+<section class="news-hero">
 
-    <!-- CONTENU PRINCIPAL : ACTUALITES -->
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+
+        <span class="hero-badge">
+            🏆 Tournoi Inter-Service
+        </span>
+
+        <h1>
+            Actualités & Notifications
+        </h1>
+
+        <p>
+            Suivez en temps réel les dernières annonces,
+            décisions officielles et événements importants
+            du tournoi.
+        </p>
+
+    </div>
+
+</section>
+
+<div class="premium-news-layout">
+
+    <!-- ================= CONTENU PRINCIPAL ================= -->
+
     <div class="content-left">
 
         {% if messages %}
-        <ul class="messages-list">
+
+        <div class="alert-wrapper">
+
             {% for message in messages %}
-                <li class="{{ message.tags }}">
-                    {{ message }}
-                </li>
+
+            <div class="alert-box {{ message.tags }}">
+
+                <span>🔔</span>
+
+                <p>{{ message }}</p>
+
+            </div>
+
             {% endfor %}
-        </ul>
+
+        </div>
+
         {% endif %}
 
-        <div class="timeline">
-            <h2 class="page-title">📰 Actualités du tournoi</h2>
-            {% for info in infos %}
-            <div class="timeline-item">
-                <div class="timeline-date">📅 {{ info.date_publication|date:"d M Y - H:i" }}</div>
-                <div class="timeline-content">
-                    {% if info.priorite == "urgent" %}
-                        <span class="badge urgent">🚨 URGENT</span>
-                    {% elif info.priorite == "important" %}
-                        <span class="badge important">⚠ IMPORTANT</span>
-                    {% else %}
-                        <span class="badge info">ℹ INFORMATION</span>
-                    {% endif %}
-                    <h3>{{ info.titre }}</h3>
-                    <p>{{ info.contenu }}</p>
-                    {% if info.fichier %}
-                        <a href="{{ info.fichier.url }}" class="btn-download" target="_blank">📎 Télécharger le fichier</a>
-                    {% endif %}
+        <!-- TIMELINE -->
+
+        <div class="timeline-wrapper">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>📰 Actualités du tournoi</h2>
+                    <p>Publications officielles et informations importantes</p>
                 </div>
+
+                <div class="count-box">
+                    {{ infos|length }} publications
+                </div>
+
             </div>
-            {% empty %}
-            <p>Aucune information publiée pour le moment.</p>
-            {% endfor %}
+
+            <div class="timeline">
+
+                {% for info in infos %}
+
+                <div class="timeline-item">
+
+                    <div class="timeline-line"></div>
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-card">
+
+                        <div class="timeline-top">
+
+                            <span class="timeline-date">
+                                📅 {{ info.date_publication|date:"d M Y - H:i" }}
+                            </span>
+
+                            {% if info.priorite == "urgent" %}
+
+                                <span class="priority urgent">
+                                    🚨 URGENT
+                                </span>
+
+                            {% elif info.priorite == "important" %}
+
+                                <span class="priority important">
+                                    ⚠ IMPORTANT
+                                </span>
+
+                            {% else %}
+
+                                <span class="priority info">
+                                    ℹ INFORMATION
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <h3>
+                            {{ info.titre }}
+                        </h3>
+
+                        <p>
+                            {{ info.contenu }}
+                        </p>
+
+                        {% if info.fichier %}
+
+                        <a href="{{ info.fichier.url }}"
+                           target="_blank"
+                           class="btn-file">
+
+                            📎 Télécharger le fichier
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="empty-box">
+
+                    <h3>📭 Aucune actualité</h3>
+
+                    <p>
+                        Les nouvelles publications apparaîtront ici.
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
         </div>
 
     </div>
 
-    <!-- NOTIFICATIONS -->
-    <div class="content-right">
-        <div class="notifications">
-            <h2>🔔 Notifications récentes</h2>
-            {% for n in notifications %}
-            <div class="notification {{ n.type_notification }}">
-                {% if n.equipe %}<img src="{{ n.equipe.logo.url }}" class="team-logo">{% endif %}
-                <strong>{{ n.titre }}</strong>
-                <p>{{ n.message }}</p>
-                <small>{{ n.date_creation|date:"d M Y H:i" }}</small>
+    <!-- ================= SIDEBAR NOTIFICATIONS ================= -->
+
+    <aside class="content-right">
+
+        <div class="notifications-card">
+
+            <div class="notif-header">
+
+                <div>
+                    <h2>🔔 Notifications</h2>
+                    <p>Activités récentes du tournoi</p>
+                </div>
+
+                <span class="notif-count">
+                    {{ notifications|length }}
+                </span>
+
             </div>
-            {% empty %}
-            <p>Aucune notification récente.</p>
-            {% endfor %}
+
+            <div class="notif-list">
+
+                {% for n in notifications %}
+
+                <div class="notification-item {{ n.type_notification }}">
+
+                    <div class="notif-top">
+
+                        {% if n.equipe and n.equipe.logo %}
+
+                        <img src="{{ n.equipe.logo.url }}"
+                             class="notif-logo">
+
+                        {% else %}
+
+                        <div class="notif-logo placeholder">
+                            ⚽
+                        </div>
+
+                        {% endif %}
+
+                        <div class="notif-content">
+
+                            <h4>
+                                {{ n.titre }}
+                            </h4>
+
+                            <p>
+                                {{ n.message }}
+                            </p>
+
+                            <small>
+                                {{ n.date_creation|date:"d M Y H:i" }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="empty-notif">
+
+                    <p>
+                        Aucune notification récente.
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
         </div>
-    </div>
+
+    </aside>
 
 </div>
+
+<!-- ================= STYLE PREMIUM ================= -->
+
+<style>
+
+/* ================= HERO ================= */
+
+.news-hero{
+    position:relative;
+    height:45vh;
+
+    background:
+    linear-gradient(
+        rgba(255,255,255,0.75),
+        rgba(88,65,165,0.82)
+    ),
+    url("{% static 'tournoi/img/stadium.jpg' %}");
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:0 0 30px 30px;
+
+    overflow:hidden;
+
+    margin-bottom:50px;
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    backdrop-filter:blur(1px);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    max-width:850px;
+    padding:20px;
+}
+
+.hero-badge{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:30px;
+
+    background:rgba(255,255,255,0.18);
+
+    border:1px solid rgba(255,255,255,0.35);
+
+    backdrop-filter:blur(12px);
+
+    color:white;
+    font-weight:600;
+
+    margin-bottom:20px;
+}
+
+.hero-content h1{
+    color:white;
+    font-size:3rem;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.hero-content p{
+    color:#f5f5f5;
+    font-size:1.1rem;
+    line-height:1.8;
+}
+
+/* ================= LAYOUT ================= */
+
+.premium-news-layout{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:30px;
+
+    max-width:1400px;
+    margin:auto;
+    padding:0 20px 50px;
+}
+
+/* ================= ALERTS ================= */
+
+.alert-wrapper{
+    margin-bottom:25px;
+}
+
+.alert-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    margin-bottom:12px;
+
+    color:white;
+    font-weight:500;
+}
+
+.alert-box.success{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+.alert-box.error{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.alert-box.warning{
+    background:linear-gradient(135deg,#d97706,#f59e0b);
+}
+
+/* ================= SECTION HEADER ================= */
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:35px;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+}
+
+.section-header h2{
+    font-size:2rem;
+    color:#2d1e5f;
+}
+
+.section-header p{
+    color:#777;
+}
+
+.count-box{
+    background:#eef2ff;
+    color:#5a3cd2;
+
+    padding:10px 18px;
+
+    border-radius:20px;
+
+    font-weight:700;
+}
+
+/* ================= TIMELINE ================= */
+
+.timeline{
+    position:relative;
+}
+
+.timeline-item{
+    position:relative;
+    padding-left:50px;
+    margin-bottom:40px;
+}
+
+.timeline-line{
+    position:absolute;
+    left:14px;
+    top:0;
+    bottom:-40px;
+    width:3px;
+    background:#d9d4ff;
+}
+
+.timeline-dot{
+    position:absolute;
+    left:0;
+    top:20px;
+
+    width:30px;
+    height:30px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#5a3cd2,#8b6dff);
+
+    border:4px solid white;
+
+    box-shadow:0 4px 15px rgba(90,60,210,0.3);
+}
+
+.timeline-card{
+    background:white;
+
+    border-radius:24px;
+
+    padding:28px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+    transition:0.3s;
+}
+
+.timeline-card:hover{
+    transform:translateY(-5px);
+}
+
+.timeline-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:18px;
+
+    flex-wrap:wrap;
+}
+
+.timeline-date{
+    color:#777;
+    font-size:14px;
+}
+
+.timeline-card h3{
+    color:#222;
+    margin-bottom:15px;
+    font-size:1.5rem;
+}
+
+.timeline-card p{
+    color:#555;
+    line-height:1.8;
+}
+
+/* ================= PRIORITY ================= */
+
+.priority{
+    padding:8px 14px;
+    border-radius:20px;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.priority.urgent{
+    background:#ffe8e8;
+    color:#dc2626;
+}
+
+.priority.important{
+    background:#fff5db;
+    color:#d97706;
+}
+
+.priority.info{
+    background:#eef2ff;
+    color:#5a3cd2;
+}
+
+/* ================= FILE BUTTON ================= */
+
+.btn-file{
+    display:inline-block;
+
+    margin-top:20px;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#5a3cd2,#7f63f4);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:0.3s;
+}
+
+.btn-file:hover{
+    transform:translateY(-3px);
+}
+
+/* ================= NOTIFICATIONS ================= */
+
+.notifications-card{
+    background:white;
+
+    border-radius:28px;
+
+    padding:28px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+    position:sticky;
+    top:100px;
+}
+
+.notif-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.notif-header h2{
+    color:#2d1e5f;
+}
+
+.notif-header p{
+    color:#777;
+    font-size:14px;
+}
+
+.notif-count{
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#eef2ff;
+    color:#5a3cd2;
+
+    font-weight:700;
+}
+
+.notif-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.notification-item{
+    padding:18px;
+    border-radius:18px;
+    transition:0.3s;
+}
+
+.notification-item:hover{
+    transform:translateY(-3px);
+}
+
+.notification-item.match{
+    background:#eef4ff;
+}
+
+.notification-item.info{
+    background:#f8f5ff;
+}
+
+.notification-item.warning{
+    background:#fff8eb;
+}
+
+.notif-top{
+    display:flex;
+    gap:15px;
+}
+
+.notif-logo{
+    width:55px;
+    height:55px;
+
+    border-radius:16px;
+
+    object-fit:cover;
+
+    border:2px solid #eee;
+}
+
+.notif-logo.placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f1f1f1;
+
+    font-size:20px;
+}
+
+.notif-content h4{
+    color:#222;
+    margin-bottom:8px;
+}
+
+.notif-content p{
+    color:#555;
+    line-height:1.6;
+    margin-bottom:8px;
+}
+
+.notif-content small{
+    color:#888;
+}
+
+/* ================= EMPTY ================= */
+
+.empty-box,
+.empty-notif{
+    background:white;
+
+    padding:45px 20px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+    .premium-news-layout{
+        grid-template-columns:1fr;
+    }
+
+    .notifications-card{
+        position:relative;
+        top:0;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .news-hero{
+        height:auto;
+        padding:80px 20px;
+    }
+
+    .hero-content h1{
+        font-size:2.2rem;
+    }
+
+    .timeline-item{
+        padding-left:35px;
+    }
+
+    .timeline-dot{
+        width:22px;
+        height:22px;
+        left:3px;
+    }
+
+    .timeline-line{
+        left:12px;
+    }
+
+    .timeline-card{
+        padding:22px;
+    }
+
+}
+
+</style>
 
 {% endblock %}

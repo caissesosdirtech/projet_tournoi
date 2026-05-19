@@ -4,269 +4,365 @@
 {% block content %}
 
 <style>
-/* HEADER EQUIPE */
-.team-header{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    gap:15px;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom:25px;
-    transition: transform 0.3s ease;
-}
-.team-header:hover { transform: translateY(-5px); }
 
-/* LOGO */
-.team-logo-large{
-    width:120px; /* taille réduite */
-    transition: transform 0.3s ease;
+/* ================= BACKGROUND GLOBAL ================= */
+
+body{
+    background: radial-gradient(circle at top, #1c1c2e, #0d0d14);
+    font-family: 'Segoe UI', sans-serif;
+    color:white;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    position:relative;
+    padding:50px;
+    border-radius:25px;
+
+    background: linear-gradient(135deg, rgba(75,54,124,0.95), rgba(0,0,0,0.85)),
+    url("{% static 'img/stadium2.jpg' %}") center/cover;
+
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    margin-bottom:30px;
+}
+
+.hero img{
+    width:130px;
+    height:130px;
     border-radius:50%;
-    animation: logoBounce 1s ease;
-}
-.team-logo-large:hover{
-    transform: scale(1.2);
-}
-
-/* ANIMATION REBOND */
-@keyframes logoBounce{
-    0% { transform:translateY(-200px); opacity:0; }
-    60% { transform:translateY(30px); }
-    80% { transform:translateY(-10px); }
-    100% { transform:translateY(0); opacity:1; }
+    border:4px solid gold;
+    margin-bottom:10px;
+    transition:0.4s;
 }
 
-/* CARDS STATISTIQUES */
-.stats-container{
-    display:flex;
-    gap:20px;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-    justify-content:center;
+.hero img:hover{
+    transform:scale(1.1) rotate(5deg);
 }
-.stat-box{
-    background:white;
+
+.hero h1{
+    font-size:3rem;
+    font-weight:900;
+}
+
+.hero p{
+    opacity:0.8;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.stat{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px;
+
     padding:20px;
-    width:200px;
     text-align:center;
-    border-radius:10px;
-    box-shadow:0 6px 15px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.stat-box:hover{
-    transform: translateY(-5px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
-.stat-box h3{
-    font-size:28px;
-    color:#4b367c;
-    margin-bottom:5px;
-}
-.stat-box p{
-    font-weight:bold;
+
+    transition:0.3s;
 }
 
-/* SECTIONS */
+.stat:hover{
+    transform:translateY(-8px);
+    background:rgba(255,255,255,0.12);
+}
+
+.stat h2{
+    color:gold;
+    font-size:2rem;
+}
+
+/* ================= SECTIONS ================= */
+
 .section{
     margin-top:30px;
 }
+
 .section h2{
+    color:gold;
+    font-weight:800;
     margin-bottom:15px;
-    color:#4b367c;
 }
 
-/* TABLEAUX */
+/* ================= PODIUM ================= */
+
+.podium{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.card{
+    width:200px;
+    padding:20px;
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+
+    text-align:center;
+    position:relative;
+
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+}
+
+.gold{ border-top:5px solid gold; transform:scale(1.08); }
+.silver{ border-top:5px solid silver; }
+.bronze{ border-top:5px solid #cd7f32; }
+
+.badge{
+    position:absolute;
+    top:-12px;
+    right:-12px;
+
+    width:30px;
+    height:30px;
+    border-radius:50%;
+
+    background:gold;
+    color:black;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:bold;
+}
+
+.card img{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin:10px 0;
+    border:2px solid gold;
+}
+
+/* ================= TABLE ================= */
+
 table{
     width:100%;
     border-collapse:collapse;
-    background:white;
-    border-radius:10px;
+
+    background:rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+
+    border-radius:15px;
     overflow:hidden;
-    box-shadow:0 6px 15px rgba(0,0,0,0.05);
-    margin-bottom:25px;
 }
-table th{
-    background:#4b367c;
-    color:white;
+
+th{
+    background:linear-gradient(135deg,#4b367c,#6c5ce7);
     padding:12px;
+    color:white;
 }
-table td{
-    padding:10px;
-    border-bottom:1px solid #eee;
+
+td{
+    padding:12px;
     text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
 }
+
+/* ================= PLAYERS GRID ================= */
+
+.players{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+}
+
+.player{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+
+    transition:0.3s;
+}
+
+.player:hover{
+    transform:translateY(-8px);
+    background:rgba(255,255,255,0.1);
+}
+
+.player img{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin-bottom:10px;
+    border:2px solid white;
+}
+
+.player strong{
+    color:gold;
+}
+
+/* ================= MATCH TIMELINE ================= */
+
+.match{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:15px;
+    margin-bottom:10px;
+
+    background:rgba(255,255,255,0.06);
+    border-radius:14px;
+
+    border-left:4px solid gold;
+}
+
+.score{
+    background:gold;
+    color:black;
+    padding:8px 15px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
 </style>
 
-<!-- HEADER EQUIPE -->
-<div class="team-header">
+<!-- ================= HERO ================= -->
+
+<div class="hero">
+
     {% if equipe.logo %}
-        <img src="{{ equipe.logo.url }}" class="team-logo-large">
-    {% else %}
-        <img src="{% static 'tournoi/images/default_team.png' %}" class="team-logo-large">
+        <img src="{{ equipe.logo.url }}">
     {% endif %}
-    <div>
-        <h2>{{ equipe.nom }}</h2>
-        <p><strong>Coach :</strong> {{ equipe.coach1 }}</p>
-        <p><strong>Assistant :</strong> {{ equipe.coach2 }}</p>
-    </div>
+
+    <h1>{{ equipe.nom }}</h1>
+
+    <p>Club officiel - Compétition élite</p>
+
 </div>
 
-<!-- STATISTIQUES -->
-<div class="stats-container">
-    <div class="stat-box">
-        <h3>{{BP }}</h3>
+<!-- ================= STATS ================= -->
+
+<div class="stats">
+
+    <div class="stat">
+        <h2>{{ joueurs|length }}</h2>
+        <p>Joueurs</p>
+    </div>
+
+    <div class="stat">
+        <h2>{{ matchs|length }}</h2>
+        <p>Matchs</p>
+    </div>
+
+    <div class="stat">
+        <h2>{{ buts_total }}</h2>
         <p>Buts marqués</p>
     </div>
-    <div class="stat-box">
-        <h3>{{ BC }}</h3>
-        <p>Buts encaissés</p>
-    </div>
-    <div class="stat-box">
-        <h3>{{ Pts }}</h3>
-        <p>Points</p>
+
+    <div class="stat">
+        <h2>{{ victoires }}</h2>
+        <p>Victoires</p>
     </div>
 
-    <div class="stat-box">
-    <h3>{{ MJ }}</h3>
-    <p>Matchs joués</p>
 </div>
 
-<div class="stat-box">
-    <h3>{{ V }}</h3>
-    <p>Victoires</p>
+<!-- ================= PODIUM BUTEURS ================= -->
+
+<div class="section">
+    <h2>⚽ Top Buteurs</h2>
+
+    <div class="podium">
+
+        {% for j in meilleurs_buteurs|slice:":3" %}
+
+        <div class="card
+            {% if forloop.counter == 1 %}gold
+            {% elif forloop.counter == 2 %}silver
+            {% else %}bronze{% endif %}">
+
+            <div class="badge">{{ forloop.counter }}</div>
+
+            {% if j.photo %}
+                <img src="{{ j.photo.url }}">
+            {% endif %}
+
+            <h4>{{ j.nom }}</h4>
+
+            <p><strong>{{ j.buts }}</strong> buts</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 </div>
 
-<div class="stat-box">
-    <h3>{{ N }}</h3>
-    <p>Nuls</p>
-</div>
+<!-- ================= EFFECTIF ================= -->
 
-<div class="stat-box">
-    <h3>{{ D }}</h3>
-    <p>Défaites</p>
-</div>
-</div>
-
-<!-- JOUEURS -->
 <div class="section">
     <h2>👥 Effectif</h2>
 
-    <table>
-        <tr>
-            <th>#</th><th>Nom</th><th>Prénom</th><th>Poste</th>
-        </tr>
+    <div class="players">
 
-        {% for joueur in joueurs %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ joueur.nom }}</td>
-            <td>{{ joueur.prenom }}</td>
-            <td>{{ joueur.poste }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        {% for j in joueurs %}
 
-    <!-- BOUTON -->
-    {% if not request.GET.all %}
-        <div style="text-align:center; margin-top:10px;">
-            <h4><a href="?all=1" class="btn-show-all">Afficher tout</a></h4>
-        </div>
-    {% endif %}
-</div>
+        <div class="player">
 
-<!-- MATCHS -->
-<div class="section">
-    <h2>📅 Historique des matchs</h2>
-
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Équipe A</th>
-            <th>Score</th>
-            <th>Équipe B</th>
-        </tr>
-
-        {% for match in matchs %}
-        <tr>
-            <td>{{ match.date|date:"d/m/Y H:i" }}</td>
-
-            <!-- EQUIPE 1 -->
-            <td style="display:flex;align-items:center;gap:8px;justify-content:center;">
-                {% if match.equipe1.logo %}
-                    <img src="{{ match.equipe1.logo.url }}" width="25" height="25" style="border-radius:50%;">
-                {% endif %}
-                {{ match.equipe1.nom }}
-            </td>
-
-            <!-- SCORE -->
-            <td>
-                {% if match.score1 is not None and match.score2 is not None %}
-                    <strong>{{ match.score1 }} - {{ match.score2 }}</strong>
-                {% else %}
-                    <span style="color:gray;">À jouer</span>
-                {% endif %}
-            </td>
-
-            <!-- EQUIPE 2 -->
-            <td style="display:flex;align-items:center;gap:8px;justify-content:center;">
-                {% if match.equipe2.logo %}
-                    <img src="{{ match.equipe2.logo.url }}" width="25" height="25" style="border-radius:50%;">
-                {% endif %}
-                {{ match.equipe2.nom }}
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4" style="text-align:center;">Aucun match</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-
-<!-- MEILLEURS BUTEURS -->
-<div class="section">
-    <h2>⚽ Meilleurs buteurs</h2>
-    <table>
-    <tr>
-        <th>#</th>
-        <th>Joueur</th>
-        <th>Équipe</th>
-        <th>Buts</th>
-    </tr>
-
-    {% for joueur in meilleurs_buteurs %}
-    <tr>
-
-        <!-- POSITION -->
-        <td>
-            {% if forloop.counter == 1 %}🥇{% endif %}
-            {% if forloop.counter == 2 %}🥈{% endif %}
-            {% if forloop.counter == 3 %}🥉{% endif %}
-        </td>
-
-        <!-- NOM JOUEUR -->
-        <td>
-            {{ joueur.nom }} {{ joueur.prenom }}
-        </td>
-
-        <!-- LOGO + EQUIPE -->
-        <td>
-            {% if joueur.equipe.logo %}
-                <img src="{{ joueur.equipe.logo.url }}" style="width:25px;height:25px;vertical-align:middle;">
+            {% if j.photo %}
+                <img src="{{ j.photo.url }}">
             {% endif %}
-            {{ joueur.equipe.nom }}
-        </td>
 
-        <!-- BUTS -->
-        <td><strong>{{ joueur.nb_buts }}</strong></td>
+            <div><strong>{{ j.nom }}</strong></div>
+            <div>{{ j.poste }}</div>
 
-    </tr>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- ================= MATCHS ================= -->
+
+<div class="section">
+    <h2>📅 Matchs récents</h2>
+
+    {% for m in matchs %}
+
+    <div class="match">
+
+        <div>
+            {{ m.equipe1.nom }} vs {{ m.equipe2.nom }}
+        </div>
+
+        <div class="score">
+            {% if m.score1 is not None %}
+                {{ m.score1 }} - {{ m.score2 }}
+            {% else %}
+                LIVE
+            {% endif %}
+        </div>
+
+    </div>
+
     {% endfor %}
-</table>
+
 </div>
 
 {% endblock %}

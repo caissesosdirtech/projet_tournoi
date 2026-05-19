@@ -5,90 +5,242 @@
 <meta charset="UTF-8">
 <title>Connexion Recours</title>
 
-<link rel="stylesheet" href="{% static 'tournoi/css/login_reclamation.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-    * {margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif;}
-    body {
-        height: 100vh;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        display: flex; justify-content:center; align-items:center;
-        position: relative; overflow:hidden;
-    }
-    .overlay {
-        position: absolute; width:100%; height:100%; background:rgba(0,0,0,0.4);
-        top:0; left:0; z-index:1;
-    }
 
-    .login-container {
-        position: relative; z-index:2;
-        background:#fff; padding:40px 30px; width:400px;
-        border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.2);
-        text-align:center; animation:fadeIn 1s ease-out;
+/* ================= RESET ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter', sans-serif;
+}
+
+/* ================= BACKGROUND STADE ================= */
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)),
+        url("{% static 'tournoi/img/stadium2.jpg' %}") center/cover no-repeat;
+
+    overflow:hidden;
+    position:relative;
+}
+
+/* overlay léger premium */
+body::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.35);
+    backdrop-filter: blur(2px);
+
+    z-index:1;
+}
+
+/* ================= LIGHT GLOW ================= */
+
+.glow{
+    position:absolute;
+    width:500px;
+    height:500px;
+
+    background:rgba(108,92,231,0.25);
+    filter: blur(120px);
+
+    border-radius:50%;
+    top:-150px;
+    left:-150px;
+
+    z-index:1;
+}
+
+/* ================= LOGIN CARD ================= */
+
+.login-card{
+    position:relative;
+    z-index:2;
+
+    width:440px;
+    padding:40px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,0.07);
+    backdrop-filter: blur(18px);
+
+    border:1px solid rgba(255,255,255,0.15);
+
+    box-shadow:0 25px 70px rgba(0,0,0,0.6);
+
+    text-align:center;
+}
+
+/* ================= LOGO ================= */
+
+.logo img{
+    width:150px;
+    margin-bottom:15px;
+}
+
+.title{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:20px;
+    opacity:0.9;
+}
+
+/* ================= TITRE ================= */
+
+h2{
+    color:#ffffff;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#cfcfe6;
+    font-size:13px;
+    margin-bottom:25px;
+}
+
+/* ================= ALERT ================= */
+
+.alert{
+    background:rgba(255,80,80,0.15);
+    color:#ffb3b3;
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+/* ================= INPUTS ================= */
+
+.input-group{
+    position:relative;
+    margin-bottom:18px;
+    text-align:left;
+}
+
+.input-group input{
+    width:100%;
+    padding:13px 12px;
+
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.18);
+
+    background:rgba(255,255,255,0.06);
+    color:white;
+
+    outline:none;
+    font-size:14px;
+
+    transition:0.25s;
+}
+
+.input-group input:focus{
+    border-color:#6c5ce7;
+    box-shadow:0 0 0 3px rgba(108,92,231,0.2);
+}
+
+/* FLOAT LABEL */
+
+.input-group label{
+    position:absolute;
+    left:12px;
+    top:13px;
+
+    color:#b8b8c6;
+    font-size:13px;
+
+    pointer-events:none;
+    transition:0.2s;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label{
+    top:-8px;
+    left:10px;
+    font-size:11px;
+    color:#6c5ce7;
+    background:#0d0d14;
+    padding:0 6px;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+    width:100%;
+    padding:13px;
+
+    border:none;
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#6c5ce7,#4b367c);
+    color:white;
+
+    font-weight:600;
+    font-size:14px;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(108,92,231,0.3);
+}
+
+/* ================= INFO ================= */
+
+.info{
+    margin-top:18px;
+    font-size:12px;
+    color:#b0b0c3;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:500px){
+    .login-card{
+        width:90%;
+        padding:30px;
     }
+}
 
-    .logo img { width:250px; margin-bottom:15px; animation:bounce 2s infinite;}
-    .logo h1 { font-size:24px; color:#1e3c72; margin-bottom:25px;}
-
-    h2 { color:#2a5298; margin-bottom:15px; font-weight:500;}
-    .subtitle { font-size:14px; color:#555; margin-bottom:25px;}
-
-    .alert { background:#ffdddd; color:#900; padding:10px 15px; border-radius:5px; margin-bottom:20px; text-align:left;}
-
-    /* === Floating Labels === */
-    .form-group {
-        position: relative; margin-bottom: 25px; text-align:left;
-    }
-    .form-group input {
-        width: 100%; padding:12px 12px; border-radius:6px; border:1px solid #ccc;
-        font-size:14px; outline:none; transition: all 0.3s;
-    }
-    .form-group input:focus { border-color:#1e3c72; box-shadow:0 0 8px rgba(30,60,114,0.3);}
-    .form-group label {
-        position: absolute; top:50%; left:12px;
-        transform: translateY(-50%);
-        color:#888; font-size:14px; pointer-events:none;
-        background:#fff; padding:0 4px; transition:0.3s;
-    }
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label {
-        top:-8px; left:10px; font-size:12px; color:#1e3c72;
-    }
-
-    .btn-login {
-        width:100%; padding:12px; background:#1e3c72; color:#fff;
-        font-size:16px; border:none; border-radius:6px; cursor:pointer; font-weight:500;
-        transition: all 0.3s;
-    }
-    .btn-login:hover { background:#2a5298; }
-
-    .info { font-size:13px; color:#666; margin-top:20px; }
-
-    .ball {
-        position:absolute; width:20px; height:20px; background:#ffdd57; border-radius:50%;
-        bottom:-40px; left:calc(50% - 10px); animation:bounceBall 3s infinite ease-in-out; z-index:0;
-    }
-
-    @keyframes fadeIn {0%{opacity:0; transform:translateY(-20px);}100%{opacity:1; transform:translateY(0);}}
-    @keyframes bounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-    @keyframes bounceBall {0%,100%{transform:translateY(0);}50%{transform:translateY(-50px);}}
 </style>
 
 </head>
+
 <body>
 
-<div class="overlay"></div>
+<div class="glow"></div>
 
-<div class="login-container">
+<div class="login-card">
 
     <div class="logo">
-        <img src="{% static 'tournoi/img/logo_tournoi.png' %}" alt="Logo tournoi">
-        <h1>Tournoi Inter-Service Coupe du DRN</h1>
+        <img src="{% static 'tournoi/img/logo_tournoi.png' %}">
     </div>
 
-    <h2>🔐 Accès Recours</h2>
-    <p class="subtitle">Capitaine ou Coach ? Connectez-vous pour déposer un recours officiel.</p>
+    <div class="title">Tournoi Inter-Service DRN</div>
+
+    <h2>Accès Recours</h2>
+    <p class="subtitle">Connexion officielle des capitaines et coachs</p>
 
     {% if messages %}
         {% for message in messages %}
@@ -98,22 +250,25 @@
 
     <form method="POST">
         {% csrf_token %}
-        <div class="form-group">
+
+        <div class="input-group">
             <input type="text" name="username" placeholder=" " required>
             <label>Nom d'utilisateur</label>
         </div>
-        <div class="form-group">
+
+        <div class="input-group">
             <input type="password" name="password" placeholder=" " required>
             <label>Mot de passe</label>
         </div>
 
-        <button type="submit" class="btn-login">⚽ Se connecter</button>
+        <button type="submit" class="btn">Se connecter</button>
     </form>
 
-    <p class="info">Accès réservé aux capitaines et coachs des équipes.</p>
-</div>
+    <p class="info">
+        Accès sécurisé - Système officiel du tournoi DRN
+    </p>
 
-<div class="ball"></div>
+</div>
 
 </body>
 </html>

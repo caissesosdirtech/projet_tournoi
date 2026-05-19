@@ -8,11 +8,10 @@ from .models import Reclamation
 from .forms import ReclamationForm, DecisionReclamationForm
 from .decorators import role_required
 
-from tournoi.models import Equipe
-
+from app_tournoi.models import Equipe
 
 @login_required(login_url='login_reclamation')
-@role_required('Capitaine', 'Coach')
+@role_required('Capitaines', 'Coachs')
 def liste_reclamations(request):
 
     reclamations = Reclamation.objects.all().order_by("-date")
@@ -27,7 +26,7 @@ def liste_reclamations(request):
     
 
 @login_required(login_url='login_reclamation')
-@role_required('Capitaine', 'Coach')
+@role_required('Capitaines', 'Coachs')
 def creer_reclamation(request):
 
     if request.method == 'POST':
@@ -82,7 +81,7 @@ def login_reclamation(request):
 
             # Coach ou Capitaine
             if user.groups.filter(
-                name__in=['Capitaine', 'Coach']
+                name__in=['Capitaines', 'Coachs']
             ).exists():
 
                 login(request, user)

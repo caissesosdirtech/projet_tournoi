@@ -4,169 +4,418 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>📩 Déposer une réclamation</title>
-<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+
+<title>📩 Déposer un recours</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-body {
-    background-color: #f4f4f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    margin: 0;
-    padding: 0;
+
+/* ================= RESET ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.reclamation-form-container {
-    max-width: 700px;
-    margin: 60px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+/* ================= BODY ================= */
+
+body{
+
+    font-family:'Inter', sans-serif;
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px 20px;
+
+    background:
+        linear-gradient(rgba(8,10,25,0.82), rgba(8,10,25,0.88)),
+        url("{% static 'tournoi/img/stadium2.jpg' %}") center/cover no-repeat;
+
+    position:relative;
 }
 
-.reclamation-form-container h2 {
-    text-align: center;
-    font-size: 28px;
-    color: #4b367c;
-    margin-bottom: 30px;
+/* ================= GLOW ================= */
+
+.glow{
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    background:rgba(108,92,231,0.22);
+
+    filter:blur(120px);
+
+    top:-150px;
+    left:-150px;
 }
 
-.form-group {
-    position: relative;
-    margin-bottom: 20px;
+/* ================= CONTAINER ================= */
+
+.reclamation-container{
+
+    position:relative;
+    z-index:2;
+
+    width:100%;
+    max-width:760px;
+
+    padding:40px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.12);
+
+    box-shadow:0 25px 60px rgba(0,0,0,0.5);
 }
 
-.form-group label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    margin-bottom: 6px;
+/* ================= HEADER ================= */
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
 }
 
-.form-group label i {
-    color: #4b367c;
+.logo{
+    width:110px;
+    margin-bottom:15px;
 }
 
-.form-group input[type="text"],
+.header h2{
+    color:white;
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.header p{
+    color:#d7d7e7;
+    font-size:14px;
+}
+
+/* ================= FORM ================= */
+
+.form-group{
+    margin-bottom:22px;
+}
+
+/* labels */
+
+.form-group label{
+
+    display:block;
+
+    color:white;
+
+    font-size:14px;
+    font-weight:600;
+
+    margin-bottom:8px;
+}
+
+/* inputs */
+
+.form-group input,
 .form-group select,
-.form-group textarea,
-.form-group input[type="file"] {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: 0.3s;
+.form-group textarea{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border-radius:14px;
+
+    border:1px solid rgba(255,255,255,0.14);
+
+    background:rgba(255,255,255,0.06);
+
+    color:white;
+
+    font-size:14px;
+
+    outline:none;
+
+    transition:0.25s;
 }
+
+/* placeholder */
+
+.form-group textarea::placeholder,
+.form-group input::placeholder{
+    color:#bdbdd3;
+}
+
+/* focus */
 
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #4b367c;
-    box-shadow: 0 0 0 3px rgba(75,54,124,0.15);
+.form-group textarea:focus{
+
+    border-color:#6c5ce7;
+
+    box-shadow:0 0 0 4px rgba(108,92,231,0.2);
 }
 
-.form-group textarea {
-    resize: vertical;
-    min-height: 120px;
+/* textarea */
+
+.form-group textarea{
+    resize:none;
+    min-height:140px;
 }
 
-.char-counter {
-    font-size: 12px;
-    color: #888;
-    text-align: right;
-    margin-top: 4px;
+/* select options */
+
+select option{
+    color:black;
 }
 
-.btn-submit {
-    background: linear-gradient(135deg, #4b367c, #7b5fcf);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 100%;
+/* ================= FILE ================= */
+
+input[type="file"]{
+    padding:12px;
 }
 
-.btn-submit:hover {
-    background: linear-gradient(135deg, #7b5fcf, #4b367c);
-    transform: translateY(-2px);
+/* ================= COUNTER ================= */
+
+.char-counter{
+    margin-top:6px;
+    text-align:right;
+    color:#bcbcd4;
+    font-size:12px;
 }
 
-.form-error {
-    color: #e74c3c;
-    font-size: 13px;
-    margin-top: 4px;
+/* ================= ERROR ================= */
+
+.form-error{
+
+    margin-top:5px;
+
+    color:#ff9f9f;
+
+    font-size:12px;
 }
+
+/* ================= BUTTON ================= */
+
+.btn-submit{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#6c5ce7,#4b367c);
+
+    color:white;
+
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.btn-submit:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 30px rgba(108,92,231,0.35);
+}
+
+/* ================= ICON INFO ================= */
+
+.info-box{
+
+    margin-top:25px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:14px;
+
+    padding:15px;
+
+    color:#d5d5e7;
+
+    font-size:13px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .reclamation-container{
+        padding:30px 20px;
+    }
+
+    .header h2{
+        font-size:24px;
+    }
+
+}
+
 </style>
+
 </head>
+
 <body>
 
-<div class="reclamation-form-container">
-<h2>📩 Déposer un recours</h2>
+<div class="glow"></div>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<div class="reclamation-container">
 
-    <!-- Équipe -->
-    <div class="form-group">
-        <label for="id_equipe"><i class="fas fa-users"></i> Équipe concernée <span style="color:red;">*</span></label>
-        {{ form.equipe }}
-        {% if form.equipe.errors %}
-            <div class="form-error">{{ form.equipe.errors.0 }}</div>
-        {% endif %}
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <img src="{% static 'tournoi/img/logo_tournoi.png' %}" class="logo">
+
+        <h2>📩 Déposer un recours</h2>
+
+        <p>
+            Plateforme officielle de gestion des réclamations du tournoi DRN
+        </p>
+
     </div>
 
-    <!-- Type de réclamation -->
-    <div class="form-group">
-        <label for="id_type_reclamation"><i class="fas fa-exclamation-circle"></i> Type de recours <span style="color:red;">*</span></label>
-        {{ form.type_reclamation }}
-        {% if form.type_reclamation.errors %}
-            <div class="form-error">{{ form.type_reclamation.errors.0 }}</div>
-        {% endif %}
+    <!-- FORM -->
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <!-- ÉQUIPE -->
+
+        <div class="form-group">
+
+            <label for="id_equipe">
+                🏟 Équipe concernée
+            </label>
+
+            {{ form.equipe }}
+
+            {% if form.equipe.errors %}
+                <div class="form-error">
+                    {{ form.equipe.errors.0 }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- TYPE -->
+
+        <div class="form-group">
+
+            <label for="id_type_reclamation">
+                ⚠ Type de recours
+            </label>
+
+            {{ form.type_reclamation }}
+
+            {% if form.type_reclamation.errors %}
+                <div class="form-error">
+                    {{ form.type_reclamation.errors.0 }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group">
+
+            <label for="id_description">
+                📝 Description détaillée
+            </label>
+
+            {{ form.description }}
+
+            <div class="char-counter" id="charCounter">
+                0 / 500
+            </div>
+
+            {% if form.description.errors %}
+                <div class="form-error">
+                    {{ form.description.errors.0 }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- FILE -->
+
+        <div class="form-group">
+
+            <label for="id_fichier_joint">
+                📎 Fichier justificatif
+            </label>
+
+            {{ form.fichier_joint }}
+
+            {% if form.fichier_joint.errors %}
+                <div class="form-error">
+                    {{ form.fichier_joint.errors.0 }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <button type="submit" class="btn-submit">
+            Envoyer le recours
+        </button>
+
+    </form>
+
+    <!-- INFO -->
+
+    <div class="info-box">
+
+        ⚽ Les recours sont examinés par la commission officielle du tournoi.
+        Toute fausse déclaration peut entraîner des sanctions disciplinaires.
+
     </div>
 
-    <!-- Description -->
-    <div class="form-group">
-        <label for="id_description"><i class="fas fa-align-left"></i> Description (optionnelle)</label>
-        {{ form.description }}
-        <div class="char-counter" id="charCounter">0 / 500</div>
-        {% if form.description.errors %}
-            <div class="form-error">{{ form.description.errors.0 }}</div>
-        {% endif %}
-    </div>
-
-    <!-- Fichier joint -->
-    <div class="form-group">
-        <label for="id_fichier_joint"><i class="fas fa-file-upload"></i> Fichier joint <span style="color:red;">*</span></label>
-        {{ form.fichier_joint }}
-        {% if form.fichier_joint.errors %}
-            <div class="form-error">{{ form.fichier_joint.errors.0 }}</div>
-        {% endif %}
-    </div>
-
-    <button type="submit" class="btn-submit">Envoyer le recours</button>
-</form>
 </div>
 
-<script>
-    const textarea = document.getElementById('id_description');
-    const counter = document.getElementById('charCounter');
-    if(textarea) {
-        textarea.addEventListener('input', () => {
-            const len = textarea.value.length;
-            counter.textContent = `${len} / 500`;
-        });
-    }
-    
-</script>
+<!-- ================= SCRIPT ================= -->
 
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+
+const textarea = document.getElementById('id_description');
+
+const counter = document.getElementById('charCounter');
+
+if(textarea){
+
+    textarea.addEventListener('input', () => {
+
+        const len = textarea.value.length;
+
+        counter.textContent = `${len} / 500`;
+
+    });
+
+}
+
+</script>
 
 </body>
 </html>

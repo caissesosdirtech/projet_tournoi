@@ -5,25 +5,33 @@ from equipes.models import Equipe
 from django import forms
 from .models import Reclamation
 
-class ReclamationForm(forms.ModelForm):
+from django import forms
+from .models import Reclamation
 
+
+from django import forms
+from .models import Reclamation, ReclamationCommentaire
+
+
+class ReclamationForm(forms.ModelForm):
     class Meta:
         model = Reclamation
-        fields = '__all__'
+        fields = ['equipe', 'type_reclamation', 'description', 'fichier_joint']
 
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        # champ obligatoire
-        self.fields['fichier_joint'].required = True
-
-        # message personnalisé
-        self.fields['fichier_joint'].error_messages = {
-            'required': "⚠ Veuillez joindre un fichier justificatif."
-        }
 
 class DecisionReclamationForm(forms.ModelForm):
+    class Meta:
+        model = Reclamation
+        fields = ['statut', 'decision', 'document_final']
+
+
+class CommentaireForm(forms.ModelForm):
+    class Meta:
+        model = ReclamationCommentaire
+        fields = ['message']
+
+class DecisionReclamationForm(forms.ModelForm):
+
     class Meta:
         model = Reclamation
         fields = ['statut', 'decision', 'document_final']

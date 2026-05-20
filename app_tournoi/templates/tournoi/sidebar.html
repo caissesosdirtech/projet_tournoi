@@ -20,224 +20,130 @@
     <!-- MENU -->
     <ul>
 
-    <!-- ACCUEIL -->
-    <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-        <a href="{% url 'dashboard' %}">
-
-            <div class="link-content">
-
-                <span>Accueil</span>
-
-                <div class="icon">
-                    <i class="fas fa-house"></i>
+        <!-- ACCUEIL -->
+        <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <a href="{% url 'dashboard' %}">
+                <div class="link-content">
+                    <span>Accueil</span>
+                    <div class="icon"><i class="fas fa-house"></i></div>
                 </div>
+            </a>
+        </li>
 
-            </div>
-
-        </a>
-    </li>
-
-    <!-- REGLEMENT -->
-    <li>
-        <a href="{% url 'reglement_interieur' %}">
-
-            <div class="link-content">
-
-                <span>Règlement</span>
-
-                <div class="icon">
-                    <i class="fas fa-book-open"></i>
+        <!-- REGLEMENT -->
+        <li>
+            <a href="{% url 'reglement_interieur' %}">
+                <div class="link-content">
+                    <span>Règlement</span>
+                    <div class="icon"><i class="fas fa-book-open"></i></div>
                 </div>
+            </a>
+        </li>
 
-            </div>
-
-        </a>
-    </li>
-
-    <!-- CALENDRIER -->
-    <li class="{% if request.resolver_match.url_name == 'calendrier' %}active{% endif %}">
-        <a href="{% url 'calendrier' %}">
-
-            <div class="link-content">
-
-                <span>Calendrier</span>
-
-                <div class="icon">
-                    <i class="fas fa-calendar-days"></i>
+        <!-- CALENDRIER -->
+        <li class="{% if request.resolver_match.url_name == 'calendrier' %}active{% endif %}">
+            <a href="{% url 'calendrier' %}">
+                <div class="link-content">
+                    <span>Calendrier</span>
+                    <div class="icon"><i class="fas fa-calendar-days"></i></div>
                 </div>
+            </a>
+        </li>
 
-            </div>
+        <!-- EQUIPES -->
+        <li class="has-submenu">
 
-        </a>
-    </li>
-
-    <!-- EQUIPES -->
-    <li class="has-submenu">
-
-        <a href="javascript:void(0);" class="submenu-toggle">
-
-            <div class="link-content">
-
-                <span>Équipes</span>
-
-                <div class="icon">
-                    <i class="fas fa-futbol"></i>
+            <a href="javascript:void(0);" class="submenu-toggle">
+                <div class="link-content">
+                    <span>Équipes</span>
+                    <div class="icon"><i class="fas fa-futbol"></i></div>
                 </div>
+                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+            </a>
 
-            </div>
+            <ul class="submenu">
 
-            <span class="arrow">
-                <i class="fas fa-chevron-down"></i>
-            </span>
+                {% for equipe in equipes %}
+                    <li>
+                        <a href="{% url 'detail_equipe' equipe.id %}">
+                            {{ equipe.nom }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li><a href="#">Aucune équipe</a></li>
+                {% endfor %}
 
-        </a>
+            </ul>
 
-        <ul class="submenu">
+        </li>
 
-            {% for equipe in equipes %}
-
-            <li>
-                <a href="{% url 'detail_equipe' equipe.id %}">
-                    {{ equipe.nom }}
-                </a>
-            </li>
-
-            {% empty %}
-
-            <li>
-                <a href="#">Aucune équipe</a>
-            </li>
-
-            {% endfor %}
-
-        </ul>
-
-    </li>
-
-    <!-- CLASSEMENT -->
-    <li class="{% if request.resolver_match.url_name == 'classement' %}active{% endif %}">
-        <a href="{% url 'classement' %}">
-
-            <div class="link-content">
-
-                <span>Classement</span>
-
-                <div class="icon">
-                    <i class="fas fa-ranking-star"></i>
+        <!-- CLASSEMENT -->
+        <li class="{% if request.resolver_match.url_name == 'classement' %}active{% endif %}">
+            <a href="{% url 'classement' %}">
+                <div class="link-content">
+                    <span>Classement</span>
+                    <div class="icon"><i class="fas fa-ranking-star"></i></div>
                 </div>
+            </a>
+        </li>
 
-            </div>
-
-        </a>
-    </li>
-
-    <!-- INFOS -->
-    <li class="{% if request.resolver_match.url_name == 'infos' %}active{% endif %}">
-        <a href="{% url 'infos' %}">
-
-            <div class="link-content">
-
-                <span>Infos</span>
-
-                <div class="icon">
-                    <i class="fas fa-circle-info"></i>
+        <!-- INFOS -->
+        <li class="{% if request.resolver_match.url_name == 'infos' %}active{% endif %}">
+            <a href="{% url 'infos' %}">
+                <div class="link-content">
+                    <span>Infos</span>
+                    <div class="icon"><i class="fas fa-circle-info"></i></div>
                 </div>
+            </a>
+        </li>
 
-            </div>
+        <!-- STATS -->
+        <li class="has-submenu">
 
-        </a>
-    </li>
-
-    <!-- STATS -->
-    <li class="has-submenu">
-
-        <a href="javascript:void(0);" class="submenu-toggle">
-
-            <div class="link-content">
-
-                <span>Statistiques</span>
-
-                <div class="icon">
-                    <i class="fas fa-chart-line"></i>
+            <a href="javascript:void(0);" class="submenu-toggle">
+                <div class="link-content">
+                    <span>Statistiques</span>
+                    <div class="icon"><i class="fas fa-chart-line"></i></div>
                 </div>
+                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+            </a>
 
+            <ul class="submenu">
+                <li><a href="{% url 'stats_equipes' %}">Stats équipes</a></li>
+                <li><a href="{% url 'stats_joueurs' %}">Stats joueurs</a></li>
+            </ul>
+
+        </li>
+
+        <!-- ================= RECOURS ================= -->
+<li class="has-submenu">
+
+    <a href="javascript:void(0);" class="submenu-toggle">
+
+        <div class="link-content">
+            <span>Recours</span>
+            <div class="icon">
+                <i class="fas fa-envelope-open-text"></i>
             </div>
+        </div>
 
-            <span class="arrow">
-                <i class="fas fa-chevron-down"></i>
-            </span>
+        <span class="arrow">
+            <i class="fas fa-chevron-down"></i>
+        </span>
 
-        </a>
+    </a>
 
-        <ul class="submenu">
+    <ul class="submenu">
 
-            <li>
-                <a href="{% url 'stats_equipes' %}">
-                    Stats équipes
-                </a>
-            </li>
+        <li>
+            <a href="{% url 'recours_dashboard' %}">
+                📩 Gestion des recours
+            </a>
+        </li>
 
-            <li>
-                <a href="{% url 'stats_joueurs' %}">
-                    Stats joueurs
-                </a>
-            </li>
+    </ul>
 
-        </ul>
-
-    </li>
-
-    <!-- RECOURS -->
-    <li class="{% if request.resolver_match.url_name == 'login_reclamation' %}active{% endif %}">
-        <a href="{% url 'login_reclamation' %}">
-
-            <div class="link-content">
-
-                <span>Déposer recours</span>
-
-                <div class="icon">
-                    <i class="fas fa-envelope-open-text"></i>
-                </div>
-
-            </div>
-
-        </a>
-    </li>
-
-    <!-- RESULTATS -->
-    <li class="{% if request.resolver_match.url_name == 'resultats' %}active{% endif %}">
-        <a href="{% url 'resultats' %}">
-
-            <div class="link-content">
-
-                <span>Résultats</span>
-
-                <div class="icon">
-                    <i class="fas fa-clipboard-list"></i>
-                </div>
-
-            </div>
-
-        </a>
-    </li>
-
-    <!-- GALERIE -->
-    <li class="{% if request.resolver_match.url_name == 'galeries' %}active{% endif %}">
-        <a href="{% url 'galeries' %}">
-
-            <div class="link-content">
-
-                <span>Galerie</span>
-
-                <div class="icon">
-                    <i class="fas fa-images"></i>
-                </div>
-
-            </div>
-
-        </a>
-    </li>
-
-</ul>
+</li>
+    </ul>
 
 </aside>

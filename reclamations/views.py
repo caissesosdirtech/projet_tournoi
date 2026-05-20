@@ -2,69 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_protect
+from django.contrib.admin.views.decorators import staff_member_required
 
-from .models import Reclamation
-from .forms import ReclamationForm, DecisionReclamationForm
-from .decorators import role_required
+from .models import Reclamation, ReclamationCommentaire
+from .forms import (
+    ReclamationForm,
+    DecisionReclamationForm,
+    CommentaireForm
+)
 
 from app_tournoi.models import Equipe
 
-@login_required(login_url='login_reclamation')
-@role_required('Capitaines', 'Coachs')
-def liste_reclamations(request):
 
-    reclamations = Reclamation.objects.all().order_by("-date")
-
-    return render(
-        request,
-        "reclamations/liste_reclamations.html",
-        {
-            "reclamations": reclamations
-        }
-    )
-    
-
-@login_required(login_url='login_reclamation')
-@role_required('Capitaines', 'Coachs')
-def creer_reclamation(request):
-
-    if request.method == 'POST':
-
-        form = ReclamationForm(
-            request.POST,
-            request.FILES
-        )
-
-        if form.is_valid():
-
-            reclamation = form.save(commit=False)
-
-            reclamation.auteur = request.user
-
-            reclamation.save()
-
-            messages.success(
-                request,
-                "✅ Réclamation envoyée avec succès."
-            )
-
-            return redirect('liste_reclamations')
-
-    else:
-
-        form = ReclamationForm()
-
-    return render(
-        request,
-        'reclamations/creer_reclamation.html',
-        {
-            'form': form
-        }
-    )
-
-@csrf_protect
+# =========================================================
+# 🔐 LOGIN RECOURS
+# =========================================================
 def login_reclamation(request):
+
+    next_url = request.GET.get("next")
 
     if request.method == "POST":
 
@@ -77,102 +32,265 @@ def login_reclamation(request):
             password=password
         )
 
-        if user is not None:
-
-            # Coach ou Capitaine
-            if user.groups.filter(
-                name__in=['Capitaines', 'Coachs']
-            ).exists():
-
-                login(request, user)
-
-                messages.success(
-                    request,
-                    f"Bienvenue {user.username} 👋"
-                )
-
-                return redirect('creer_reclamation')
-
-            # Admin
-            elif user.is_staff:
-
-                login(request, user)
-
-                return redirect('admin_dashboard')
-
-            else:
-
-                messages.error(
-                    request,
-                    "⛔ Accès réservé aux coachs et capitaines."
-                )
-
-        else:
+        # ❌ utilisateur introuvable
+        if user is None:
 
             messages.error(
                 request,
-                "❌ Identifiants incorrects."
+                "❌ Identifiants incorrects"
             )
+
+            return render(
+                request,
+                "reclamations/login_reclamation.html"
+            )
+
+        # ❌ sécurité groupes
+        if not user.groups.filter(
+            name__in=["Capitaines", "Coachs"]
+        ).exists():
+
+            messages.error(
+                request,
+                "⛔ Accès réservé aux capitaines et coachs"
+            )
+
+            return render(
+                request,
+                "reclamations/login_reclamation.html"
+            )
+
+        # ✅ connexion
+        login(request, user)
+
+        # 🔁 redirection intelligente
+        if next_url == "mes_reclamations":
+            return redirect("mes_reclamations")
+
+        return redirect("recours_dashboard")
 
     return render(
         request,
         "reclamations/login_reclamation.html"
     )
 
-def reclamation(request):
 
-    equipes = Equipe.objects.all()
-    reclamations_en_attente = Reclamation.objects.filter(statut="attente").count()
+# =========================================================
+# 📌 DASHBOARD UNIQUE RECOURS
+# =========================================================
+@login_required(login_url='login_reclamation')
+def recours_dashboard(request):
 
-    context = {
-        'equipes': equipes,
-        'reclamations_en_attente': reclamations_en_attente,
-    }
-
-    return render(request, 'reclamations/reclamation.html', context)
-
-
-@login_required
-def decision_reclamation(request, id):
-
-    if not request.user.is_staff:
+    # 🔐 sécurité
+    if not request.user.groups.filter(
+        name__in=['Capitaines', 'Coachs']
+    ).exists():
 
         messages.error(
             request,
-            "⛔ Accès interdit."
+            "⛔ Accès réservé aux capitaines et coachs."
         )
 
         return redirect('login_reclamation')
+
+    # ==========================
+    # FORMULAIRE
+    # ==========================
+    form = ReclamationForm(
+        request.POST or None,
+        request.FILES or None
+    )
+
+    # ==========================
+    # ENVOI RECOURS
+    # ==========================
+    if request.method == "POST":
+
+        if form.is_valid():
+
+            rec = form.save(commit=False)
+
+            rec.auteur = request.user
+
+            # statut par défaut
+            rec.statut = "en_attente"
+
+            rec.save()
+
+            messages.success(
+                request,
+                "✅ Votre recours a été envoyé avec succès."
+            )
+
+            return redirect('recours_dashboard')
+
+        else:
+
+            print(form.errors)
+
+            messages.error(
+                request,
+                "❌ Veuillez corriger les erreurs."
+            )
+
+    # ==========================
+    # MES RECOURS
+    # ==========================
+    reclamations = Reclamation.objects.filter(
+        auteur=request.user
+    ).order_by('-date')
+
+    return render(
+        request,
+        "reclamations/recours_dashboard.html",
+        {
+            "form": form,
+            "reclamations": reclamations
+        }
+    )
+
+
+# =========================================================
+# 📊 SUIVRE MES RECOURS
+# =========================================================
+@login_required(login_url='login_reclamation')
+def mes_reclamations(request):
+
+    # 🔐 sécurité groupes
+    if not request.user.groups.filter(
+        name__in=['Capitaines', 'Coachs']
+    ).exists():
+
+        return redirect('login_reclamation')
+
+    reclamations = Reclamation.objects.filter(
+        auteur=request.user
+    ).order_by('-date')
+
+    return render(
+        request,
+        "reclamations/mes_reclamations.html",
+        {
+            "reclamations": reclamations
+        }
+    )
+
+
+# =========================================================
+# 📩 CREER RECLAMATION
+# =========================================================
+@login_required(login_url='login_reclamation')
+def creer_reclamation(request):
+
+    # 🔐 sécurité groupes
+    if not request.user.groups.filter(
+        name__in=['Capitaines', 'Coachs']
+    ).exists():
+
+        return redirect('login_reclamation')
+
+    form = ReclamationForm(
+        request.POST or None,
+        request.FILES or None
+    )
+
+    if request.method == "POST":
+
+        if form.is_valid():
+
+            rec = form.save(commit=False)
+
+            rec.auteur = request.user
+
+            rec.statut = "en_attente"
+
+            rec.save()
+
+            messages.success(
+                request,
+                "✅ Recours envoyé avec succès."
+            )
+
+            return redirect('dashboard')
+
+        else:
+
+            print(form.errors)
+
+            messages.error(
+                request,
+                "❌ Veuillez corriger les erreurs."
+            )
+
+    return render(
+        request,
+        "reclamations/creer_reclamation.html",
+        {
+            "form": form
+        }
+    )
+
+
+# =========================================================
+# 👮 ADMIN : LISTE RECLAMATIONS
+# =========================================================
+@staff_member_required
+def liste_reclamations(request):
+
+    reclamations = Reclamation.objects.all().order_by("-date")
+
+    return render(
+        request,
+        "reclamations/liste_reclamations.html",
+        {
+            "reclamations": reclamations
+        }
+    )
+
+
+# =========================================================
+# 👮 ADMIN : TRAITEMENT
+# =========================================================
+@staff_member_required
+def decision_reclamation(request, id):
 
     reclamation = get_object_or_404(
         Reclamation,
         id=id
     )
 
-    if request.method == "POST":
+    form = DecisionReclamationForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=reclamation
+    )
 
-        form = DecisionReclamationForm(
-            request.POST,
-            request.FILES,
-            instance=reclamation
-        )
+    if request.method == "POST":
 
         if form.is_valid():
 
-            form.save()
+            rec = form.save(commit=False)
+
+            # notification user
+            rec.vu_par_user = False
+
+            rec.save()
 
             messages.success(
                 request,
-                "✅ Réclamation traitée."
+                "✅ Traitement effectué avec succès."
             )
 
             return redirect("liste_reclamations")
 
-    else:
+        else:
 
-        form = DecisionReclamationForm(
-            instance=reclamation
-        )
+            print(form.errors)
+
+            messages.error(
+                request,
+                "❌ Erreur dans le formulaire."
+            )
 
     return render(
         request,
@@ -183,17 +301,55 @@ def decision_reclamation(request, id):
         }
     )
 
+
+# =========================================================
+# 💬 COMMENTAIRES
+# =========================================================
 @login_required
+def ajouter_commentaire(request, id):
+
+    reclamation = get_object_or_404(
+        Reclamation,
+        id=id
+    )
+
+    form = CommentaireForm(
+        request.POST or None
+    )
+
+    if request.method == "POST":
+
+        if form.is_valid():
+
+            commentaire = form.save(commit=False)
+
+            commentaire.reclamation = reclamation
+            commentaire.auteur = request.user
+
+            commentaire.save()
+
+            messages.success(
+                request,
+                "💬 Commentaire ajouté."
+            )
+
+            return redirect('mes_reclamations')
+
+    return render(
+        request,
+        "reclamations/commentaire.html",
+        {
+            "form": form,
+            "reclamation": reclamation
+        }
+    )
+
+
+# =========================================================
+# 🗑 SUPPRESSION ADMIN
+# =========================================================
+@staff_member_required
 def supprimer_reclamation(request, id):
-
-    if not request.user.is_staff:
-
-        messages.error(
-            request,
-            "⛔ Accès interdit."
-        )
-
-        return redirect('login_reclamation')
 
     reclamation = get_object_or_404(
         Reclamation,
@@ -210,3 +366,26 @@ def supprimer_reclamation(request, id):
         )
 
     return redirect('liste_reclamations')
+
+
+# =========================================================
+# 📄 PAGE GENERALE RECOURS
+# =========================================================
+def reclamation(request):
+
+    equipes = Equipe.objects.all()
+
+    reclamations_en_attente = Reclamation.objects.filter(
+        statut="en_attente"
+    ).count()
+
+    context = {
+        'equipes': equipes,
+        'reclamations_en_attente': reclamations_en_attente,
+    }
+
+    return render(
+        request,
+        'reclamations/reclamation.html',
+        context
+    )

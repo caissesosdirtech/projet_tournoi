@@ -1,0 +1,56 @@
+{% extends 'tournoi/base.html' %}
+{% block content %}
+
+<style>
+.container{padding:30px}
+.card{background:#fff;padding:20px;border-radius:15px;margin-bottom:15px;box-shadow:0 10px 25px rgba(0,0,0,0.08)}
+.badge{padding:5px 10px;border-radius:20px;font-size:12px}
+.en_attente{background:#ffeaa7}
+.en_cours{background:#74b9ff;color:white}
+.traitee{background:#55efc4}
+.rejetee{background:#ff7675;color:white}
+
+.progress{height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-top:10px}
+.bar{height:100%;background:#6c5ce7}
+</style>
+
+<div class="container">
+
+<h2>📌 Mes recours</h2>
+
+{% for r in reclamations %}
+<div class="card">
+
+    <b>{{ r.get_type_reclamation_display }}</b> - {{ r.date }}
+
+    <p><b>Équipe:</b> {{ r.equipe.nom }}</p>
+
+    <span class="badge {{ r.statut }}">{{ r.get_statut_display }}</span>
+
+    <!-- PROGRESSION -->
+    <div class="progress">
+        <div class="bar" style="width:
+            {% if r.statut == 'en_attente' %}20%
+            {% elif r.statut == 'en_cours' %}60%
+            {% elif r.statut == 'traitee' %}100%
+            {% else %}30%
+            {% endif %}
+        "></div>
+    </div>
+
+    <p>{{ r.description }}</p>
+
+    <p><b>Réponse:</b> {{ r.decision|default:"En attente..." }}</p>
+
+    {% if r.fichier_joint %}
+        <a href="{{ r.fichier_joint.url }}">📎 fichier</a>
+    {% endif %}
+
+</div>
+{% empty %}
+<p>Aucun recours</p>
+{% endfor %}
+
+</div>
+
+{% endblock %}

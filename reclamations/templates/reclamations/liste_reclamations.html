@@ -1,86 +1,140 @@
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="fr">
+{% block content %}
 
-<head>
-<meta charset="UTF-8">
-<title>Liste des Réclamations</title>
+<style>
 
-<link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
-<link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
+/* ================= GLOBAL ================= */
 
-</head>
+.container{
+    padding:30px;
+}
 
-<body>
+/* TITRE */
+h2{
+    margin-bottom:25px;
+    color:#2c2c54;
+    font-size:22px;
+}
 
-<!-- ================= HEADER ================= -->
+/* ================= TABLE WRAPPER ================= */
 
-<header class="header">
-<h1>📩 Liste des Réclamations</h1>
-<span>Gestion des réclamations</span>
-</header>
+.table-wrapper{
+    background:white;
+    border-radius:16px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    overflow:hidden;
+    animation:fadeIn 0.5s ease;
+}
 
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+/* HEADER */
+th{
+    background:linear-gradient(135deg,#4b367c,#6c5ce7);
+    color:white;
+    padding:14px;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+/* ROW */
+td{
+    padding:14px;
+    text-align:center;
+    font-size:13px;
+    border-bottom:1px solid #f1f1f1;
+    transition:0.2s;
+}
+
+/* HOVER ROW */
+tr:hover td{
+    background:#f8f9ff;
+}
+
+/* ================= BADGES ================= */
+
+.badge{
+    padding:6px 12px;
+    border-radius:30px;
+    font-size:11px;
+    font-weight:600;
+    display:inline-block;
+}
+
+/* statuts */
+.en_attente{ background:#ffeaa7; color:#2d3436; }
+.en_cours{ background:#74b9ff; color:white; }
+.traitee{ background:#55efc4; color:#1e272e; }
+.rejetee{ background:#ff7675; color:white; }
+
+/* ================= FILE ================= */
+
+.file a{
+    color:#6c5ce7;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.file a:hover{
+    text-decoration:underline;
+}
+
+/* ================= ACTIONS ================= */
+
+.actions a{
+    display:inline-block;
+    margin:0 6px;
+    font-size:16px;
+    transition:0.2s;
+}
+
+.actions a:hover{
+    transform:scale(1.2);
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+    padding:25px;
+    text-align:center;
+    color:#888;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(15px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+</style>
 
 <div class="container">
 
-<!-- ================= SIDEBAR ================= -->
+<h2>📋 Gestion des réclamations</h2>
 
-<aside class="sidebar">
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="javascript:void(0);" onclick="openModal('modalInfo')">📝 Ajouter Info</a></li>
-            <li><a href="{% url 'programmer_match' %}">➕ Programmer un match</a></li>
+<div class="table-wrapper">
 
-            <li class="has-submenu">
-                <a href="#">👥 Équipes & Joueurs</a>
-                <ul class="submenu">
-                    <li><a href="{% url 'liste_equipes' %}">📋 Liste des équipes</a></li>
-                    <li><a href="{% url 'liste_joueurs' %}">📋 Liste des joueurs</a></li>
-                    <li><a href="javascript:void(0)" onclick="openModal('modalEquipe')">➕ Ajouter Équipe</a></li>
-                    <li><a href="javascript:void(0)" onclick="openModal('modalJoueur')">➕ Ajouter Joueur</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="{% url 'liste_reclamations' %}">
-                    📩  Liste Réclamations
-                    {% if reclamations_en_attente > 0 %}
-                        <span class="notif-badge">{{ reclamations_en_attente }}</span>
-                    {% endif %}
-                </a>
-            </li>
-
-            <li><a href="/admin/">🔐 Django Admin</a></li>
-            <li><a href="{% url 'dashboard' %}">🌍 Site public</a></li>
-        </ul>
-    </aside>
-
-
-<!-- ================= CONTENT ================= -->
-
-<main class="content">
-
-<section class="card">
-
-<h3>📋 Toutes les réclamations</h3>
-
-<table class="table">
+<table>
 
 <thead>
-
 <tr>
-<th>#</th>
-<th>Auteur</th>
-<th>Equipe</th>
-<th>Type</th>
-<th>Description</th>
-<th>Fichier</th>
-<th>Statut</th>
-<th>Date</th>
-<th>Action</th>
+    <th>#</th>
+    <th>Auteur</th>
+    <th>Équipe</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Fichier</th>
+    <th>Statut</th>
+    <th>Date</th>
+    <th>Actions</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -89,70 +143,42 @@
 
 <tr>
 
-<td>{{ forloop.counter }}</td>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ r.auteur.username }}</td>
+    <td>{{ r.equipe.nom }}</td>
+    <td>{{ r.get_type_reclamation_display }}</td>
 
-<td>{{ r.auteur.get_full_name|default:r.auteur.username }}</td>
+    <td>{{ r.description|truncatechars:45 }}</td>
 
-<td>{{ r.equipe }}</td>
+    <td class="file">
+        {% if r.fichier_joint %}
+            <a href="{{ r.fichier_joint.url }}" target="_blank">📎 ouvrir</a>
+        {% else %}
+            <span style="color:#aaa;">-</span>
+        {% endif %}
+    </td>
 
-<td>{{ r.type_reclamation }}</td>
+    <td>
+        <span class="badge {{ r.statut }}">
+            {{ r.get_statut_display }}
+        </span>
+    </td>
 
-<td>{{ r.description|truncatewords:10 }}</td>
+    <td>{{ r.date|date:"d/m/Y H:i" }}</td>
 
-<td>
+    <td class="actions">
+        <a href="{% url 'decision_reclamation' r.id %}" title="Traiter">⚙️</a>
+        <a href="{% url 'supprimer_reclamation' r.id %}" title="Supprimer">🗑</a>
+    </td>
 
-{% if r.fichier_joint %}
-<a href="{{ r.fichier_joint.url }}" class="btn-primary" target="_blank">
-Voir
-</a>
-{% else %}
--
-{% endif %}
-
-</td>
-
-<td>
-
-{% if r.statut == "en_attente" %}
-<span class="badge badge-orange">En attente</span>
-
-{% elif r.statut == "en_cours" %}
-<span class="badge badge-blue">En cours</span>
-
-{% elif r.statut == "traitee" %}
-<span class="badge badge-green">Traitée</span>
-
-{% endif %}
-
-</td>
-
-<td>{{ r.date|date:"d/m/Y H:i" }}</td>
-
-<td>
-    <div class="action-buttons">
-
-        <a href="{% url 'decision_reclamation' r.id %}" class="btn-primary">
-            Traiter
-        </a>
-
-        <button class="btn-danger" onclick="confirmDelete({{ r.id }})">
-             Supprimer
-        </button>
-
-        <form id="delete-form-{{ r.id }}" method="POST" action="{% url 'supprimer_reclamation' r.id %}" style="display:none;">
-            {% csrf_token %}
-        </form>
-
-    </div>
-</td>
 </tr>
 
 {% empty %}
 
 <tr>
-<td colspan="9" style="text-align:center;">
-Aucune réclamation
-</td>
+    <td colspan="9" class="empty">
+        Aucune réclamation enregistrée
+    </td>
 </tr>
 
 {% endfor %}
@@ -161,56 +187,8 @@ Aucune réclamation
 
 </table>
 
-</section>
-
-</main>
+</div>
 
 </div>
 
-
-<!-- ================= FOOTER ================= -->
-
-<footer class="footer">
-<p>© 2026 – Plateforme de gestion du tournoi</p>
-</footer>
-
-<!-- SWEETALERT -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-function confirmDelete(id){
-    Swal.fire({
-        title: "Supprimer cette réclamation ?",
-        text: "Cette action est irréversible !",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Oui, supprimer",
-        cancelButtonText: "Annuler"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById("delete-form-" + id).submit();
-        }
-    });
-}
-</script>
-
-<!-- SWEETALERT -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-{% if messages %}
-<script>
-    {% for message in messages %}
-        Swal.fire({
-            icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
-            title: "{{ message|escapejs }}",
-            showConfirmButton: false,
-            timer: 5000
-        });
-    {% endfor %}
-</script>
-{% endif %}
-
-</body>
-</html>
+{% endblock %}

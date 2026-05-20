@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^tlof3+*wc^7p_#a!58%$gt9x#vi5e5p=wu9rsa#m53o-@lg7@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -135,3 +135,26 @@ LOGIN_URL = '/admin-login/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+# =========================================
+# AUTHENTIFICATION / SESSIONS
+# =========================================
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+SESSION_COOKIE_AGE = 1209600  # 2 semaines
+
+SESSION_SAVE_EVERY_REQUEST = True
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+CSRF_TRUSTED_ORIGINS = [
+
+    'http://127.0.0.1:8000',
+
+    'http://localhost:8000',
+
+]

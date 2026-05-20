@@ -13,16 +13,84 @@ from django import forms
 from .models import Reclamation, ReclamationCommentaire
 
 
-class ReclamationForm(forms.ModelForm):
-    class Meta:
-        model = Reclamation
-        fields = ['equipe', 'type_reclamation', 'description', 'fichier_joint']
+from django import forms
+from .models import Reclamation
 
+
+from django import forms
+from .models import Reclamation
+
+
+# FORMULAIRE UTILISATEUR
+class ReclamationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Reclamation
+
+        fields = [
+
+            'equipe',
+
+            'type_reclamation',
+
+            'description',
+
+            'fichier_joint'
+
+        ]
+
+        widgets = {
+
+            'description': forms.Textarea(attrs={
+
+                'rows': 5,
+
+                'placeholder':
+                'Décrivez précisément votre recours...'
+
+            }),
+
+        }
+
+
+# FORMULAIRE COMMISSION
+class DecisionReclamationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Reclamation
+
+        fields = [
+
+            'statut',
+
+            'decision_commission',
+
+            'commentaire_admin',
+
+            'document_final'
+
+        ]
+
+        widgets = {
+
+            'commentaire_admin': forms.Textarea(attrs={
+
+                'rows': 4,
+
+                'placeholder':
+                'Décision officielle de la commission...'
+
+            }),
+
+        }
 
 class DecisionReclamationForm(forms.ModelForm):
     class Meta:
         model = Reclamation
-        fields = ['statut', 'decision', 'document_final']
+        fields = ['statut','decision_commission','commentaire_admin','document_final'
+        ]
 
 
 class CommentaireForm(forms.ModelForm):
@@ -33,10 +101,30 @@ class CommentaireForm(forms.ModelForm):
 class DecisionReclamationForm(forms.ModelForm):
 
     class Meta:
+
         model = Reclamation
-        fields = ['statut', 'decision', 'document_final']
+
+        fields = [
+
+            'statut',
+
+            'decision_commission',
+
+            'commentaire_admin',
+
+            'document_final'
+
+        ]
+
         widgets = {
-            'statut': forms.Select(attrs={'class': 'form-control'}),
-            'decision': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Commentaire / décision'}),
-            'document_final': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-        }       
+
+            'commentaire_admin': forms.Textarea(attrs={
+
+                'rows': 4,
+
+                'placeholder':
+                'Décision officielle de la commission...'
+
+            }),
+
+        }

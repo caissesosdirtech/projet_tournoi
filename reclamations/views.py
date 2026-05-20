@@ -110,7 +110,7 @@ def recours_dashboard(request):
 
             rec = form.save(commit=False)
 
-            rec.auteur = request.user
+            rec.utilisateur = request.user
 
             # statut par défaut
             rec.statut = "en_attente"
@@ -137,7 +137,7 @@ def recours_dashboard(request):
     # MES RECOURS
     # ==========================
     reclamations = Reclamation.objects.filter(
-        auteur=request.user
+        utilisateur=request.user
     ).order_by('-date')
 
     return render(
@@ -164,7 +164,7 @@ def mes_reclamations(request):
         return redirect('login_reclamation')
 
     reclamations = Reclamation.objects.filter(
-        auteur=request.user
+        utilisateur=request.user
     ).order_by('-date')
 
     return render(
@@ -200,7 +200,7 @@ def creer_reclamation(request):
 
             rec = form.save(commit=False)
 
-            rec.auteur = request.user
+            rec.utilisateur = request.user
 
             rec.statut = "en_attente"
 
@@ -324,7 +324,7 @@ def ajouter_commentaire(request, id):
             commentaire = form.save(commit=False)
 
             commentaire.reclamation = reclamation
-            commentaire.auteur = request.user
+            commentaire.utilisateur = request.user
 
             commentaire.save()
 

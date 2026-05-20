@@ -1,9 +1,21 @@
-{% extends 'tournoi/base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Tournoi DRN{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{% static 'tournoi/css/admin_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'tournoi/css/modals.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
 
-{% block content %}
 <div class="admin-wrapper">
-    <!-- ================= HEADER ADMIN ================= -->
+    <!-- HEADER -->
     <header class="header">
         <div class="header-left">
             <h1>🏆 Admin Tournament Panel</h1>
@@ -21,46 +33,19 @@
     </header>
 
     <div class="admin-container">
-        <!-- ================= SIDEBAR ================= -->
-        <aside class="sidebar">
-            <ul>
-                <li class="{% if page == 'dashboard' %}active{% endif %}">
-                    <a href="{% url 'admin_dashboard' %}">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="{% if page == 'matchs' %}active{% endif %}">
-                    <a href="{% url 'programmer_match' %}">
-                        <i class="fas fa-calendar-plus"></i>
-                        <span>Programmer Match</span>
-                    </a>
-                </li>
-                <li class="has-submenu">
-                    <a href="#">
-                        <i class="fas fa-users"></i>
-                        <span>Équipes & Joueurs</span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{% url 'liste_equipes' %}">Liste des Équipes</a></li>
-                        <li><a href="{% url 'liste_joueurs' %}">Liste des Joueurs</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:void(0)" onclick="openModal('modalInfo')">
-                        <i class="fas fa-bullhorn"></i>
-                        <span>Ajouter Info</span>
-                    </a>
-                </li>
-                <!-- Ajoute d'autres liens ici -->
-            </ul>
-        </aside>
+        <!-- Sidebar Admin -->
+        {% include 'tournoi/sidebar_admin.html' %}
 
-        <!-- ================= CONTENU PRINCIPAL ================= -->
+        <!-- Contenu Principal -->
         <main class="content">
-            {% block admin_content %}
-            {% endblock %}
+            <div class="content-inner">
+                {% block admin_content %}
+                {% endblock %}
+            </div>
         </main>
     </div>
 </div>
-{% endblock %}
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

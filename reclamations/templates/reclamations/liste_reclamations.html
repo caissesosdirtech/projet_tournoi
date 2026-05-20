@@ -1,7 +1,4 @@
-{% extends 'tournoi/base_admin.html' %}
 {% load static %}
-
-{% block admin_content %}
 
 <div class="reclamation-page">
 
@@ -87,10 +84,10 @@
                         <td>{{ r.date|date:"d/m/Y H:i" }}</td>
                         <td>
                             <div class="actions">
-                                <a href="{% url 'decision_reclamation' r.id %}" class="action-btn btn-edit" title="Traiter">
+                                <a href="{% url 'decision_reclamation' r.id %}" class="action-btn btn-edit">
                                     <i class="fas fa-gavel"></i>
                                 </a>
-                                <a href="{% url 'supprimer_reclamation' r.id %}" class="action-btn btn-delete" title="Supprimer">
+                                <a href="{% url 'supprimer_reclamation' r.id %}" class="action-btn btn-delete">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -98,19 +95,11 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="9" class="text-center py-5">
-                            <div class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <p>Aucune réclamation enregistrée</p>
-                            </div>
-                        </td>
+                        <td colspan="9" class="text-center py-5">Aucune réclamation enregistrée</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
-
-{% endblock %}

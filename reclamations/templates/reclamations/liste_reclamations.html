@@ -1,49 +1,136 @@
 {% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<div class="reclamation-page">
+<div class="reclamation-container">
 
-    <!-- HERO -->
-    <div class="hero-section">
-        <div class="hero-title">⚖️ Gestion Premium des Réclamations</div>
-        <div class="hero-subtitle">
-            Gérez les recours officiels du tournoi, consultez les pièces jointes, 
-            traitez les décisions de la commission et suivez les dossiers en temps réel.
-        </div>
-    </div>
+    <!-- ================= HEADER ================= -->
+    <div class="reclamation-header">
 
-    <!-- STATS -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Réclamations</h3>
-            <div class="number">{{ reclamations.count }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>En attente</h3>
-            <div class="number">{{ reclamations_en_attente }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>En cours</h3>
-            <div class="number">{{ reclamations_en_cours }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Traitées</h3>
-            <div class="number">{{ reclamations_traitees }}</div>
-        </div>
-    </div>
+        <div class="header-left">
 
-    <!-- TABLE -->
-    <div class="table-container">
-        <div class="table-header">
-            <h2>📋 Liste des Réclamations</h2>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher...">
+            <span class="section-badge">
+                ⚖️ Administration des recours
+            </span>
+
+            <h1>
+                Gestion des Réclamations
+            </h1>
+
+            <p>
+                Consultez, analysez et traitez les recours officiels du tournoi
+                depuis une interface moderne et professionnelle.
+            </p>
+
+        </div>
+
+        <div class="header-right">
+
+            <div class="header-card">
+
+                <i class="fas fa-folder-open"></i>
+
+                <div>
+                    <strong>{{ reclamations.count }}</strong>
+                    <span>Dossiers enregistrés</span>
+                </div>
+
             </div>
+
         </div>
 
+    </div>
+
+    <!-- ================= STATISTIQUES ================= -->
+    <div class="stats-grid">
+
+        <div class="stat-box total">
+
+            <div class="icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+
+            <div class="details">
+                <span>Total Réclamations</span>
+                <h2>{{ reclamations.count }}</h2>
+            </div>
+
+        </div>
+
+        <div class="stat-box attente">
+
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div class="details">
+                <span>En attente</span>
+                <h2>{{ reclamations_en_attente }}</h2>
+            </div>
+
+        </div>
+
+        <div class="stat-box encours">
+
+            <div class="icon">
+                <i class="fas fa-spinner"></i>
+            </div>
+
+            <div class="details">
+                <span>En cours</span>
+                <h2>{{ reclamations_en_cours }}</h2>
+            </div>
+
+        </div>
+
+        <div class="stat-box traite">
+
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <div class="details">
+                <span>Traitées</span>
+                <h2>{{ reclamations_traitees }}</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <div class="table-section">
+
+        <!-- TOP BAR -->
+        <div class="table-top">
+
+            <div>
+
+                <h2>📋 Liste des Réclamations</h2>
+
+                <p>
+                    Historique complet des recours du tournoi
+                </p>
+
+            </div>
+
+            <div class="search-area">
+
+                <i class="fas fa-search"></i>
+
+                <input type="text"
+                       placeholder="Rechercher une réclamation...">
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
         <div class="table-responsive">
-            <table>
+
+            <table class="premium-table">
+
                 <thead>
+
                     <tr>
                         <th>#</th>
                         <th>Utilisateur</th>
@@ -55,51 +142,166 @@
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
+
                 <tbody>
+
                     {% for r in reclamations %}
+
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+
                         <td>
-                            <div class="user-box">
-                                <div class="avatar">{{ r.utilisateur.username|first|upper }}</div>
-                                <div><strong>{{ r.utilisateur.username }}</strong></div>
-                            </div>
+                            <strong>#{{ forloop.counter }}</strong>
                         </td>
-                        <td>{{ r.equipe.nom|default:"-" }}</td>
-                        <td>{{ r.get_type_reclamation_display }}</td>
-                        <td>{{ r.description|truncatechars:60 }}</td>
+
                         <td>
+
+                            <div class="user-info">
+
+                                <div class="avatar">
+                                    {{ r.utilisateur.username|first|upper }}
+                                </div>
+
+                                <div class="user-text">
+
+                                    <strong>
+                                        {{ r.utilisateur.username }}
+                                    </strong>
+
+                                    <small>
+                                        Utilisateur
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="team-tag">
+                                {{ r.equipe.nom|default:"Aucune" }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="type-tag">
+                                {{ r.get_type_reclamation_display }}
+                            </span>
+
+                        </td>
+
+                        <td class="description">
+                            {{ r.description|truncatechars:65 }}
+                        </td>
+
+                        <td>
+
                             {% if r.fichier_joint %}
-                                <a href="{{ r.fichier_joint.url }}" target="_blank" class="file-btn">
-                                    <i class="fas fa-paperclip"></i> Ouvrir
-                                </a>
+
+                            <a href="{{ r.fichier_joint.url }}"
+                               target="_blank"
+                               class="file-link">
+
+                                <i class="fas fa-paperclip"></i>
+                                Ouvrir
+
+                            </a>
+
                             {% else %}
-                                <span style="color:#94a3b8;">Aucun</span>
+
+                            <span class="empty-file">
+                                Aucun
+                            </span>
+
                             {% endif %}
+
                         </td>
+
                         <td>
-                            <span class="badge {{ r.statut }}">{{ r.get_statut_display }}</span>
+
+                            <span class="status {{ r.statut }}">
+                                {{ r.get_statut_display }}
+                            </span>
+
                         </td>
-                        <td>{{ r.date|date:"d/m/Y H:i" }}</td>
+
                         <td>
-                            <div class="actions">
-                                <a href="{% url 'decision_reclamation' r.id %}" class="action-btn btn-edit">
-                                    <i class="fas fa-gavel"></i>
-                                </a>
-                                <a href="{% url 'supprimer_reclamation' r.id %}" class="action-btn btn-delete">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+
+                            <div class="date-box">
+
+                                <strong>
+                                    {{ r.date|date:"d/m/Y" }}
+                                </strong>
+
+                                <small>
+                                    {{ r.date|date:"H:i" }}
+                                </small>
+
                             </div>
+
                         </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a href="{% url 'decision_reclamation' r.id %}"
+                                   class="btn-action btn-view">
+
+                                    <i class="fas fa-gavel"></i>
+
+                                </a>
+
+                                <a href="{% url 'supprimer_reclamation' r.id %}"
+                                   class="btn-action btn-delete">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
                     </tr>
+
                     {% empty %}
+
                     <tr>
-                        <td colspan="9" class="text-center py-5">Aucune réclamation enregistrée</td>
+
+                        <td colspan="9">
+
+                            <div class="empty-state">
+
+                                <i class="fas fa-folder-open"></i>
+
+                                <h3>
+                                    Aucune réclamation trouvée
+                                </h3>
+
+                                <p>
+                                    Les nouvelles réclamations apparaîtront ici.
+                                </p>
+
+                            </div>
+
+                        </td>
+
                     </tr>
+
                     {% endfor %}
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>

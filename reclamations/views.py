@@ -239,22 +239,34 @@ from django.shortcuts import render
 
 @staff_member_required
 def liste_reclamations(request):
+
     reclamations = Reclamation.objects.all().order_by("-date")
 
-    # Calcul des statistiques (utile pour tes cartes)
-    reclamations_en_attente = reclamations.filter(statut='en_attente').count()
-    reclamations_en_cours = reclamations.filter(statut='en_cours').count()
-    reclamations_traitees = reclamations.filter(statut='traitee').count()
+    reclamations_en_attente = reclamations.filter(
+        statut='en_attente'
+    ).count()
+
+    reclamations_en_cours = reclamations.filter(
+        statut='en_cours'
+    ).count()
+
+    reclamations_traitees = reclamations.filter(
+        statut='traitee'
+    ).count()
 
     context = {
         'reclamations': reclamations,
         'reclamations_en_attente': reclamations_en_attente,
         'reclamations_en_cours': reclamations_en_cours,
         'reclamations_traitees': reclamations_traitees,
-        'page': 'liste_reclamations',           # ← Important pour le menu actif
+        'page': 'liste_reclamations',
     }
 
-    return render(request, "reclamations/liste_reclamations.html", context)
+    return render(
+        request,
+        "matchs/admin_dashboard.html",
+        context
+    )
 
 # =========================================================
 # 👮 ADMIN : TRAITEMENT

@@ -1,6 +1,8 @@
 {% load static %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- ================= CONTAINER ================= -->
 <div class="reclamation-container">
 
     <!-- ================= HEADER ================= -->
@@ -39,6 +41,49 @@
         </div>
 
     </div>
+
+    <!-- ================= MESSAGE SUCCESS ================= -->
+    {% if messages %}
+        {% for message in messages %}
+
+        <div class="custom-success-modal active" id="successModal">
+
+            <div class="success-box">
+
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+
+                <h2>
+                    {% if "suppression" in message|lower %}
+                        🗑 Suppression réussie
+
+                    {% elif "décision" in message|lower %}
+                        ✅ Décision enregistrée
+
+                    {% elif "erreur" in message|lower %}
+                        ❌ Erreur
+
+                    {% else %}
+                        ℹ Notification
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {{ message }}
+                </p>
+
+                <button class="btn-close-success"
+                        onclick="closeSuccessModal()">
+                    OK
+                </button>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+    {% endif %}
 
     <!-- ================= STATISTIQUES ================= -->
     <div class="stats-grid">
@@ -140,6 +185,7 @@
                         <th>Fichier</th>
                         <th>Statut</th>
                         <th>Date</th>
+                        <th>Décision</th>
                         <th>Actions</th>
                     </tr>
 
@@ -246,23 +292,48 @@
 
                         </td>
 
+                        <!-- DECISION -->
+                        <td>
+
+                            {% if r.decision_commission %}
+
+                                <span class="status traite">
+                                    {{ r.get_decision_commission_display }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="status attente">
+                                    Non traitée
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- ACTIONS -->
                         <td>
 
                             <div class="action-buttons">
 
+                                <!-- TRAITER -->
                                 <a href="{% url 'decision_reclamation' r.id %}"
-                                   class="btn-action btn-view">
+                                   class="btn-action btn-view"
+                                   title="Traiter">
 
                                     <i class="fas fa-gavel"></i>
 
                                 </a>
 
-                                <a href="{% url 'supprimer_reclamation' r.id %}"
-                                   class="btn-action btn-delete">
+                                <!-- SUPPRIMER -->
+                                <button type="button"
+                                        class="btn-action btn-delete"
+                                        onclick="openDeleteModal('{% url 'supprimer_reclamation' r.id %}')"
+                                        title="Supprimer">
 
                                     <i class="fas fa-trash"></i>
 
-                                </a>
+                                </button>
 
                             </div>
 
@@ -274,7 +345,7 @@
 
                     <tr>
 
-                        <td colspan="9">
+                        <td colspan="10">
 
                             <div class="empty-state">
 
@@ -305,3 +376,212 @@
     </div>
 
 </div>
+
+<!-- ================= MODAL CONFIRMATION ================= -->
+
+<div class="delete-modal" id="deleteModal">
+
+    <div class="delete-box">
+
+        <div class="delete-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+
+        <h2>
+            Confirmation
+        </h2>
+
+        <p>
+            ⚠️ Voulez-vous vraiment supprimer cette réclamation ?
+        </p>
+
+        <form method="POST" id="deleteForm">
+
+            {% csrf_token %}
+
+            <div class="delete-actions">
+
+                <button type="button"
+                        class="btn-cancel-delete"
+                        onclick="closeDeleteModal()">
+
+                    Annuler
+
+                </button>
+
+                <button type="submit"
+                        class="btn-confirm-delete">
+
+                    Oui, supprimer
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+/* ===== MODAL BACKGROUND ===== */
+
+.delete-modal,
+.custom-success-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.75);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    animation: fadeIn 0.3s ease;
+}
+
+.delete-modal.active,
+.custom-success-modal.active{
+    display: flex;
+}
+
+/* ===== BOX ===== */
+
+.delete-box,
+.success-box{
+    width: 420px;
+    background: white;
+    border-radius: 24px;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    animation: scaleUp 0.3s ease;
+}
+
+/* ===== ICONS ===== */
+
+.delete-icon{
+    width: 90px;
+    height: 90px;
+    margin: auto;
+    border-radius: 50%;
+    background: #fff4e5;
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.success-icon{
+    width: 90px;
+    height: 90px;
+    margin: auto;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+/* ===== ACTIONS ===== */
+
+.delete-actions{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+.btn-cancel-delete{
+    background: #f1f5f9;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn-confirm-delete{
+    background: linear-gradient(135deg,#ef4444,#dc2626);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn-close-success{
+    background: linear-gradient(135deg,#10b981,#059669);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes scaleUp{
+    from{
+        transform:scale(0.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+</style>
+
+<script>
+
+function openDeleteModal(url){
+
+    document.getElementById("deleteModal")
+            .classList.add("active");
+
+    document.getElementById("deleteForm").action = url;
+}
+
+function closeDeleteModal(){
+
+    document.getElementById("deleteModal")
+            .classList.remove("active");
+}
+
+function closeSuccessModal(){
+
+    let successModal =
+        document.getElementById("successModal");
+
+    if(successModal){
+        successModal.classList.remove("active");
+    }
+}
+
+setTimeout(() => {
+
+    let successModal =
+        document.getElementById("successModal");
+
+    if(successModal){
+        successModal.classList.remove("active");
+    }
+
+}, 3000);
+
+</script>

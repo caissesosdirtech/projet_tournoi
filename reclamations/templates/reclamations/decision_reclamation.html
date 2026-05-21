@@ -3,149 +3,106 @@
 {% block content %}
 
 <style>
-
-/* ================= BACKGROUND ================= */
-
-body{
-    background:#f4f6fb;
+.container-box{
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-/* ================= CONTAINER ================= */
-
-.container{
-    max-width:650px;
-    margin:40px auto;
-    background:white;
-    border-radius:18px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.08);
-    overflow:hidden;
-    animation:fadeIn 0.6s ease;
+h2{
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e293b;
 }
 
-/* HEADER */
-.header{
-    background:linear-gradient(135deg,#4b367c,#6c5ce7);
-    padding:20px;
-    color:white;
+.form-group{
+    margin-bottom: 15px;
 }
 
-.header h2{
-    margin:0;
-    font-size:20px;
-}
-
-/* BODY */
-.body{
-    padding:25px;
-}
-
-/* LABEL */
 label{
-    font-weight:600;
-    font-size:13px;
-    color:#333;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
 }
 
-/* INPUTS */
-select, textarea, input{
-    width:100%;
-    padding:12px;
-    margin-top:6px;
-    margin-bottom:18px;
-    border-radius:10px;
-    border:1px solid #e0e0e0;
-    outline:none;
-    transition:0.3s;
-    font-size:14px;
+input, select, textarea{
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-select:focus, textarea:focus, input:focus{
-    border-color:#6c5ce7;
-    box-shadow:0 0 0 3px rgba(108,92,231,0.15);
-}
-
-/* TEXTAREA */
-textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-/* BUTTON */
 button{
-    width:100%;
-    padding:13px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#4b367c,#6c5ce7);
-    color:white;
-    font-weight:600;
-    font-size:14px;
-    cursor:pointer;
-    transition:0.3s;
+    background: #2563eb;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 15px;
+    cursor: pointer;
 }
 
 button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(108,92,231,0.3);
+    background: #1d4ed8;
 }
 
-/* STATUS PREVIEW */
-.status-preview{
-    padding:10px 15px;
-    border-radius:10px;
-    display:inline-block;
-    font-size:12px;
-    font-weight:600;
-    margin-bottom:15px;
+.info-box{
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-.en_attente{ background:#ffeaa7; color:#6c5ce7; }
-.en_cours{ background:#74b9ff; color:white; }
-.traitee{ background:#55efc4; }
-
-/* ANIMATION */
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(20px);}
-    to{opacity:1; transform:translateY(0);}
+.info-box p{
+    margin: 5px 0;
 }
-
 </style>
 
-<div class="container">
+<div class="container-box">
 
-<!-- ================= HEADER ================= -->
-<div class="header">
-    <h2>⚙️ Traitement du recours</h2>
-</div>
+    <h2>⚖️ Traitement de la réclamation</h2>
 
-<div class="body">
-
-<!-- ================= STATUS ACTUEL ================= -->
-{% if reclamation %}
-    <div class="status-preview {{ reclamation.statut }}">
-        Statut actuel : {{ reclamation.get_statut_display }}
+    <!-- INFOS RECLAMATION -->
+    <div class="info-box">
+        <p><strong>Utilisateur :</strong> {{ reclamation.utilisateur.username }}</p>
+        <p><strong>Type :</strong> {{ reclamation.get_type_reclamation_display }}</p>
+        <p><strong>Description :</strong> {{ reclamation.description }}</p>
+        <p><strong>Statut actuel :</strong> {{ reclamation.get_statut_display }}</p>
     </div>
-{% endif %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+    <!-- FORMULAIRE -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <!-- STATUT -->
-    <label>Changer le statut</label>
-    {{ form.statut }}
+        <div class="form-group">
+            <label>Statut</label>
+            {{ form.statut }}
+        </div>
 
-    <!-- DECISION -->
-    <label>Décision de l’admin</label>
-    {{ form.decision }}
+        <div class="form-group">
+            <label>Décision de la commission</label>
+            {{ form.decision_commission }}
+        </div>
 
-    <!-- DOCUMENT FINAL -->
-    <label>Document final (optionnel)</label>
-    {{ form.document_final }}
+        <div class="form-group">
+            <label>Commentaire admin</label>
+            {{ form.commentaire_admin }}
+        </div>
 
-    <button type="submit">💾 Valider le traitement</button>
-</form>
+        <div class="form-group">
+            <label>Document final (optionnel)</label>
+            {{ form.document_final }}
+        </div>
 
-</div>
+        <button type="submit">
+            ✅ Enregistrer la décision
+        </button>
+
+    </form>
 
 </div>
 

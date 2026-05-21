@@ -268,37 +268,60 @@ def liste_reclamations(request):
         context
     )
 
+
 # =========================================================
-# 👮 ADMIN : TRAITEMENT
+# 👮 TRAITEMENT RECLAMATION
 # =========================================================
 @staff_member_required
 def decision_reclamation(request, id):
 
+    # récupérer la réclamation
     reclamation = get_object_or_404(
         Reclamation,
         id=id
     )
 
+    # formulaire
     form = DecisionReclamationForm(
         request.POST or None,
         request.FILES or None,
         instance=reclamation
     )
 
+    # =====================================================
+    # ENREGISTREMENT
+    # =====================================================
     if request.method == "POST":
 
         if form.is_valid():
 
             rec = form.save(commit=False)
 
-            # notification user
-            rec.vu_par_user = False
+            # =============================================
+            # GESTION AUTOMATIQUE STATUT
+            # =============================================
+            if rec.decision_commission == "accepte":
 
+                rec.statut = "traitee"
+
+            elif rec.decision_commission == "rejete":
+
+                rec.statut = "rejetee"
+
+            elif rec.decision_commission == "partiel":
+
+                rec.statut = "en_cours"
+
+            else:
+
+                rec.statut = "en_attente"
+
+            # sauvegarde
             rec.save()
 
             messages.success(
                 request,
-                "✅ Traitement effectué avec succès."
+                "✅ Décision enregistrée avec succès."
             )
 
             return redirect("liste_reclamations")
@@ -312,6 +335,9 @@ def decision_reclamation(request, id):
                 "❌ Erreur dans le formulaire."
             )
 
+    # =====================================================
+    # AFFICHAGE PAGE
+    # =====================================================
     return render(
         request,
         "reclamations/decision_reclamation.html",
@@ -320,7 +346,6 @@ def decision_reclamation(request, id):
             "reclamation": reclamation
         }
     )
-
 
 # =========================================================
 # 💬 COMMENTAIRES
@@ -382,7 +407,7 @@ def supprimer_reclamation(request, id):
 
         messages.success(
             request,
-            "🗑 Réclamation supprimée."
+            "🗑 Réclamation supprimée avec succès."
         )
 
     return redirect('liste_reclamations')

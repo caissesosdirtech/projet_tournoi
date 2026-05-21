@@ -507,22 +507,14 @@ def ajouter_info(request):
         niveau = request.POST.get("niveau")
         fichier = request.FILES.get("fichier")
 
-        info = InfoTournoi.objects.create(
+        InfoTournoi.objects.create(
             titre=titre,
             contenu=description,
             priorite=niveau,
             fichier=fichier
         )
 
-        # Création automatique d'une notification
-        Notification.objects.create(
-            titre=titre,
-            message=description,
-            type_notification="info"
-        )
-
-    return redirect('admin_dashboard')
-
+    return redirect('infos')
 
 def ajouter_info_ajax(request):
 
@@ -556,7 +548,9 @@ def infos(request):
 
     infos = InfoTournoi.objects.all().order_by('-date_publication')
 
-    notifications = Notification.objects.all().order_by('-date_creation')
+    notifications = Notification.objects.all().order_by(
+        '-date_creation'
+    )[:5]
 
     context = {
         'infos': infos,

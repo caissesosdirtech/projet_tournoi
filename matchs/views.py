@@ -496,7 +496,12 @@ def gerer_evenements(request, id):
         'evenements': evenements
     })
 
-# ----------------- Vue pour ajouter une info (via formulaire admin) -----------------
+
+
+# =====================================================
+# AJOUT ACTUALITÉ
+# =====================================================
+
 @staff_member_required
 def ajouter_info(request):
 
@@ -507,15 +512,29 @@ def ajouter_info(request):
         niveau = request.POST.get("niveau")
         fichier = request.FILES.get("fichier")
 
-        InfoTournoi.objects.create(
+        # ✅ Création actualité
+        info = InfoTournoi.objects.create(
             titre=titre,
             contenu=description,
             priorite=niveau,
             fichier=fichier
         )
 
-    return redirect('infos')
+        # ✅ Notification courte
+        Notification.objects.create(
+            titre="📢 Nouvelle actualité publiée",
+            message=f"{titre}",
+            type_notification="info"
+        )
 
+    return redirect('admin_dashboard')
+
+
+# =====================================================
+# AJOUT ACTUALITÉ AJAX
+# =====================================================
+
+@staff_member_required
 def ajouter_info_ajax(request):
 
     if request.method == "POST":
@@ -525,11 +544,19 @@ def ajouter_info_ajax(request):
         niveau = request.POST.get("niveau")
         fichier = request.FILES.get("fichier")
 
+        # ✅ Actualité
         info = InfoTournoi.objects.create(
             titre=titre,
             contenu=description,
             priorite=niveau,
             fichier=fichier
+        )
+
+        # ✅ Notification
+        Notification.objects.create(
+            titre="📢 Nouvelle actualité publiée",
+            message=f"{titre}",
+            type_notification="info"
         )
 
         data = {
@@ -542,26 +569,123 @@ def ajouter_info_ajax(request):
 
         return JsonResponse(data)
 
-    return JsonResponse({'success': False})      
+    return JsonResponse({'success': False})
+
+
+# =====================================================
+# PAGE ACTUALITÉS / NOTIFICATIONS
+# =====================================================
 
 def infos(request):
 
-    infos = InfoTournoi.objects.all().order_by('-date_publication')
+    # ✅ 4 dernières actualités
+    infos = InfoTournoi.objects.all().order_by('-date_publication')[:4]
 
-    notifications = Notification.objects.all().order_by(
-        '-date_creation'
-    )[:5]
+    # ✅ 10 dernières notifications
+    notifications = Notification.objects.all().order_by('-date_creation')[:10]
 
     context = {
         'infos': infos,
         'notifications': notifications,
     }
 
-    return render(
-        request,
-        "matchs/infos.html",
-        context
+    return render(request, "matchs/infos.html", context)
+
+
+@staff_member_required
+def supprimer_info(request, info_id):
+
+    info = get_object_or_404(InfoTournoi, id=info_id)
+
+    titre = info.titre
+
+    # ✅ suppression
+    info.delete()
+
+    # ✅ notification automatique
+    Notification.objects.create(
+        titre="🗑 Actualité supprimée",
+        message=f"{titre} a été supprimée.",
+        type_notification="warning"
     )
+
+    messages.success(request, "Actualité supprimée avec succès.")
+
+    return redirect('admin_dashboard')
+
+
+# =====================================================
+# AJOUT MATCH + NOTIFICATION
+# =====================================================
+
+@staff_member_required
+def ajouter_match(request):
+
+    if request.method == "POST":
+
+        equipe1_id = request.POST.get("equipe1")
+        equipe2_id = request.POST.get("equipe2")
+        date = request.POST.get("date")
+
+        match = Match.objects.create(
+            equipe1_id=equipe1_id,
+            equipe2_id=equipe2_id,
+            date=date
+        )
+
+        # ✅ Notification MATCH
+        Notification.objects.create(
+            titre="⚽ Nouveau match programmé",
+            message=f"{match.equipe1.nom} vs {match.equipe2.nom}",
+            type_notification="match"
+        )
+
+    return redirect('liste_matchs')
+
+
+# =====================================================
+# SUSPENSION JOUEUR
+# =====================================================
+
+@staff_member_required
+def suspendre_joueur(request, joueur_id):
+
+    joueur = Joueur.objects.get(id=joueur_id)
+
+    # Exemple de suspension
+    joueur.est_suspendu = True
+    joueur.save()
+
+    # ✅ Notification SUSPENSION
+    Notification.objects.create(
+        titre="🚨 Suspension enregistrée",
+        message=f"{joueur.nom} {joueur.prenom} est suspendu.",
+        type_notification="warning"
+    )
+
+    return redirect('liste_joueurs')
+
+
+# =====================================================
+# MISE À JOUR CLASSEMENT
+# =====================================================
+
+@staff_member_required
+def mettre_a_jour_classement(request):
+
+    # Ici tu fais ton traitement classement
+    # ...
+
+    # ✅ Notification CLASSEMENT
+    Notification.objects.create(
+        titre="🏆 Classement mis à jour",
+        message="Le classement général du tournoi a été actualisé.",
+        type_notification="classement"
+    )
+
+    return redirect('classement') 
+
+
 
 def stats_equipes(request):
     equipes = Equipe.objects.all()

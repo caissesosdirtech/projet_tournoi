@@ -29,7 +29,7 @@ urlpatterns = [
     path('infos/', views.infos, name='infos'),
     path('ajouter-info/', views.ajouter_info, name='ajouter_info'),
     path('galeries/', views.galeries, name='galeries'), 
-
+    path('supprimer-info/<int:info_id>/',views.supprimer_info,name='supprimer_info'),
 
     # ================= GESTION EQUIPES =================
     path('equipes/', views.liste_equipes, name='liste_equipes'),

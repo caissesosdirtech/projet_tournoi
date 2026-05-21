@@ -21,6 +21,7 @@ from joueurs.models import Joueur
 from reclamations.models import Reclamation
 from matchs.models import Match, Evenement, But, Carton, InfoTournoi, Notification, Galerie
 from sanctions.models import Suspension
+from .models import InfoTournoi, Notification
 
 # ================= FORMS =================
 from .forms import InfoTournoiForm
@@ -552,7 +553,21 @@ def ajouter_info_ajax(request):
     return JsonResponse({'success': False})      
 
 def infos(request):
-    return render(request, "matchs/infos.html")
+
+    infos = InfoTournoi.objects.all().order_by('-date_publication')
+
+    notifications = Notification.objects.all().order_by('-date_creation')
+
+    context = {
+        'infos': infos,
+        'notifications': notifications,
+    }
+
+    return render(
+        request,
+        "matchs/infos.html",
+        context
+    )
 
 def stats_equipes(request):
     equipes = Equipe.objects.all()

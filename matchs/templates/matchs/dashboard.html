@@ -8,29 +8,28 @@
 <style>
 
 :root{
-    --bg:#07111f;
-    --card:#0f1c2e;
-    --card2:#16263d;
-    --primary:#00e676;
-    --blue:#2196f3;
-    --gold:#ffc107;
-    --danger:#ff5252;
-    --text:#ffffff;
-    --muted:#a9bdd3;
-    --border:rgba(255,255,255,.06);
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --primary:#2563eb;
+    --green:#16a34a;
+    --gold:#f59e0b;
+    --danger:#dc2626;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
 }
 
 /* ================= GLOBAL ================= */
 
 body{
-    background:
-        radial-gradient(circle at top left,#13243b 0%,#07111f 45%),
-        radial-gradient(circle at bottom right,#0c1a2c 0%,#07111f 55%);
-    color:white;
+    background:linear-gradient(to bottom,#f8fbff,#eef4fa);
+    color:var(--text);
 }
 
 .dashboard-wrapper{
-    padding:10px;
+    padding:20px;
 }
 
 /* ================= HERO ================= */
@@ -38,14 +37,13 @@ body{
 .hero-dashboard{
     position:relative;
     overflow:hidden;
-    border-radius:28px;
+    border-radius:30px;
     padding:45px;
     margin-bottom:30px;
     background:
-        linear-gradient(rgba(0,0,0,.70),rgba(0,0,0,.80)),
+        linear-gradient(rgba(15,23,42,.78),rgba(15,23,42,.78)),
         url("{% static 'tournoi/img/stadium3.jpg' %}") center/cover;
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 25px 55px rgba(0,0,0,.35);
+    box-shadow:0 25px 50px rgba(0,0,0,.12);
 }
 
 .hero-dashboard::before{
@@ -54,7 +52,7 @@ body{
     width:450px;
     height:450px;
     border-radius:50%;
-    background:rgba(0,230,118,.10);
+    background:rgba(37,99,235,.18);
     top:-180px;
     right:-120px;
     filter:blur(70px);
@@ -69,42 +67,42 @@ body{
     display:inline-flex;
     align-items:center;
     gap:10px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.10);
     padding:10px 18px;
     border-radius:50px;
-    margin-bottom:20px;
+    background:rgba(255,255,255,.12);
+    color:white;
     font-weight:700;
     backdrop-filter:blur(10px);
+    margin-bottom:20px;
 }
 
 .live-dot{
     width:10px;
     height:10px;
     border-radius:50%;
-    background:#00ff6a;
-    animation:pulse 1.2s infinite;
+    background:#00ff73;
+    animation:pulse 1.3s infinite;
 }
 
 @keyframes pulse{
     0%{transform:scale(1);}
-    50%{transform:scale(1.7);opacity:.5;}
+    50%{transform:scale(1.6);opacity:.5;}
     100%{transform:scale(1);}
 }
 
 .hero-title{
-    font-size:3.5rem;
+    font-size:3.4rem;
     font-weight:900;
-    line-height:1;
-    margin-bottom:18px;
+    color:white;
+    margin-bottom:15px;
 }
 
 .hero-title span{
-    color:var(--primary);
+    color:#60a5fa;
 }
 
 .hero-text{
-    color:#dbe7f3;
+    color:#e2e8f0;
     max-width:700px;
     line-height:1.8;
     font-size:1.05rem;
@@ -113,94 +111,72 @@ body{
 /* ================= QUICK STATS ================= */
 
 .quick-stats{
-    margin-top:30px;
+    margin-top:35px;
 }
 
 .quick-card{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:22px;
-    padding:22px;
-    backdrop-filter:blur(12px);
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:24px;
+    padding:25px;
+    color:white;
+    backdrop-filter:blur(10px);
     transition:.3s;
-    height:100%;
 }
 
 .quick-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 15px 35px rgba(0,0,0,.25);
+    transform:translateY(-6px);
 }
 
 .quick-card h2{
-    font-size:2rem;
+    font-size:2.2rem;
     font-weight:900;
     margin-bottom:8px;
 }
 
 .quick-card p{
     margin:0;
-    color:#d3deea;
+    color:#dbeafe;
 }
 
-/* ================= ALERT STRIP ================= */
+/* ================= ALERT ================= */
 
 .alert-strip{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:18px;
+    gap:20px;
     margin-bottom:30px;
 }
 
 .alert-box{
-    padding:18px 20px;
-    border-radius:20px;
-    font-weight:700;
+    background:var(--card);
+    border-radius:22px;
+    padding:20px;
+    box-shadow:var(--shadow);
     border:1px solid var(--border);
-    background:linear-gradient(145deg,#13243b,#0f1c2e);
-    box-shadow:0 10px 25px rgba(0,0,0,.18);
+    font-weight:700;
 }
 
 .alert-box span{
     display:block;
-    color:#9fb3c8;
+    color:var(--muted);
+    margin-bottom:6px;
     font-size:.9rem;
-    margin-bottom:5px;
-}
-
-.alert-green{
-    border-left:4px solid var(--primary);
 }
 
 .alert-blue{
-    border-left:4px solid var(--blue);
+    border-left:5px solid var(--primary);
+}
+
+.alert-green{
+    border-left:5px solid var(--green);
 }
 
 .alert-red{
-    border-left:4px solid var(--danger);
+    border-left:5px solid var(--danger);
 }
 
-/* ================= SECTION TITLE ================= */
-
-.section-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:22px;
-}
-
-.section-title h3{
-    margin:0;
-    font-size:1.7rem;
-    font-weight:900;
-}
-
-.section-title a{
-    color:var(--primary);
-    text-decoration:none;
-    font-weight:700;
-}
-
-/* ================= MAIN GRID ================= */
+/* ================= GRID ================= */
 
 .main-grid{
     display:grid;
@@ -208,30 +184,39 @@ body{
     gap:25px;
 }
 
-/* ================= PREMIUM CARDS ================= */
+/* ================= PREMIUM CARD ================= */
 
 .premium-card{
-    background:linear-gradient(145deg,#13243b,#0f1c2e);
+    background:var(--card);
     border-radius:28px;
-    border:1px solid rgba(255,255,255,.05);
     overflow:hidden;
-    box-shadow:0 20px 45px rgba(0,0,0,.25);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
 }
 
-/* ================= TABLE ================= */
+/* ================= HEADER ================= */
 
 .table-header{
-    padding:22px 28px;
-    border-bottom:1px solid rgba(255,255,255,.05);
     display:flex;
     justify-content:space-between;
     align-items:center;
+    padding:22px 28px;
+    border-bottom:1px solid var(--border);
 }
 
 .table-header h3{
     margin:0;
-    font-weight:900;
+    font-size:1.3rem;
+    font-weight:800;
 }
+
+.table-header a{
+    text-decoration:none;
+    color:var(--primary);
+    font-weight:700;
+}
+
+/* ================= TABLE ================= */
 
 .table-responsive{
     overflow-x:auto;
@@ -243,30 +228,32 @@ body{
 }
 
 .dashboard-table th{
-    color:#c8d7e6;
+    background:#f8fafc;
+    color:#475569;
+    padding:16px;
     font-size:.9rem;
-    padding:18px;
-    background:rgba(255,255,255,.03);
+    text-transform:uppercase;
 }
 
 .dashboard-table td{
-    padding:18px;
-    border-bottom:1px solid rgba(255,255,255,.04);
-    color:white;
+    padding:16px;
+    border-bottom:1px solid #edf2f7;
+    font-weight:500;
 }
 
 .dashboard-table tr:hover{
-    background:rgba(255,255,255,.03);
+    background:#f8fbff;
 }
 
 /* ================= MINI LOGO ================= */
 
 .mini-logo{
-    width:28px;
-    height:28px;
+    width:34px;
+    height:34px;
     border-radius:50%;
     object-fit:cover;
     margin-right:8px;
+    vertical-align:middle;
 }
 
 /* ================= BUTEURS ================= */
@@ -277,32 +264,32 @@ body{
 
 .buteur-item{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    padding:14px;
-    border-radius:18px;
-    margin-bottom:14px;
-    background:rgba(255,255,255,.04);
+    align-items:center;
+    padding:15px;
+    border-radius:20px;
+    margin-bottom:15px;
+    background:#f8fafc;
     transition:.3s;
 }
 
 .buteur-item:hover{
     transform:translateX(5px);
-    background:rgba(255,255,255,.06);
+    background:#eff6ff;
 }
 
 .player-left{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:15px;
 }
 
 .player-photo{
-    width:55px;
-    height:55px;
+    width:60px;
+    height:60px;
     border-radius:50%;
     object-fit:cover;
-    border:2px solid rgba(255,255,255,.08);
+    border:3px solid #dbeafe;
 }
 
 .player-name{
@@ -310,20 +297,21 @@ body{
 }
 
 .player-team{
-    color:#9fb3c8;
+    color:var(--muted);
     font-size:.9rem;
 }
 
 .goal-badge{
-    background:linear-gradient(135deg,#00c853,#009624);
-    min-width:55px;
-    height:55px;
+    min-width:58px;
+    height:58px;
     border-radius:18px;
     display:flex;
     align-items:center;
     justify-content:center;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:white;
     font-weight:900;
-    font-size:1.2rem;
+    font-size:1.1rem;
 }
 
 /* ================= RESUME ================= */
@@ -336,46 +324,40 @@ body{
 }
 
 .resume-box{
-    background:rgba(255,255,255,.04);
-    border-radius:20px;
-    padding:20px;
+    background:#f8fafc;
+    border-radius:22px;
+    padding:22px;
     text-align:center;
     transition:.3s;
 }
 
 .resume-box:hover{
     transform:translateY(-4px);
-    background:rgba(255,255,255,.06);
+    background:#eff6ff;
 }
 
 .resume-box h5{
-    color:#9fb3c8;
+    color:var(--muted);
     margin-bottom:10px;
 }
 
 .resume-box p{
     margin:0;
     font-size:1.05rem;
-    font-weight:900;
+    font-weight:800;
 }
 
-/* ================= CLASSEMENT ================= */
-
-.classement-wrapper{
-    margin-top:30px;
-}
-
-/* ================= CHARTS ================= */
+/* ================= CHART ================= */
 
 .chart-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:22px;
-    margin-top:25px;
+    gap:25px;
+    margin-top:30px;
 }
 
 .chart-card{
-    padding:20px;
+    padding:25px;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -403,7 +385,7 @@ body{
     }
 
     .hero-title{
-        font-size:2.3rem;
+        font-size:2.2rem;
     }
 
     .resume-grid{
@@ -464,7 +446,7 @@ body{
 
     </div>
 
-    <!-- ALERTS -->
+    <!-- ALERTES -->
     <div class="alert-strip">
 
         <div class="alert-box alert-blue">
@@ -548,12 +530,6 @@ body{
                                 </td>
 
                             </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center">
-                                    Aucun match
-                                </td>
-                            </tr>
                             {% endfor %}
 
                         </tbody>
@@ -565,7 +541,7 @@ body{
             </div>
 
             <!-- CLASSEMENT -->
-            <div class="premium-card classement-wrapper">
+            <div class="premium-card">
 
                 <div class="table-header">
                     <h3>🏆 Classement</h3>
@@ -661,10 +637,6 @@ body{
                         </div>
 
                     </div>
-
-                    {% empty %}
-
-                    <p>Aucun buteur</p>
 
                     {% endfor %}
 

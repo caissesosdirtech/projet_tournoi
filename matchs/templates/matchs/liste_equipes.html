@@ -1,118 +1,423 @@
+{% load static %}
+
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+
+
+<!-- ================= HEADER ================= -->
 
 <div class="page-header-pro">
 
     <div class="title-section">
+
         <h2>👥 Liste des équipes</h2>
+
         <span class="badge-count">
             {{ equipes|length }} équipes
         </span>
+
     </div>
 
-    <!-- ✅ bouton simple -->
     <div>
-        <a href="javascript:void(0)" onclick="openModal('modalEquipe')" class="btn-add">➕ Ajouter Équipe</a>
+
+        <a href="javascript:void(0)"
+           onclick="openModal('modalEquipe')"
+           class="btn-add">
+
+            ➕ Ajouter Équipe
+
+        </a>
+
     </div>
 
 </div>
 
-<!-- 🔍 BARRE DE RECHERCHE -->
+<!-- ================= FILTER ================= -->
+
 <form method="get" class="filter-bar-premium">
 
     <div class="field search-field">
-        <span class="search-icon">🔍</span>
+
+        <span class="search-icon">
+            <i class="fas fa-search"></i>
+        </span>
+
         <input type="text"
                name="q"
                placeholder="Rechercher une équipe..."
                value="{{ request.GET.q|default:'' }}">
+
     </div>
 
     <div class="button-group">
+
         <button type="submit" class="btn-premium">
             Rechercher
         </button>
 
-        <a href="{% url 'liste_equipes' %}" class="btn-light">
+        <a href="{% url 'liste_equipes' %}"
+           class="btn-light">
+
             Réinitialiser
+
         </a>
+
     </div>
 
 </form>
 
-<!-- 📋 TABLE -->
-<table class="table table-premium">
+<!-- ================= TABLE ================= -->
 
-<thead>
-<tr>
-<th>#</th>
-<th>Équipe</th>
-<th>Coach principal</th>
-<th>Coach adjoint</th>
-<th>Actions</th>
-</tr>
-</thead>
+<div class="table-wrapper">
 
-<tbody>
+<table class="table-premium">
 
-{% for e in equipes %}
-<tr>
+    <thead>
 
-<td>{{ forloop.counter }}</td>
+        <tr>
 
-<td>
-<div class="team-cell">
+            <th>#</th>
+            <th>Équipe</th>
+            <th>Coach principal</th>
+            <th>Coach adjoint</th>
+            <th style="text-align:center;">Actions</th>
 
-{% if e.logo %}
-<img src="{{ e.logo.url }}" class="team-logo">
-{% else %}
-<div class="team-logo placeholder">⚽</div>
-{% endif %}
+        </tr>
 
-<span class="team-name">
-{{ e.nom }}
-</span>
+    </thead>
+
+    <tbody>
+
+        {% for e in equipes %}
+
+        <tr>
+
+            <td>
+                {{ forloop.counter }}
+            </td>
+
+            <td>
+
+                <div class="team-cell">
+
+                    {% if e.logo %}
+
+                    <img src="{{ e.logo.url }}"
+                         class="team-logo">
+
+                    {% else %}
+
+                    <div class="team-logo placeholder">
+                        ⚽
+                    </div>
+
+                    {% endif %}
+
+                    <span class="team-name">
+                        {{ e.nom }}
+                    </span>
+
+                </div>
+
+            </td>
+
+            <td>
+                {{ e.coach1 }}
+            </td>
+
+            <td>
+                {{ e.coach2 }}
+            </td>
+
+            <td>
+
+                <div class="action-buttons">
+
+                    <!-- EDIT -->
+
+                    <button type="button"
+                            class="btn-action edit"
+
+                            onclick="ouvrirModalEditEquipe(
+                            '{{ e.id }}',
+                            '{{ e.nom|escapejs }}',
+                            '{{ e.coach1|escapejs }}',
+                            '{{ e.coach2|escapejs }}'
+                            )">
+
+                        <i class="fas fa-pencil-alt"></i>
+
+                    </button>
+
+                    <!-- DELETE -->
+
+                    <button type="button"
+                            class="btn-action delete"
+
+                            onclick="ouvrirModalDeleteEquipe(
+                            '{{ e.id }}',
+                            '{{ e.nom|escapejs }}'
+                            )">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="5"
+                style="text-align:center;padding:25px;">
+
+                Aucune équipe trouvée
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
 
 </div>
-</td>
 
-<td>{{ e.coach1 }}</td>
-<td>{{ e.coach2 }}</td>
+<!-- ================= MODAL AJOUT ================= -->
 
-<td>
+<div class="modal" id="modalEquipe">
 
-<!-- ✏ EDIT -->
+    <div class="modal-box">
 
-<button class="btn-action edit"
-onclick="ouvrirModalEditEquipe(
-'{{ e.id }}',
-'{{ e.nom|escapejs }}',
-'{{ e.coach1|escapejs }}',
-'{{ e.coach2|escapejs }}'
-)">
-    <i class="fas fa-pencil-alt"></i>
-</button>
-<!-- 🗑 DELETE -->
-<button class="btn-action delete"
-onclick="ouvrirModalDeleteEquipe('{{ e.id }}','{{ e.nom }}')">
-    <i class="fas fa-trash"></i>
-</button>
+        <h2>➕ Ajouter une équipe</h2>
 
-</td>
+        <form method="POST"
+              enctype="multipart/form-data">
 
-</tr>
+            {% csrf_token %}
 
-{% empty %}
+            {{ form.as_p }}
 
-<tr>
-<td colspan="5" style="text-align:center">
-Aucune équipe trouvée
-</td>
-</tr>
+            <div class="modal-actions">
 
-{% endfor %}
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalEquipe')">
 
-</tbody>
-</table>
+                    Annuler
+
+                </button>
+
+                <button type="submit"
+                        class="btn-save">
+
+                    Enregistrer
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL EDIT ================= -->
+
+<div class="modal" id="modalEditEquipe">
+
+    <div class="modal-box">
+
+        <h2>✏ Modifier Équipe</h2>
+
+        <form method="POST"
+              id="formEditEquipe">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="equipe_id"
+                   id="edit_equipe_id">
+
+            <div class="form-group">
+
+                <label>Nom équipe</label>
+
+                <input type="text"
+                       id="edit_nom"
+                       name="nom">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Coach principal</label>
+
+                <input type="text"
+                       id="edit_coach1"
+                       name="coach1">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Coach adjoint</label>
+
+                <input type="text"
+                       id="edit_coach2"
+                       name="coach2">
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalEditEquipe')">
+
+                    Annuler
+
+                </button>
+
+                <button type="submit"
+                        class="btn-save">
+
+                    Modifier
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL DELETE ================= -->
+
+<div class="modal" id="modalDeleteEquipe">
+
+    <div class="modal-box">
+
+        <h2>🗑 Supprimer Équipe</h2>
+
+        <p>
+            Voulez-vous supprimer :
+            <strong id="deleteEquipeName"></strong> ?
+        </p>
+
+        <form method="POST"
+              id="deleteEquipeForm">
+
+            {% csrf_token %}
+
+            <div class="modal-actions">
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('modalDeleteEquipe')">
+
+                    Annuler
+
+                </button>
+
+                <button type="submit"
+                        class="btn-save"
+                        style="background:linear-gradient(135deg,#ef4444,#dc2626);">
+
+                    Supprimer
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script>
+
+/* ================= OPEN MODAL ================= */
+
+function openModal(id){
+
+    let modal = document.getElementById(id);
+
+    if(modal){
+        modal.classList.add("active");
+    }
+}
+
+/* ================= CLOSE MODAL ================= */
+
+function closeModal(id){
+
+    let modal = document.getElementById(id);
+
+    if(modal){
+        modal.classList.remove("active");
+    }
+}
+
+/* ================= EDIT ================= */
+
+function ouvrirModalEditEquipe(id, nom, coach1, coach2){
+
+    let modal = document.getElementById("modalEditEquipe");
+
+    modal.classList.add("active");
+
+    document.getElementById("edit_equipe_id").value = id;
+    document.getElementById("edit_nom").value = nom;
+    document.getElementById("edit_coach1").value = coach1;
+    document.getElementById("edit_coach2").value = coach2;
+}
+
+/* ================= DELETE ================= */
+
+function ouvrirModalDeleteEquipe(id, nom){
+
+    let modal = document.getElementById("modalDeleteEquipe");
+
+    modal.classList.add("active");
+
+    document.getElementById("deleteEquipeName").innerText = nom;
+
+    document.getElementById("deleteEquipeForm").action =
+        "/equipes/supprimer/" + id + "/";
+}
+
+/* ================= CLOSE ON OUTSIDE CLICK ================= */
+
+window.onclick = function(event){
+
+    document.querySelectorAll(".modal").forEach(function(modal){
+
+        if(event.target === modal){
+            modal.classList.remove("active");
+        }
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

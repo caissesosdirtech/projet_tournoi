@@ -12,11 +12,14 @@ from .forms import (
 )
 
 from app_tournoi.models import Equipe
+from matchs.utils import is_capitaine_ou_coach
+from django.contrib.auth import authenticate, login, logout  # ← ajoutez logout
 
 
 # =========================================================
 # 🔐 LOGIN RECOURS
 # =========================================================
+
 def login_reclamation(request):
 
     next_url = request.GET.get("next")
@@ -26,71 +29,41 @@ def login_reclamation(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
+        user = authenticate(request, username=username, password=password)
 
-        # ❌ utilisateur introuvable
+        # ❌ mauvais login
         if user is None:
+            messages.error(request, "❌ Identifiants incorrects")
+            return render(request, "reclamations/login_reclamation.html")
 
-            messages.error(
-                request,
-                "❌ Identifiants incorrects"
-            )
+        # ❌ vérification groupes (IMPORTANT)
+        if not user.groups.filter(name__in=["Capitaines", "Coachs"]).exists():
+            messages.error(request, "⛔ Accès réservé aux capitaines et coachs")
+            return render(request, "reclamations/login_reclamation.html")
 
-            return render(
-                request,
-                "reclamations/login_reclamation.html"
-            )
-
-        # ❌ sécurité groupes
-        if not user.groups.filter(
-            name__in=["Capitaines", "Coachs"]
-        ).exists():
-
-            messages.error(
-                request,
-                "⛔ Accès réservé aux capitaines et coachs"
-            )
-
-            return render(
-                request,
-                "reclamations/login_reclamation.html"
-            )
-
-        # ✅ connexion
+        # ✅ connexion OK
         login(request, user)
 
-        # 🔁 redirection intelligente
-        if next_url == "mes_reclamations":
-            return redirect("mes_reclamations")
+        # 🔁 redirection
+        if next_url:
+            return redirect(next_url)
 
         return redirect("recours_dashboard")
 
-    return render(
-        request,
-        "reclamations/login_reclamation.html"
-    )
+    return render(request, "reclamations/login_reclamation.html")
 
 
 # =========================================================
 # 📌 DASHBOARD UNIQUE RECOURS
 # =========================================================
+
+
 @login_required(login_url='login_reclamation')
 def recours_dashboard(request):
 
-    # 🔐 sécurité
-    if not request.user.groups.filter(
-        name__in=['Capitaines', 'Coachs']
-    ).exists():
-
-        messages.error(
-            request,
-            "⛔ Accès réservé aux capitaines et coachs."
-        )
-
+    # 🔐 sécurité groupes (IMPORTANT)
+    if not request.user.groups.filter(name__in=['Capitaines', 'Coachs']).exists():
+        messages.error(request, "⛔ Accès réservé aux capitaines et coachs.")
         return redirect('login_reclamation')
 
     # ==========================
@@ -109,32 +82,18 @@ def recours_dashboard(request):
         if form.is_valid():
 
             rec = form.save(commit=False)
-
             rec.utilisateur = request.user
-
-            # statut par défaut
             rec.statut = "en_attente"
-
             rec.save()
 
-            messages.success(
-                request,
-                "✅ Votre recours a été envoyé avec succès."
-            )
-
+            messages.success(request, "✅ Votre recours a été envoyé avec succès.")
             return redirect('recours_dashboard')
 
         else:
-
-            print(form.errors)
-
-            messages.error(
-                request,
-                "❌ Veuillez corriger les erreurs."
-            )
+            messages.error(request, "❌ Veuillez corriger les erreurs.")
 
     # ==========================
-    # MES RECOURS
+    # LISTE DES RECOURS
     # ==========================
     reclamations = Reclamation.objects.filter(
         utilisateur=request.user
@@ -149,32 +108,22 @@ def recours_dashboard(request):
         }
     )
 
-
 # =========================================================
 # 📊 SUIVRE MES RECOURS
 # =========================================================
 @login_required(login_url='login_reclamation')
 def mes_reclamations(request):
 
-    # 🔐 sécurité groupes
-    if not request.user.groups.filter(
-        name__in=['Capitaines', 'Coachs']
-    ).exists():
-
+    if not request.user.groups.filter(name__in=['Capitaines', 'Coachs']).exists():
         return redirect('login_reclamation')
 
     reclamations = Reclamation.objects.filter(
         utilisateur=request.user
     ).order_by('-date')
 
-    return render(
-        request,
-        "reclamations/mes_reclamations.html",
-        {
-            "reclamations": reclamations
-        }
-    )
-
+    return render(request, "reclamations/mes_reclamations.html", {
+        "reclamations": reclamations
+    })
 
 # =========================================================
 # 📩 CREER RECLAMATION
@@ -182,60 +131,32 @@ def mes_reclamations(request):
 @login_required(login_url='login_reclamation')
 def creer_reclamation(request):
 
-    # 🔐 sécurité groupes
-    if not request.user.groups.filter(
-        name__in=['Capitaines', 'Coachs']
-    ).exists():
-
+    if not request.user.groups.filter(name__in=['Capitaines', 'Coachs']).exists():
         return redirect('login_reclamation')
 
-    form = ReclamationForm(
-        request.POST or None,
-        request.FILES or None
-    )
+    form = ReclamationForm(request.POST or None, request.FILES or None)
 
     if request.method == "POST":
 
         if form.is_valid():
-
             rec = form.save(commit=False)
-
             rec.utilisateur = request.user
-
             rec.statut = "en_attente"
-
             rec.save()
 
-            messages.success(
-                request,
-                "✅ Recours envoyé avec succès."
-            )
+            messages.success(request, "✅ Recours envoyé avec succès.")
+            return redirect('recours_dashboard')
 
-            return redirect('dashboard')
+        messages.error(request, "❌ Veuillez corriger les erreurs.")
 
-        else:
-
-            print(form.errors)
-
-            messages.error(
-                request,
-                "❌ Veuillez corriger les erreurs."
-            )
-
-    return render(
-        request,
-        "reclamations/creer_reclamation.html",
-        {
-            "form": form
-        }
-    )
+    return render(request, "reclamations/creer_reclamation.html", {
+        "form": form
+    })
 
 
 # =========================================================
 # 👮 ADMIN : LISTE RECLAMATIONS
 # =========================================================
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
 
 @staff_member_required
 def liste_reclamations(request):
@@ -434,3 +355,12 @@ def reclamation(request):
         'reclamations/reclamation.html',
         context
     )
+
+
+# =========================================================
+# 🚪 LOGOUT COACH / CAPITAINE
+# =========================================================
+def logout_reclamation(request):
+    logout(request)
+    return redirect('dashboard') 
+

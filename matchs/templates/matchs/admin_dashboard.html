@@ -60,12 +60,34 @@
                 </a>
             </li>
 
-            <li>
-                <a href="javascript:void(0);" onclick="openModal('modalInfo')">
-                    <span>Ajouter Info</span>
-                    <i class="fas fa-bullhorn"></i>
-                </a>
-            </li>
+            <li class="has-submenu">
+
+    <a href="javascript:void(0);">
+        <span>Informations</span>
+        <i class="fas fa-chevron-down"></i>
+    </a>
+
+    <ul class="submenu">
+
+        <!-- Ajouter info -->
+        <li>
+            <a href="javascript:void(0);" onclick="openModal('modalInfo')">
+                <span>Ajouter Info</span>
+                <i class="fas fa-plus-circle"></i>
+            </a>
+        </li>
+
+        <!-- Supprimer info -->
+        <li>
+    <a href="{% url 'liste_infos_admin' %}">
+    <span>Gérer Infos</span>
+    <i class="fas fa-list"></i>
+</a>
+</li>
+
+    </ul>
+
+</li>
 
             <li>
                 <a href="{% url 'programmer_match' %}">
@@ -199,7 +221,10 @@
         {% include "matchs/liste_equipes.html" %}
 
     {% elif page == "liste_reclamations" %}
-        {% include "reclamations/liste_reclamations.html" %}  <!-- ← Ajout ici -->
+        {% include "reclamations/liste_reclamations.html" %}
+
+    {% elif page == "liste_infos" %}
+        {% include "matchs/liste_infos_admin.html" %}
 
     {% else %}
         {% include "tournoi/dashboard_cards.html" %}

@@ -17,6 +17,12 @@ urlpatterns = [
         name='login_reclamation'
     ),
 
+    path(
+        'recours/logout/',
+        views.logout_reclamation, 
+        name='logout_reclamation'
+    ),
+
     # ================= CREER RECOURS =================
     path(
         'creer/',

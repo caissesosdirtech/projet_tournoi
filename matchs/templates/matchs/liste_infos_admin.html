@@ -1,0 +1,95 @@
+<div class="infos-container">
+
+    <!-- HEADER -->
+    <div class="infos-header">
+
+        <div>
+            <h2>🗂 Gestion des informations</h2>
+            <p>Publiez et gérez les actualités du tournoi</p>
+        </div>
+
+        <div class="infos-count">
+            {{ infos|length }} informations
+        </div>
+
+    </div>
+
+    <!-- FILTRES (optionnel futur JS) -->
+    <div class="infos-filters">
+
+        <button class="filter active">Toutes</button>
+        <button class="filter">🚨 Urgent</button>
+        <button class="filter">⚠ Important</button>
+        <button class="filter">ℹ Info</button>
+
+    </div>
+
+    <!-- GRID -->
+    <div class="infos-grid">
+
+        {% for info in infos %}
+
+        <div class="info-card {{ info.priorite }}">
+
+            <!-- BADGE -->
+            <div class="info-badge {{ info.priorite }}">
+                {{ info.priorite|upper }}
+            </div>
+
+            <!-- DATE -->
+            <div class="info-meta">
+                📅 {{ info.date_publication|date:"d/m/Y H:i" }}
+            </div>
+
+            <!-- TITRE -->
+            <h3 class="info-title">{{ info.titre }}</h3>
+
+            <!-- DESCRIPTION -->
+            <p class="info-text">
+                {{ info.contenu|truncatechars:160 }}
+            </p>
+
+            <!-- FICHIER -->
+            {% if info.fichier %}
+                <a href="{{ info.fichier.url }}"
+                   class="info-file"
+                   target="_blank">
+                    📎 Télécharger fichier
+                </a>
+            {% endif %}
+
+            <!-- ACTIONS -->
+            <div class="info-actions">
+
+                <a href="#" class="btn-view">
+                    👁 Voir
+                </a>
+
+                <form method="POST"
+                      action="{% url 'supprimer_info' info.id %}"
+                      onsubmit="return confirm('Supprimer cette information ?')">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn-delete">
+                        🗑 Supprimer
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+            <h3>Aucune information</h3>
+            <p>Commencez par publier une actualité</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

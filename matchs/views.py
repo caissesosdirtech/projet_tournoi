@@ -529,6 +529,19 @@ def ajouter_info(request):
 
     return redirect('admin_dashboard')
 
+def liste_infos(request):
+    infos = InfoTournoi.objects.all().order_by('-date_publication')
+    return render(request, "matchs/liste_infos.html", {"infos": infos})
+
+def liste_infos_admin(request):
+
+    infos = InfoTournoi.objects.all().order_by('-date_publication')
+
+    return render(request, "matchs/admin_dashboard.html", {
+        "infos": infos,
+        "page": "liste_infos",
+        "equipes": Equipe.objects.all()
+    })
 
 # =====================================================
 # AJOUT ACTUALITÉ AJAX
@@ -582,7 +595,7 @@ def infos(request):
     infos = InfoTournoi.objects.all().order_by('-date_publication')[:4]
 
     # ✅ 10 dernières notifications
-    notifications = Notification.objects.all().order_by('-date_creation')[:10]
+    notifications = Notification.objects.all().order_by('-date_creation')[:5]
 
     context = {
         'infos': infos,
@@ -597,22 +610,12 @@ def supprimer_info(request, info_id):
 
     info = get_object_or_404(InfoTournoi, id=info_id)
 
-    titre = info.titre
+    if request.method == "POST":
+        info.delete()
 
-    # ✅ suppression
-    info.delete()
+        return redirect('/dashboard/infos/#')
 
-    # ✅ notification automatique
-    Notification.objects.create(
-        titre="🗑 Actualité supprimée",
-        message=f"{titre} a été supprimée.",
-        type_notification="warning"
-    )
-
-    messages.success(request, "Actualité supprimée avec succès.")
-
-    return redirect('admin_dashboard')
-
+    return redirect('/dashboard/infos/#')
 
 # =====================================================
 # AJOUT MATCH + NOTIFICATION
@@ -824,98 +827,244 @@ def admin_logout(request):
     logout(request)
     return redirect('admin_login')
     
+def logout_view(request):
+    logout(request)
+
+    # ADMIN
+    if request.user.is_staff:
+        return redirect('admin_login')
+
+    # USER / CAPITAINE
+    return redirect('dashboard')   # ou '/'    
+    
 
 @staff_member_required
 def admin_dashboard(request):
 
     now = timezone.now()
 
-    # ===== MATCHS =====
+    # =====================================================
+    # MATCHS
+    # =====================================================
+
     matchs = Match.objects.all()
 
     equipe_id = request.GET.get('equipe')
+
     if equipe_id:
-        matchs = matchs.filter(Q(equipe1_id=equipe_id) | Q(equipe2_id=equipe_id))
+
+        matchs = matchs.filter(
+            Q(equipe1_id=equipe_id) |
+            Q(equipe2_id=equipe_id)
+        )
 
     statut = request.GET.get('statut')
-    if statut:
-        if statut == 'a_venir':
-            matchs = matchs.filter(score1__isnull=True, date__gt=now)
-        elif statut == 'en_cours':
-            matchs = matchs.filter(score1__isnull=True, date__lte=now)
-        elif statut == 'termine':
-            matchs = matchs.filter(score1__isnull=False)
 
-    # ===== FORM INFO =====
+    if statut:
+
+        if statut == 'a_venir':
+
+            matchs = matchs.filter(
+                score1__isnull=True,
+                date__gt=now
+            )
+
+        elif statut == 'en_cours':
+
+            matchs = matchs.filter(
+                score1__isnull=True,
+                date__lte=now
+            )
+
+        elif statut == 'termine':
+
+            matchs = matchs.filter(
+                score1__isnull=False
+            )
+
+    # =====================================================
+    # AJOUT INFO
+    # =====================================================
+
     if request.method == 'POST':
-        info_form = InfoTournoiForm(request.POST, request.FILES)
+
+        info_form = InfoTournoiForm(
+            request.POST,
+            request.FILES
+        )
+
         if info_form.is_valid():
-            info_form.save()
-            messages.success(request, "✅ Information ajoutée avec succès !")
+
+            info = info_form.save()
+
+            # 🔔 Notification automatique
+            Notification.objects.create(
+
+                titre="📢 Nouvelle actualité publiée",
+
+                message=f"{info.titre}",
+
+                type_notification="info"
+            )
+
+            messages.success(
+                request,
+                "✅ Information ajoutée avec succès !"
+            )
+
             return redirect('admin_dashboard')
+
     else:
+
         info_form = InfoTournoiForm()
 
-    # ===== INFOS =====
-    infos = InfoTournoi.objects.all().order_by('-id')
+    # =====================================================
+    # INFOS
+    # =====================================================
 
-    # ===== MEDIAS =====
-    medias = Galerie.objects.filter(archive=False)
+    infos = InfoTournoi.objects.all().order_by('-date_publication')
 
-    # ===== STATS =====
+    # ✅ seulement les 4 dernières
+    infos_recentes = InfoTournoi.objects.all().order_by(
+        '-date_publication'
+    )[:4]
+
+    # =====================================================
+    # MEDIAS
+    # =====================================================
+
+    medias = Galerie.objects.filter(
+        archive=False
+    )
+
+    # =====================================================
+    # STATS MATCHS
+    # =====================================================
+
     total_matchs = Match.objects.count()
-    matchs_termines = Match.objects.filter(score1__isnull=False).count()
-    matchs_a_venir = Match.objects.filter(score1__isnull=True, date__gt=now).count()
-    matchs_en_cours = Match.objects.filter(score1__isnull=True, date__lte=now).count()
 
-    prochain_match = Match.objects.filter(
+    matchs_termines = Match.objects.filter(
+        score1__isnull=False
+    ).count()
+
+    matchs_a_venir = Match.objects.filter(
         score1__isnull=True,
         date__gt=now
+    ).count()
+
+    matchs_en_cours = Match.objects.filter(
+        score1__isnull=True,
+        date__lte=now
+    ).count()
+
+    # =====================================================
+    # PROCHAIN MATCH
+    # =====================================================
+
+    prochain_match = Match.objects.filter(
+
+        score1__isnull=True,
+        date__gt=now
+
     ).order_by('date').first()
 
+    # =====================================================
+    # TOP TEAM
+    # =====================================================
+
     top_team = Equipe.objects.annotate(
+
         num_joueurs=Count('joueurs')
+
     ).order_by('-num_joueurs').first()
 
+    # =====================================================
+    # MEILLEUR BUTEUR
+    # =====================================================
+
     meilleur_buteur = Joueur.objects.annotate(
+
         nb_buts=Count('buts')
-    ).filter(nb_buts__gt=0).order_by('-nb_buts').first()
 
-    # ===== RECLAMATIONS =====
+    ).filter(
+        nb_buts__gt=0
+    ).order_by('-nb_buts').first()
+
+    # =====================================================
+    # RECLAMATIONS
+    # =====================================================
+
     total_reclamations = Reclamation.objects.count()
-    reclamations_en_attente = Reclamation.objects.filter(statut='en_attente').count()
-    reclamations_en_cours = Reclamation.objects.filter(statut='en_cours').count()
-    reclamations_traitees = Reclamation.objects.filter(statut='traitee').count()
 
-    # ===== CONTEXT UNIQUE =====
+    reclamations_en_attente = Reclamation.objects.filter(
+        statut='en_attente'
+    ).count()
+
+    reclamations_en_cours = Reclamation.objects.filter(
+        statut='en_cours'
+    ).count()
+
+    reclamations_traitees = Reclamation.objects.filter(
+        statut='traitee'
+    ).count()
+
+    # =====================================================
+    # CONTEXT
+    # =====================================================
+
     context = {
+
+        # MATCHS
         'matchs': matchs,
+
+        # EQUIPES / JOUEURS
         'equipes': Equipe.objects.all(),
         'joueurs': Joueur.objects.all(),
+
+        # MEDIAS
         'medias': medias,
+
+        # PAGE
         'page': 'dashboard',
+
+        # DATE
         'now': now,
+
+        # PROCHAIN MATCH
         'prochain_match': prochain_match,
 
+        # STATS
         'total_matchs': total_matchs,
         'matchs_a_venir': matchs_a_venir,
         'matchs_en_cours': matchs_en_cours,
         'matchs_termines': matchs_termines,
 
+        # TOPS
         'top_team': top_team,
         'meilleur_buteur': meilleur_buteur,
 
+        # RECLAMATIONS
         'total_reclamations': total_reclamations,
         'reclamations_en_attente': reclamations_en_attente,
         'reclamations_en_cours': reclamations_en_cours,
         'reclamations_traitees': reclamations_traitees,
 
-        # 🔥 IMPORTANT
+        # INFOS
         'infos': infos,
+
+        # ✅ IMPORTANT POUR TON TEMPLATE
+        'infos_recentes': infos_recentes,
+
+        # FORM
         'info_form': info_form,
     }
 
-    return render(request, 'matchs/admin_dashboard.html', context)
+    return render(
+        request,
+        'matchs/admin_dashboard.html',
+        context
+    )
+
     # ================= GESTION MATCHS =================
 
 @login_required

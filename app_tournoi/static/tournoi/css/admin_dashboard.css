@@ -1900,3 +1900,286 @@ body{
 
 }
 
+/* ================= ACTUALITES ADMIN ================= */
+
+.infos-admin-section{
+    margin-top:40px;
+}
+
+.section-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.section-top h2{
+    margin:0;
+    color:#222;
+}
+
+.section-top p{
+    margin-top:5px;
+    color:#777;
+}
+
+.info-count{
+    background:#eef2ff;
+    color:#4338ca;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:700;
+}
+
+.infos-admin-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:22px;
+}
+
+.info-admin-card{
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    transition:.3s;
+    border:1px solid #eee;
+}
+
+.info-admin-card:hover{
+    transform:translateY(-5px);
+}
+
+.info-top{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.info-top h3{
+    margin:0;
+    color:#222;
+    font-size:1.2rem;
+}
+
+.info-top small{
+    color:#777;
+}
+
+.info-description{
+    color:#555;
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.badge{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.badge.urgent{
+    background:#ffe5e5;
+    color:#dc2626;
+}
+
+.badge.important{
+    background:#fff5db;
+    color:#d97706;
+}
+
+.badge.info{
+    background:#eef2ff;
+    color:#4338ca;
+}
+
+.btn-file-admin{
+    display:inline-block;
+    padding:10px 16px;
+    border-radius:12px;
+    background:#4338ca;
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    margin-bottom:18px;
+}
+
+.btn-file-admin:hover{
+    opacity:.9;
+}
+
+.info-actions{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.btn-delete-info{
+    padding:10px 16px;
+    border-radius:12px;
+    background:#dc2626;
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn-delete-info:hover{
+    background:#b91c1c;
+    transform:translateY(-2px);
+}
+
+.empty-admin-info{
+    background:white;
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.infos-container{
+    padding: 25px;
+}
+
+.infos-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.infos-header h2{
+    margin:0;
+    color:#1e293b;
+}
+
+.infos-header p{
+    color:#64748b;
+    margin:5px 0 0;
+}
+
+.infos-count{
+    background:#2563eb;
+    color:white;
+    padding:8px 14px;
+    border-radius:12px;
+    font-weight:bold;
+}
+
+/* FILTRES */
+.infos-filters{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.filter{
+    border:none;
+    padding:8px 14px;
+    border-radius:20px;
+    background:#e2e8f0;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.filter.active,
+.filter:hover{
+    background:#2563eb;
+    color:white;
+}
+
+/* GRID */
+.infos-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+.info-card{
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    transition:0.3s;
+    position:relative;
+}
+
+.info-card:hover{
+    transform:translateY(-5px);
+}
+
+/* BADGES */
+.info-badge{
+    position:absolute;
+    top:12px;
+    right:12px;
+    padding:4px 10px;
+    font-size:12px;
+    border-radius:10px;
+    color:white;
+}
+
+.info-badge.urgent{ background:#dc2626; }
+.info-badge.important{ background:#f59e0b; }
+.info-badge.information{ background:#2563eb; }
+
+/* META */
+.info-meta{
+    font-size:12px;
+    color:#94a3b8;
+    margin-bottom:8px;
+}
+
+/* TITLE */
+.info-title{
+    font-size:18px;
+    margin:0 0 10px;
+    color:#0f172a;
+}
+
+/* TEXT */
+.info-text{
+    font-size:14px;
+    color:#475569;
+}
+
+/* FILE */
+.info-file{
+    display:inline-block;
+    margin-top:10px;
+    color:#2563eb;
+    font-weight:500;
+}
+
+/* ACTIONS */
+.info-actions{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+.btn-view{
+    text-decoration:none;
+    color:#0ea5e9;
+}
+
+.btn-delete{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:6px 10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.empty-state{
+    text-align:center;
+    padding:40px;
+    color:#64748b;
+}
+

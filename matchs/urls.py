@@ -12,6 +12,7 @@ urlpatterns = [
     # ================= AUTHENTIFICATION ADMIN =================
     path('admin-login/', views.admin_login, name='admin_login'),
     path('admin-logout/', views.admin_logout, name='admin_logout'),
+    path('logout/', views.logout_view, name='logout'),
 
     # ================= MATCHS =================
     path('programmer-match/', views.programmer_match, name='programmer_match'),
@@ -30,6 +31,9 @@ urlpatterns = [
     path('ajouter-info/', views.ajouter_info, name='ajouter_info'),
     path('galeries/', views.galeries, name='galeries'), 
     path('supprimer-info/<int:info_id>/',views.supprimer_info,name='supprimer_info'),
+    path('infos/', views.liste_infos, name='liste_infos'),
+    path('dashboard/infos/', views.liste_infos_admin, name='liste_infos_admin'),  
+      
 
     # ================= GESTION EQUIPES =================
     path('equipes/', views.liste_equipes, name='liste_equipes'),

@@ -825,20 +825,26 @@ def admin_login(request):
 
 def admin_logout(request):
     logout(request)
-    return redirect('admin_login')
+    return redirect('admin-login')
     
 def logout_view(request):
-    logout(request)
+    # ✅ Vérifier le rôle AVANT logout
+    is_admin = request.user.is_staff
 
-    # ADMIN
-    if request.user.is_staff:
-        return redirect('admin_login')
+    logout(request)  # ← maintenant on déconnecte
 
-    # USER / CAPITAINE
-    return redirect('dashboard')   # ou '/'    
+    if is_admin:
+        return redirect('admin-login')  # ← admin_login pas admin-login
+
+    # Coach / Capitaine / User
+    return redirect('dashboard') 
+
+
     
 
-@staff_member_required
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def admin_dashboard(request):
 
     now = timezone.now()

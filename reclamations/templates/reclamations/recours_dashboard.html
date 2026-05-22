@@ -59,6 +59,48 @@ body{
     line-height:1.7;
 }
 
+/* HERO ACTIONS */
+.hero-actions{
+    margin-top:25px;
+}
+
+.logout-btn{
+
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.12);
+
+    border:1px solid rgba(255,255,255,0.15);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    backdrop-filter:blur(8px);
+
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+
+    transform:translateY(-3px);
+
+    background:white;
+
+    color:#0f172a;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+
+}
+
 /* STATS */
 .stats{
     display:grid;
@@ -316,6 +358,19 @@ tbody tr:hover{
             consultez leur état de traitement et téléchargez
             les décisions finales de la commission.
         </p>
+
+        <!-- BOUTON LOGOUT -->
+        <div class="hero-actions">
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+
+                <i class="fas fa-sign-out-alt"></i>
+
+                Déconnexion
+
+            </a>
+
+        </div>
 
     </div>
 

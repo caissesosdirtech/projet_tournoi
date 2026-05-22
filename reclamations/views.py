@@ -57,13 +57,19 @@ def login_reclamation(request):
 # 📌 DASHBOARD UNIQUE RECOURS
 # =========================================================
 
-
 @login_required(login_url='login_reclamation')
 def recours_dashboard(request):
 
-    # 🔐 sécurité groupes (IMPORTANT)
-    if not request.user.groups.filter(name__in=['Capitaines', 'Coachs']).exists():
-        messages.error(request, "⛔ Accès réservé aux capitaines et coachs.")
+    # 🔐 sécurité groupes
+    if not request.user.groups.filter(
+        name__in=['Capitaines', 'Coachs']
+    ).exists():
+
+        messages.error(
+            request,
+            "⛔ Accès réservé aux capitaines et coachs."
+        )
+
         return redirect('login_reclamation')
 
     # ==========================
@@ -82,15 +88,25 @@ def recours_dashboard(request):
         if form.is_valid():
 
             rec = form.save(commit=False)
+
             rec.utilisateur = request.user
             rec.statut = "en_attente"
+
             rec.save()
 
-            messages.success(request, "✅ Votre recours a été envoyé avec succès.")
+            messages.success(
+                request,
+                "✅ Votre recours a été envoyé avec succès."
+            )
+
             return redirect('recours_dashboard')
 
         else:
-            messages.error(request, "❌ Veuillez corriger les erreurs.")
+
+            messages.error(
+                request,
+                "❌ Veuillez corriger les erreurs."
+            )
 
     # ==========================
     # LISTE DES RECOURS
@@ -99,13 +115,43 @@ def recours_dashboard(request):
         utilisateur=request.user
     ).order_by('-date')
 
+    # ==========================
+    # STATISTIQUES
+    # ==========================
+    total_recours = reclamations.count()
+
+    en_attente = reclamations.filter(
+        statut='en_attente'
+    ).count()
+
+    en_cours = reclamations.filter(
+        statut='en_cours'
+    ).count()
+
+    traites = reclamations.filter(
+        statut='traitee'
+    ).count()
+
+    # ==========================
+    # CONTEXT
+    # ==========================
+    context = {
+
+        "form": form,
+
+        "reclamations": reclamations,
+
+        # STATS
+        "total_recours": total_recours,
+        "en_attente": en_attente,
+        "en_cours": en_cours,
+        "traites": traites,
+    }
+
     return render(
         request,
         "reclamations/recours_dashboard.html",
-        {
-            "form": form,
-            "reclamations": reclamations
-        }
+        context
     )
 
 # =========================================================
@@ -360,7 +406,10 @@ def reclamation(request):
 # =========================================================
 # 🚪 LOGOUT COACH / CAPITAINE
 # =========================================================
-def logout_reclamation(request):
+
+from django.contrib.auth import logout
+
+def user_logout(request):
     logout(request)
-    return redirect('dashboard') 
+    return redirect('dashboard')
 

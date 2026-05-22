@@ -10,9 +10,11 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
     # ================= AUTHENTIFICATION ADMIN =================
-    path('admin-login/', views.admin_login, name='admin_login'),
+    path('admin-login/', views.admin_login, name='admin-login'),
     path('admin-logout/', views.admin_logout, name='admin_logout'),
     path('logout/', views.logout_view, name='logout'),
+    
+    
 
     # ================= MATCHS =================
     path('programmer-match/', views.programmer_match, name='programmer_match'),

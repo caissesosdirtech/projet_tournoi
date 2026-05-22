@@ -22,32 +22,7 @@
         <span>Edition 2026/2027</span>
     </div>
 
-    <div class="header-right">
-        <div class="admin-menu">
-            <button id="adminMenuBtn" class="btn-round profile-btn">
-                {% if request.user.is_authenticated %}
-                    <img src="{% static 'tournoi/img/default_player.JPG' %}" class="profile-img">
-                {% else %}
-                    👤
-                {% endif %}
-            </button>
-
-            <div id="adminDropdown" class="dropdown-content">
-                {% if request.user.is_authenticated %}
-                    <a href="{% url 'admin_dashboard' %}">
-                        <i class="fas fa-chart-line"></i>  Admin
-                    </a>
-                    <a href="{% url 'admin_logout' %}">
-                        <i class="fas fa-sign-out-alt"></i> Déconnexion
-                    </a>
-                {% else %}
-                    <a href="{% url 'admin_login' %}">
-                        <i class="fas fa-sign-in-alt"></i> Connexion
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+    
 </header>
 
 <!-- ================= CONTAINER ================= -->

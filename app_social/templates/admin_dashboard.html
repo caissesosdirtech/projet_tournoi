@@ -1,0 +1,608 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Tableau de Bord Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.5s ease forwards; }
+  .fade-in-1 { animation-delay: 0.1s; opacity: 0; }
+  .fade-in-2 { animation-delay: 0.2s; opacity: 0; }
+  .fade-in-3 { animation-delay: 0.3s; opacity: 0; }
+  .fade-in-4 { animation-delay: 0.4s; opacity: 0; }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e9ecef;
+  }
+
+  .chart-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+  }
+
+  .activity-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 420px;
+  }
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  .activity-text { font-size: 0.875rem; color: #343a40; line-height: 1.4; }
+  .activity-time { font-size: 0.75rem; color: #adb5bd; margin-top: 2px; }
+
+  .dec-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+    height: 100%;
+  }
+  .dec-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fff5f5;
+    margin-bottom: 8px;
+    border-left: 4px solid #dc3545;
+  }
+  .dec-item:last-child { margin-bottom: 0; }
+  .dec-nom { font-size: 0.875rem; font-weight: 600; color: #343a40; }
+  .dec-motif { font-size: 0.75rem; color: #6c757d; }
+  .dec-montant { font-weight: 700; color: #dc3545; font-size: 0.9rem; white-space: nowrap; }
+  .dec-date { font-size: 0.72rem; color: #adb5bd; }
+
+  .progress-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .progress { border-radius: 50px; height: 12px; background: #e9ecef; }
+  .progress-bar { border-radius: 50px; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .progress-info { font-size: 0.78rem; color: #6c757d; margin-top: 5px; }
+
+  .calendar-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+  }
+  .mini-calendar { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .mini-calendar th { text-align: center; padding: 6px 2px; color: #6c757d; font-weight: 600; }
+  .mini-calendar td { text-align: center; padding: 6px 2px; border-radius: 8px; cursor: default; color: #343a40; }
+  .mini-calendar td.today { background: #0d6efd; color: white; font-weight: bold; border-radius: 50%; }
+  .mini-calendar td.has-event { background: #fff3cd; color: #856404; font-weight: 600; border-radius: 50%; position: relative; }
+  .mini-calendar td.has-event::after { content: '•'; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); color: #f0ad4e; font-size: 10px; }
+  .mini-calendar td.other-month { color: #ced4da; }
+  .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cal-nav button { background: none; border: 1px solid #dee2e6; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 0.85rem; color: #495057; transition: 0.2s; }
+  .cal-nav button:hover { background: #f8f9fa; }
+  .remb-list { margin-top: 12px; }
+  .remb-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; border-radius: 8px; background: #f8f9fa; margin-bottom: 6px; font-size: 0.82rem; }
+  .remb-badge { background: #fff3cd; color: #856404; border-radius: 6px; padding: 2px 8px; font-weight: 600; font-size: 0.78rem; }
+
+  /* ✅ Bandeau portail bureau */
+ .bureau-banner {
+    background: linear-gradient(135deg, #0d6efd15, #0d6efd08);
+    border: 1px solid #0d6efd30;
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 100px; /* ✅ AJOUTÉ */
+}
+  .bureau-banner .role-badge {
+    background: #0d6efd;
+    color: white;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Bouton mobile -->
+<button class="btn btn-primary d-md-none mb-3" id="mobileSidebarToggle">
+    <i class="bi bi-list"></i> Menu
+</button>
+
+<!-- ✅ BANDEAU MEMBRE DU BUREAU -->
+{% if est_bureau and not request.user.is_staff %}
+<div class="bureau-banner fade-in fade-in-1">
+    <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-person-badge-fill text-primary fs-4"></i>
+        <div>
+            <div class="fw-semibold text-dark">
+                {{ request.user.first_name }} {{ request.user.last_name }}
+            </div>
+            <div class="text-muted small">Membre du bureau</div>
+        </div>
+        {% if role_actuel %}
+            <span class="role-badge">{{ role_actuel|cut:"_" }}</span>
+        {% endif %}
+    </div>
+    <a href="{% url 'portail_adherent' %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-person-circle me-2"></i>Mon Portail Adhérent
+    </a>
+</div>
+{% endif %}
+
+<!-- Titre -->
+<h2 class="mt-5 pt-3 mb-3 fw-bold border-bottom pb-2 fade-in fade-in-1">
+    <i class="bi bi-house-door-fill me-2 text-primary"></i>
+    Bienvenue sur le <span class="text-primary">Tableau de Bord</span>
+</h2>
+
+<!-- Solde -->
+<div class="alert alert-primary d-flex align-items-center justify-content-center text-center shadow-sm mb-4 fade-in fade-in-2">
+    <i class="bi bi-cash-coin me-2 fs-3 text-success"></i>
+    <div>
+        <span class="fs-4 fw-bold">Solde net de la Caisse {{ solde_net|floatformat:0 }} FCFA</span>
+    </div>
+</div>
+
+<!-- Notifications -->
+<div class="alert alert-dark mt-3 shadow fade-in fade-in-3">
+    <h5 class="mb-3">
+        <i class="bi bi-bell-fill text-warning me-2"></i>
+        Notifications récentes
+    </h5>
+    <ul class="mb-0 list-unstyled">
+        <li>🔔 <strong>{{ prets_en_attente }}</strong> prêt(s) en attente de validation</li>
+        <li>📅 <strong>{{ cotisations_en_retard }}</strong> cotisation(s) en retard</li>
+        <li>
+            🕒 Prochain remboursement :
+            {% if prochain_remb %}
+                le <strong>{{ prochain_remb.0.date_paiement|date:"d/m/Y" }}</strong>
+            {% else %}
+                <em>Aucun prévu dans les 7 jours</em>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+<!-- Cartes -->
+{% include 'admin/includes/cards.html' %}
+
+<!-- ===== GRAPHIQUE + ACTIVITÉS ===== -->
+<p class="section-title mt-4 fade-in fade-in-1">
+    <i class="bi bi-bar-chart-fill text-primary"></i>
+    Statistiques & Activité
+</p>
+
+<div class="row g-3 mb-4 fade-in fade-in-2">
+
+    <div class="col-lg-8">
+        <div class="chart-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-graph-up me-2 text-primary"></i>
+                    Cotisations par mois
+                </h6>
+                <span class="badge bg-primary">{{ labels|length }} mois</span>
+            </div>
+            <div style="height: 360px;">
+                <canvas id="cotisationsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="activity-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-clock-history me-2 text-success"></i>
+                    Activités récentes
+                </h6>
+                <span class="badge bg-success">{{ activites_recentes|length }}</span>
+            </div>
+
+            {% for acti in activites_recentes %}
+            <div class="activity-item">
+                <div class="activity-dot bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="activity-text fw-semibold">{{ acti.texte }}</div>
+                    <div class="activity-text text-muted">{{ acti.detail }}</div>
+                    <div class="activity-time">
+                        <i class="bi bi-calendar-event me-1"></i>{{ acti.date|date:"d/m/Y" }}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                Aucune activité récente
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- ===== DÉCAISSEMENTS ===== -->
+<div class="row g-3 mb-4 fade-in fade-in-3">
+    <div class="col-12">
+        <div class="dec-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-arrow-down-circle me-2 text-danger"></i>
+                    Derniers décaissements
+                </h6>
+                <span class="badge bg-danger">{{ decaissements_recents|length }}</span>
+            </div>
+            <div class="row g-3">
+                {% for dec in decaissements_recents %}
+                <div class="col-md-4">
+                    <div class="dec-item h-100">
+                        <div>
+                            <div class="dec-nom">{{ dec.nom }}</div>
+                            <div class="dec-motif">{{ dec.motif }}</div>
+                            <div class="dec-date">
+                                <i class="bi bi-calendar3 me-1"></i>{{ dec.date|date:"d/m/Y" }}
+                            </div>
+                        </div>
+                        <div class="dec-montant">-{{ dec.montant|floatformat:0 }} FCFA</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-wallet2 fs-1 d-block mb-3"></i>
+                        Aucun décaissement récent
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== INDICATEURS ===== -->
+<p class="section-title fade-in fade-in-1">
+    <i class="bi bi-speedometer2 text-warning"></i> Indicateurs
+</p>
+<div class="row g-3 mb-4 fade-in fade-in-2">
+
+  <div class="col-md-4">
+    <div class="progress-card h-100">
+      <h6 class="fw-bold mb-3">
+          <i class="bi bi-123 me-2 text-warning"></i>Compteurs clés
+      </h6>
+      <div class="d-flex flex-column gap-3">
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-primary bg-opacity-10">
+          <span class="text-primary fw-semibold"><i class="bi bi-people me-2"></i>Adhérents</span>
+          <span class="fw-bold fs-5 text-primary counter" data-target="{{ total_adherents }}" data-unit="">0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-success bg-opacity-10">
+          <span class="text-success fw-semibold"><i class="bi bi-cash me-2"></i>Cotisants ce mois</span>
+          <span class="fw-bold fs-5 text-success counter" data-target="{{ nb_cotisants_mois }}" data-unit="">0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-warning bg-opacity-10">
+          <span class="text-warning fw-semibold"><i class="bi bi-bank2 me-2"></i>Prêts actifs</span>
+          <span class="fw-bold fs-5 text-warning counter" data-target="{{ total_prets }}" data-unit="">0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-danger bg-opacity-10">
+          <span class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-2"></i>En retard</span>
+          <span class="fw-bold fs-5 text-danger counter" data-target="{{ cotisations_en_retard }}" data-unit="">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="progress-card h-100">
+      <h6 class="fw-bold mb-4">
+          <i class="bi bi-bar-chart-steps me-2 text-info"></i>Taux & Progression
+      </h6>
+
+      {% if total_adherents > 0 %}
+      <div class="mb-4">
+        <div class="progress-label">
+          <span>Taux de cotisation ce mois</span>
+          <span class="text-success">{{ nb_cotisants_mois }} / {{ total_adherents }}</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-success"
+               role="progressbar"
+               style="width: 0%"
+               data-width="{% widthratio nb_cotisants_mois total_adherents 100 %}"
+               aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <div class="progress-info">
+            {% widthratio nb_cotisants_mois total_adherents 100 %}% des adhérents ont cotisé ce mois
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="mb-4">
+        <div class="progress-label">
+          <span>Taux de remboursement des prêts</span>
+          <span class="text-primary">{{ taux_remboursement }}%</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-primary"
+               role="progressbar"
+               style="width: 0%"
+               data-width="{{ taux_remboursement }}"
+               aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <div class="progress-info">
+            {{ taux_remboursement }}% du montant total des prêts validés remboursé
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <div class="progress-label">
+          <span>Croissance mensuelle des cotisations</span>
+          <span class="{% if croissance >= 0 %}text-success{% else %}text-danger{% endif %}">
+            {% if croissance >= 0 %}+{% endif %}{{ croissance }}%
+          </span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar {% if croissance >= 0 %}bg-success{% else %}bg-danger{% endif %}"
+               role="progressbar"
+               style="width: 0%"
+               data-width="{% if croissance >= 0 %}{{ croissance }}{% else %}0{% endif %}"
+               aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <div class="progress-info">Par rapport au mois précédent</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CALENDRIER ===== -->
+<p class="section-title fade-in fade-in-1">
+    <i class="bi bi-calendar3 text-danger"></i> Calendrier des remboursements
+</p>
+<div class="row g-3 mb-4 fade-in fade-in-2">
+  <div class="col-md-5">
+    <div class="calendar-card">
+      <div class="cal-nav">
+        <button id="calPrev"><i class="bi bi-chevron-left"></i></button>
+        <strong id="calTitle"></strong>
+        <button id="calNext"><i class="bi bi-chevron-right"></i></button>
+      </div>
+      <table class="mini-calendar">
+        <thead>
+          <tr>
+            <th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+          </tr>
+        </thead>
+        <tbody id="calBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="calendar-card h-100">
+      <h6 class="fw-bold mb-3">
+          <i class="bi bi-clock-history me-2 text-danger"></i>Remboursements prévus (7 jours)
+      </h6>
+      <div class="remb-list">
+        {% for p in prochain_remb %}
+        <div class="remb-item">
+          <div>
+            <div class="fw-semibold">{{ p.pret.adherant.nom }} {{ p.pret.adherant.prenom }}</div>
+            <div class="text-muted" style="font-size:0.78rem;">{{ p.date_paiement|date:"d/m/Y" }}</div>
+          </div>
+          <span class="remb-badge">{{ p.montant|floatformat:0 }} FCFA</span>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-3">
+          <i class="bi bi-calendar-check fs-3 d-block mb-2"></i>
+          Aucun remboursement prévu dans les 7 jours
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('cotisationsChart').getContext('2d');
+const chartLabels = {{ labels|safe }};
+const chartData = {{ data|safe }};
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: chartLabels,
+    datasets: [{
+      label: 'Montant cotisations (FCFA)',
+      data: chartData,
+      backgroundColor: 'rgba(13, 110, 253, 0.15)',
+      borderColor: 'rgba(13, 110, 253, 0.8)',
+      borderWidth: 2,
+      borderRadius: 8,
+      borderSkipped: false,
+    }, {
+      label: 'Tendance',
+      data: chartData,
+      type: 'line',
+      borderColor: 'rgba(25, 135, 84, 0.8)',
+      borderWidth: 2,
+      pointBackgroundColor: 'rgba(25, 135, 84, 1)',
+      pointRadius: 4,
+      tension: 0.4,
+      fill: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { font: { size: 12 } } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.parsed.y.toLocaleString('fr-FR') + ' FCFA'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: val => val.toLocaleString('fr-FR') + ' F' },
+        grid: { color: 'rgba(0,0,0,0.05)' }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target) || 0;
+  const unit = el.dataset.unit || '';
+  const duration = 1500;
+  const start = performance.now();
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(target * ease);
+    el.textContent = current.toLocaleString('fr-FR') + (unit ? ' ' + unit : '');
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+const progressObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const bar = entry.target;
+      const width = Math.min(parseFloat(bar.dataset.width) || 0, 100);
+      bar.style.width = width + '%';
+      progressObserver.unobserve(bar);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.progress-bar[data-width]').forEach(bar => progressObserver.observe(bar));
+
+const remboursementDates = [
+  {% for p in prochain_remb %}"{{ p.date_paiement|date:'Y-m-d' }}"{% if not forloop.last %},{% endif %}{% endfor %}
+];
+
+let calDate = new Date();
+
+function renderCalendar() {
+  const year = calDate.getFullYear();
+  const month = calDate.getMonth();
+  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin',
+                      'Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('calTitle').textContent = monthNames[month] + ' ' + year;
+
+  let startDay = new Date(year, month, 1).getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  let html = '';
+  let day = 1;
+
+  for (let row = 0; row < 6; row++) {
+    html += '<tr>';
+    for (let col = 0; col < 7; col++) {
+      const cellIndex = row * 7 + col;
+      if (cellIndex < startDay || day > daysInMonth) {
+        html += '<td class="other-month"></td>';
+      } else {
+        const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const hasEvent = remboursementDates.includes(dateStr);
+        const cls = isToday ? 'today' : (hasEvent ? 'has-event' : '');
+        html += `<td class="${cls}" title="${hasEvent ? '📅 Remboursement prévu' : ''}">${day}</td>`;
+        day++;
+      }
+    }
+    html += '</tr>';
+    if (day > daysInMonth) break;
+  }
+  document.getElementById('calBody').innerHTML = html;
+}
+
+document.getElementById('calPrev').addEventListener('click', () => {
+  calDate.setMonth(calDate.getMonth() - 1);
+  renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+  calDate.setMonth(calDate.getMonth() + 1);
+  renderCalendar();
+});
+
+renderCalendar();
+</script>
+{% endblock %}

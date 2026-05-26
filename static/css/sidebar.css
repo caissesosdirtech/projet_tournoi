@@ -1,0 +1,587 @@
+/* ================= VARIABLES ================= */
+:root {
+  --sidebar-bg: #1e1e2d;
+  --sidebar-header: #151521;
+  --sidebar-hover: #2c2c3c;
+  --submenu-bg: #26263a;
+  --text: #ffffff;
+  --text-muted: #cfcfcf;
+  --accent: #4f8cff;
+}
+
+/* ================= SIDEBAR ================= */
+.django-sidebar {
+    width: var(--sidebar-width);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+/* HEADER */
+.sidebar-header {
+  padding: 15px;
+  background: var(--sidebar-header);
+  font-weight: bold;
+}
+
+.sidebar-brand {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ================= MENU ================= */
+.django-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.django-nav-item {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* LIENS PRINCIPAUX */
+.django-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.django-nav-link:hover {
+  background: var(--sidebar-hover);
+  color: white;
+}
+
+/* ================= FLÈCHE ROTATION ================= */
+.arrow {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+/* rotation quand actif */
+.toggle-menu.active .arrow {
+  transform: rotate(180deg);
+}
+
+/* ================= SOUS-MENU (IMPORTANT) ================= */
+.django-submenu {
+  display: none;
+  background: var(--submenu-bg);
+  padding: 5px 0;
+  margin: 0;
+  list-style: none;
+  border-left: 3px solid var(--accent);
+  animation: slideDown 0.25s ease;
+}
+
+/* affichage actif */
+.django-submenu.show {
+  display: block;
+}
+
+/* animation ouverture */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* LIENS DU SOUS-MENU */
+.django-submenu li a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+/* hover sous-menu */
+.django-submenu li a:hover {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  padding-left: 25px;
+}
+
+/* ================= CONTENT ================= */
+/* Contenu */
+.django-main-content {
+  margin-left: var(--sidebar-width);
+  padding: 90px 20px 70px 20px; /* top: compense header | bottom: compense footer */
+}
+
+/* Messages toujours visibles sous le header */
+.django-main-content .alert {
+    margin-top: 20px;
+    position: relative;
+    z-index: 999;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .django-sidebar {
+    transform: translateX(-100%);
+    transition: 0.3s;
+  }
+
+  .django-sidebar.active {
+    transform: translateX(0);
+  }
+
+}
+
+:root {
+  --primary: #4f46e5;
+  --secondary: #6366f1;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --dark: #0f172a;
+  --light: #f8fafc;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+}
+
+/* BODY */
+body {
+  background: var(--light);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;  /* on enlève le padding-top ici */
+}
+
+
+/* HEADER MODERNE */
+/* ================= HEADER ADMIN ================= */
+.admin-header {
+    height: 70px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* Sidebar descend sous header */
+.django-sidebar {
+    top: 70px !important;
+    height: calc(100vh - 70px) !important;
+}
+
+/* Contenu */
+.django-main-content {
+    margin-left: var(--sidebar-width);
+    padding-bottom: 60px; /* évite que footer cache contenu */
+}
+
+/* Footer */
+.admin-footer {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-width);
+    right: 0;
+
+    margin: 0;
+    padding: 10px 0;
+
+    background: #212529;
+    color: white;
+    text-align: center;
+
+    z-index: 1000;
+    border: none; /* important */
+}
+
+/* ajustement du contenu pour éviter que le footer cache */
+.django-main-content {
+    padding-bottom: 70px;
+}
+
+/* SIDEBAR MODERNE */
+.django-sidebar {
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  color: #fff;
+}
+
+.django-nav-link {
+  border-radius: 10px;
+  margin: 5px 10px;
+  transition: 0.3s;
+}
+
+.django-nav-link:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+/* CARTES DASHBOARD */
+.card-modern {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.card-modern:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* TITRES */
+.page-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* TABLE MODERNE */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* BOUTONS */
+.btn-primary {
+  background: var(--primary);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+/* Bouton avatar rond */
+.user-avatar-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    color: white;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.user-avatar-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Hover effet moderne */
+.user-avatar-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Dropdown style */
+.dropdown-menu {
+    border-radius: 12px;
+    border: none;
+    z-index: 2000;
+}
+
+
+.modal {
+  z-index: 3000 !important;
+}
+
+.modal-backdrop {
+  z-index: 2990 !important;
+}
+
+.django-sidebar {
+  z-index: 1000;
+}
+
+/* ===== SEARCH BAR MODERNE ===== */
+.search-container {
+  max-width: 400px;
+}
+
+.search-box {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.search-box .input-group-text {
+  border: none;
+}
+
+.search-box:focus-within {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: scale(1.01);
+  transition: 0.2s;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  background: #f1f1f1;
+  border: none !important;
+  border-radius: 50px !important;
+  padding: 6px 14px;
+  transition: 0.2s;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #0d6efd;
+  color: white !important;
+}
+
+.search-container {
+  width: 300px;
+}
+
+.search-box {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+}
+
+.search-box .input-group-text {
+  border: none;
+}
+
+.search-box:focus-within {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: scale(1.02);
+  transition: 0.2s;
+}
+
+:root {
+    --sidebar-width: 280px;
+}
+
+/* ===== ALIGNEMENT GLOBAL ===== */
+
+.chart-card,
+.activity-card,
+.dec-card {
+    height: 100%;
+}
+
+/* ===== GRAPHIQUE ===== */
+
+.chart-card canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ===== ACTIVITÉS ===== */
+
+.activity-card {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.activity-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-card::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 10px;
+}
+
+/* ===== DÉCAISSEMENTS ===== */
+
+.dec-item {
+    min-height: 120px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 991px) {
+
+    .activity-card {
+        max-height: unset;
+    }
+
+    .dec-item {
+        min-height: auto;
+    }
+
+}
+
+/* ===== BLOC SPECIAL ===== */
+.django-special-item {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== LINK ADMIN ONLY ===== */
+.admin-only-link {
+  background: linear-gradient(135deg, #1d3557, #0d6efd);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s ease;
+  box-shadow: 0 6px 18px rgba(13,110,253,0.25);
+}
+
+/* hover effet */
+.admin-only-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(13,110,253,0.35);
+}
+
+/* texte structure */
+.special-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.special-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== BADGE ADMIN ONLY ===== */
+.admin-only-badge {
+  background: #dc3545;
+  color: #fff;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  animation: pulseBadge 1.8s infinite;
+}
+
+/* petite animation */
+@keyframes pulseBadge {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.special-subtitle {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+/* =========================
+   ONGLET ADMIN SPECIAL
+========================= */
+.django-special-item {
+    margin-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 18px;
+}
+
+.admin-only-link {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px 16px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.admin-only-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #334155, #0f172a);
+}
+
+.admin-only-link i.bi-person-badge-fill {
+    font-size: 1.4rem;
+    color: #facc15;
+}
+
+.special-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 12px;
+}
+
+.special-title {
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.special-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.75rem;
+    margin-top: 2px;
+}
+
+.admin-only-badge {
+    background: #facc15;
+    color: #111827;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+/* Sous-menu spécial */
+.special-submenu {
+    margin-top: 10px;
+    padding-left: 12px;
+}
+
+.special-submenu li a {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: 0.25s;
+}
+
+.special-submenu li a:hover {
+    background: rgba(250,204,21,0.12);
+    color: #facc15;
+}

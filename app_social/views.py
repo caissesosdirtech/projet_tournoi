@@ -535,11 +535,6 @@ def verifier_etat(request):
         "adherant": adherant
     })
     
-def galerie(request):
-    images = GalerieImage.objects.all()  # Récupérer toutes les images
-    print(images)  # Vérifier si les images sont bien chargées
-    return render(request, 'app_social/galerie.html', {'galerie_images': images})
-
 
 def nous_ecrire(request):
 

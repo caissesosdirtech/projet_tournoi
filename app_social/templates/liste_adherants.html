@@ -1,0 +1,171 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block title %}Liste des Adhérents{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+<style>
+.search-container { width: 300px; }
+.search-box {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.dataTables_wrapper .dataTables_paginate {
+  display: flex;
+  justify-content: center !important;
+  margin-top: 20px;
+}
+.highlight { background: #fff3cd; border-radius: 3px; padding: 0 2px; font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-5 mb-4">Liste des Adhérents</h1>
+
+<!-- ── TOP BAR ── -->
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+  <a href="{% url 'generate_excel' %}" class="btn btn-primary">
+    📄 Télécharger Excel
+  </a>
+
+  <!-- Recherche live -->
+  <div class="search-container">
+    <div class="input-group search-box">
+      <span class="input-group-text bg-white border-end-0">
+        <i class="bi bi-search"></i>
+      </span>
+      <input type="text" id="customSearch" class="form-control border-start-0"
+             placeholder="Rechercher un adhérent...">
+    </div>
+  </div>
+
+  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutAdherantModal">
+    ➕ New Adhérent
+  </button>
+
+</div>
+
+<!-- ── FILTRES ── -->
+<div class="d-flex gap-2 mb-3 flex-wrap">
+  <select id="filterDepartement" class="form-select w-auto">
+    <option value="">📂 Tous les départements</option>
+    <option value="Dep_Surveillance">Surveillance</option>
+    <option value="Dep_SSI">SSI</option>
+    <option value="Dep_Dev_Conception">Développement</option>
+    <option value="Dep_INFLUENCE">Influence</option>
+    <option value="Dep_DELTA">DELTA</option>
+    <option value="Dep_Admin">Admin</option>
+  </select>
+
+  <select id="filterCentre" class="form-select w-auto">
+    <option value="">🏢 Tous les centres</option>
+    <option value="LE CAP">LE CAP</option>
+    <option value="CCRO">CCRO</option>
+    <option value="PASTEUR">PASTEUR</option>
+    <option value="DANTEC">DANTEC</option>
+    <option value="DELTA">DELTA</option>
+  </select>
+</div>
+
+<!-- ── TABLE ── -->
+<table id="adherentsTable" class="table table-striped table-bordered">
+  <thead class="table-primary">
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Téléphone</th>
+      <th>Adresse</th>
+      <th>Département</th>
+      <th>Centre</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in liste_adherants %}
+    <tr>
+      <td>{{ a.nom }}</td>
+      <td>{{ a.prenom }}</td>
+      <td>{{ a.telephone }}</td>
+      <td>{{ a.adresse_rue }}</td>
+      <td data-dept="{{ a.departement|default:'' }}">{{ a.departement }}</td>
+      <td data-centre="{{ a.sous_departement|default:'' }}">{{ a.sous_departement }}</td>
+      <td>
+        <a href="{% url 'fiche_adherant' a.id %}" class="btn btn-info btn-sm">📄 Fiche</a>
+        <button class="btn btn-warning btn-sm openModifierModal"
+          data-id="{{ a.id }}"
+          data-nom="{{ a.nom }}"
+          data-prenom="{{ a.prenom }}"
+          data-email="{{ a.email }}"
+          data-telephone="{{ a.telephone }}"
+          data-adresse="{{ a.adresse_rue }}"
+          data-departement="{{ a.departement|default:'' }}"
+          data-sousdepartement="{{ a.sous_departement|default:'' }}">✏
+        </button>
+        <button class="btn btn-danger btn-sm openDeleteModal"
+          data-url="{% url 'supprimer_adherant' a.id %}">🗑
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+  // ── INIT DATATABLE ──
+  let table = $('#adherentsTable').DataTable({
+    dom: 'lrtip',          // masque la search box native
+    pageLength: 10,
+    responsive: true,
+    language: {
+      url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json"
+    },
+    columnDefs: [
+      { orderable: false, targets: 6 }  // colonne Actions non triable
+    ]
+  });
+
+  // ── RECHERCHE LIVE (debounce 300ms) ──
+  let searchTimer;
+  $('#customSearch').on('keyup', function () {
+    clearTimeout(searchTimer);
+    const val = this.value;
+    searchTimer = setTimeout(function () {
+      table.search(val).draw();
+    }, 300);
+  });
+
+  // ── FILTRE DÉPARTEMENT ──
+  $.fn.dataTable.ext.search.push(function (settings, data, index) {
+    const dept   = $('#filterDepartement').val();
+    const centre = $('#filterCentre').val();
+
+    // data[4] = département, data[5] = centre
+    const rowDept   = $(table.row(index).node()).find('td:eq(4)').data('dept')   || '';
+    const rowCentre = $(table.row(index).node()).find('td:eq(5)').data('centre') || '';
+
+    const okDept   = !dept   || rowDept   === dept;
+    const okCentre = !centre || rowCentre === centre;
+
+    return okDept && okCentre;
+  });
+
+  $('#filterDepartement, #filterCentre').on('change', function () {
+    table.draw();
+  });
+
+});
+</script>
+{% endblock %}

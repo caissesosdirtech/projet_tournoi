@@ -1,0 +1,46 @@
+{% extends "app_social/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h3>État de vos cotisations</h3>
+
+  <!-- Statut général -->
+  <div class="alert {% if 'À JOUR' in message %}alert-success{% elif 'RÉGULARISER' in message %}alert-warning{% else %}alert-secondary{% endif %}">
+    <strong>{{ message }}</strong>
+    {% if result %}
+      — Dernière cotisation : <strong>{{ result.mois }} {{ result.annee }}</strong>
+    {% endif %}
+  </div>
+
+  <!-- Liste des cotisations -->
+  {% if cotisations %}
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>#</th>
+        <th>Mois</th>
+        <th>Année</th>
+        <th>Montant</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cotisation in cotisations %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ cotisation.mois }}</td>
+        <td>{{ cotisation.annee }}</td>
+        <td>{{ cotisation.montant }} FCFA</td>
+        <td>
+          <span class="badge badge-success">Payé</span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="text-muted">Aucune cotisation enregistrée.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

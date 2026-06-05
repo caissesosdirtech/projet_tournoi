@@ -470,48 +470,51 @@ from datetime import datetime
 
 @login_required(login_url='login_adherent')
 def verifier_etat(request):
-
     try:
         adherant = Adherant.objects.get(telephone=request.user)
     except Adherant.DoesNotExist:
         return redirect('login_adherent')
 
-    # ordre réel des mois
     mois_ordre = Case(
-        When(mois="Janvier", then=1),
-        When(mois="Février", then=2),
-        When(mois="Mars", then=3),
-        When(mois="Avril", then=4),
-        When(mois="Mai", then=5),
-        When(mois="Juin", then=6),
-        When(mois="Juillet", then=7),
-        When(mois="Août", then=8),
+        When(mois="Janvier",   then=1),
+        When(mois="Février",   then=2),
+        When(mois="Mars",      then=3),
+        When(mois="Avril",     then=4),
+        When(mois="Mai",       then=5),
+        When(mois="Juin",      then=6),
+        When(mois="Juillet",   then=7),
+        When(mois="Août",      then=8),
         When(mois="Septembre", then=9),
-        When(mois="Octobre", then=10),
-        When(mois="Novembre", then=11),
-        When(mois="Décembre", then=12),
+        When(mois="Octobre",   then=10),
+        When(mois="Novembre",  then=11),
+        When(mois="Décembre",  then=12),
         output_field=IntegerField()
     )
 
+    # Liste affichée : Janvier → Décembre
     cotisations = (
         CotisationMensuelle.objects
         .filter(adherant=adherant)
         .annotate(mois_num=mois_ordre)
-        .order_by('annee', 'mois_num')
+        .order_by('annee', 'mois_num')  # ✅ ordre croissant pour l'affichage
     )
 
-    derniere = cotisations.first()
+    # Dernière cotisation : on prend le dernier élément séparément
+    derniere = (
+        CotisationMensuelle.objects
+        .filter(adherant=adherant)
+        .annotate(mois_num=mois_ordre)
+        .order_by('-annee', '-mois_num')  # ✅ ordre décroissant pour avoir le plus récent
+        .first()
+    )
 
     result = None
     message = ""
 
     if derniere:
-
-        # mois actuel
         mois_actuel = datetime.now().month
         annee_actuelle = datetime.now().year
 
-        # cotisation à jour ?
         if (
             derniere.annee == annee_actuelle and
             derniere.mois_num == mois_actuel
@@ -524,7 +527,6 @@ def verifier_etat(request):
             "mois": derniere.mois,
             "annee": derniere.annee
         }
-
     else:
         message = "Aucune cotisation trouvée"
 

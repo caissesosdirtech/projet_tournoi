@@ -202,8 +202,10 @@ def dashboard(request):
 
 def calendrier(request):
     now = timezone.now()
-    # Tri des matchs par date décroissante pour mettre le dernier en premier
-    matchs = Match.objects.order_by('-date')  
+
+    # Tri des matchs du plus ancien au plus récent
+    matchs = Match.objects.order_by('date')
+
     equipes = Equipe.objects.all()
 
     context = {
@@ -853,7 +855,7 @@ def admin_dashboard(request):
     # MATCHS
     # =====================================================
 
-    matchs = Match.objects.all()
+    matchs = Match.objects.order_by('date')
 
     equipe_id = request.GET.get('equipe')
 

@@ -107,7 +107,7 @@ def stats_joueurs(request):
 
 
 def calendrier(request):
-    matchs = Match.objects.all().order_by("date")
+    matchs = Match.objects.order_by('date')
     return render(request, "matchs/calendrier.html", {
         "matchs": matchs
     })
